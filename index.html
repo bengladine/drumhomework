@@ -277,6 +277,8 @@
           if (g.label) card.append(el("p", { class: "title", style: "margin-top:10px" }, g.label));
           card.append(el("iframe", {
             class: "groove-frame", loading: "lazy", title: g.label || "Groove",
+            // grow with the number of bars so nothing hides behind an inner scrollbar
+            style: "height:" + (80 + 95 * (+((g.url.match(/[?&]Measures=(\d+)/) || [])[1]) || 1)) + "px",
             src: grooveEmbed(g.url, bpm)
           }));
           card.append(el("a", { class: "ext", href: g.url, target: "_blank", rel: "noopener" }, "Open in Groove Scribe ↗"));
