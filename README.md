@@ -45,6 +45,9 @@ Rules: `id` unique per assignment (the date works). Only `goal` is required.
 Mind the comma after the `}` of your new block.
 If the page says "Huiswerk niet gevonden", the JSON has a typo: paste it into https://jsonlint.com.
 
+## Language
+Page labels are Dutch by default. For an English page, add `"lang": "en",` under `"name"` in the student's file (see `s/oji.json`).
+
 ## New student
 Make up a random 8-character code (letters/digits, not their name). Add file → Create new file → `s/<code>.json`, copy the test student's file as a start.
 

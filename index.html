@@ -156,22 +156,41 @@
     return n;
   }
 
+  // ---------- labels (per student: "lang": "en" in their file; default Dutch) ----------
+  const LABELS = {
+    nl: { hi: "Hoi", intro: "Dit is je drumhuiswerk.", none: "Nog geen opdracht.", previous: "Vorige opdrachten",
+          days: ["ma", "di", "wo", "do", "vr", "za", "zo"], streak1: "dag op rij geoefend", streakN: "dagen op rij geoefend",
+          doneToday: "✓ Vandaag geoefend!", practiceToday: "Ik heb vandaag geoefend", thisWeek: "Deze week",
+          goalsDone: (d, n) => d + " van " + n + " doelen gehaald", allDone: "🎉 Alles gehaald! Laat het zien in de les.",
+          pdf: "📄 Open de noten (PDF)", goal: "Jouw doel", done: "Gelukt", doneAt: "Gelukt op",
+          goalDone: "🎉 Doel gehaald! Laat het zien in de les.", listen: "Luister & speel mee",
+          tempoNow: b => "Tempo nu: " + b + " bpm — druk op ▶ in de noten", focus: "Let op" },
+    en: { hi: "Hi", intro: "This is your drum homework.", none: "No homework yet.", previous: "Previous homework",
+          days: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"], streak1: "day in a row", streakN: "days in a row",
+          doneToday: "✓ Practised today!", practiceToday: "I practised today", thisWeek: "This week",
+          goalsDone: (d, n) => d + " of " + n + " goals reached", allDone: "🎉 All done! Show it in your next lesson.",
+          pdf: "📄 Open the sheet music (PDF)", goal: "Your goal", done: "Done", doneAt: "Done at",
+          goalDone: "🎉 Goal reached! Show it in your next lesson.", listen: "Listen & play along",
+          tempoNow: b => "Tempo now: " + b + " bpm — press ▶ in the notation", focus: "Focus on" }
+  };
+  const T = k => (LABELS[(data && data.lang) || "nl"] || LABELS.nl)[k];
+
   // ---------- render ----------
   let data = null;
   const playing = {}; // assignment id -> bpm currently loaded
 
   function render() {
     app.textContent = "";
-    app.append(el("h1", null, "Hoi " + (data.name || "") + " 👋"));
-    app.append(el("p", { class: "sub" }, "Dit is je drumhuiswerk."));
+    app.append(el("h1", null, T("hi") + " " + (data.name || "") + " 👋"));
+    app.append(el("p", { class: "sub" }, T("intro")));
     app.append(streakCard());
 
     const list = data.assignments || [];
-    if (!list.length) { app.append(el("p", { class: "sub" }, "Nog geen opdracht.")); return; }
+    if (!list.length) { app.append(el("p", { class: "sub" }, T("none"))); return; }
     app.append(assignmentView(list[0]));
 
     if (list.length > 1) {
-      app.append(el("p", { class: "label", style: "margin-top:24px" }, "Vorige opdrachten"));
+      app.append(el("p", { class: "label", style: "margin-top:24px" }, T("previous")));
       for (const a of list.slice(1)) {
         app.append(el("details", { class: "old" },
           el("summary", null, (a.date ? a.date + " · " : "") + (a.title || a.goal)),
@@ -184,7 +203,7 @@
     const s = streak();
     const doneToday = state.days.includes(todayKey);
     const monday = addDays(today, -((today.getDay() + 6) % 7));
-    const names = ["ma", "di", "wo", "do", "vr", "za", "zo"];
+    const names = T("days");
     const week = el("div", { class: "week" });
     names.forEach((nm, i) => {
       const d = addDays(monday, i), key = ymd(d);
@@ -198,12 +217,12 @@
     return el("section", { class: "card" },
       el("div", { class: "streak" },
         el("span", { class: "streak-num" }, "🔥 " + s),
-        el("span", null, s === 1 ? "dag op rij geoefend" : "dagen op rij geoefend")),
+        el("span", null, s === 1 ? T("streak1") : T("streakN"))),
       week,
       el("button", {
         class: "big-btn" + (doneToday ? " on" : ""),
         onclick: () => toggleDay(todayKey)
-      }, doneToday ? "✓ Vandaag geoefend!" : "Ik heb vandaag geoefend"));
+      }, doneToday ? T("doneToday") : T("practiceToday")));
   }
 
   // A week's homework is either one exercise (old format) or a list in "exercises".
@@ -222,11 +241,11 @@
     const doneCount = exs.filter((ex, i) => isDone(ex, ids[i])).length;
     const wrap = el("div");
     wrap.append(el("section", { class: "card" },
-      el("p", { class: "label" }, "Deze week"),
+      el("p", { class: "label" }, T("thisWeek")),
       a.title ? el("p", { class: "goal", style: "font-size:1.3rem" }, a.title) : null,
-      el("p", { class: "sub", style: "margin:6px 0 0" }, doneCount + " van " + exs.length + " doelen gehaald"),
-      doneCount === exs.length ? el("div", { class: "celebrate" }, "🎉 Alles gehaald! Laat het zien in de les.") : null,
-      a.pdf ? el("a", { class: "pdf-btn", style: "margin-top:12px", href: a.pdf, target: "_blank", rel: "noopener" }, "📄 Open de noten (PDF)") : null));
+      el("p", { class: "sub", style: "margin:6px 0 0" }, T("goalsDone")(doneCount, exs.length)),
+      doneCount === exs.length ? el("div", { class: "celebrate" }, T("allDone")) : null,
+      a.pdf ? el("a", { class: "pdf-btn", style: "margin-top:12px", href: a.pdf, target: "_blank", rel: "noopener" }, T("pdf")) : null));
 
     exs.forEach((ex, i) => {
       const id = ids[i], done = isDone(ex, id);
@@ -257,22 +276,22 @@
 
     // 1. The goal
     wrap.append(el("section", { class: "card" },
-      el("p", { class: "label" }, "Jouw doel"),
+      el("p", { class: "label" }, T("goal")),
       a.title ? el("p", { class: "title" }, a.title) : null,
       el("p", { class: "goal" + (allDone ? " done" : "") }, a.goal),
       !tempos.length ? el("label", { class: "check", style: "margin-top:12px" },
         el("input", { type: "checkbox", ...(allDone ? { checked: "" } : {}), onchange: () => toggleTick("done") }),
-        allDone ? "Gelukt ✓" : "Gelukt") : null,
-      allDone ? el("div", { class: "celebrate" }, "🎉 Doel gehaald! Laat het zien in de les.") : null));
+        allDone ? T("done") + " ✓" : T("done")) : null,
+      allDone ? el("div", { class: "celebrate" }, T("goalDone")) : null));
 
     // 2. Listen + tempo steps
     // "groove" can be one URL, or a list of {label, url} for multi-part exercises
     const grooves = !a.groove ? [] : Array.isArray(a.groove) ? a.groove : [{ url: a.groove }];
     if (grooves.length || tempos.length) {
       const bpm = playing[id] || tempos[0] || 80;
-      const card = el("section", { class: "card" }, el("p", { class: "label" }, "Luister & speel mee"));
+      const card = el("section", { class: "card" }, el("p", { class: "label" }, T("listen")));
       if (grooves.length) {
-        card.append(el("p", { class: "now-playing" }, "Tempo nu: " + bpm + " bpm — druk op ▶ in de noten"));
+        card.append(el("p", { class: "now-playing" }, T("tempoNow")(bpm)));
         grooves.forEach(g => {
           if (g.label) card.append(el("p", { class: "title", style: "margin-top:10px" }, g.label));
           card.append(el("iframe", {
@@ -295,7 +314,7 @@
             class: "play" + (t === bpm ? " active" : ""),
             onclick: () => { playing[id] = t; render(); }
           }, "▶ " + t) : el("strong", { style: "min-width:80px" }, t + " bpm"),
-          el("label", { class: "check" }, box, checked ? "Gelukt ✓" : "Gelukt op " + t)));
+          el("label", { class: "check" }, box, checked ? T("done") + " ✓" : T("doneAt") + " " + t)));
       });
       wrap.append(card);
     }
@@ -304,14 +323,14 @@
     if (a.focus && a.focus.length) {
       const items = Array.isArray(a.focus) ? a.focus : [a.focus];
       wrap.append(el("section", { class: "card" },
-        el("p", { class: "label" }, "Let op"),
+        el("p", { class: "label" }, T("focus")),
         el("ul", { class: "focus" }, items.map(f => el("li", null, f)))));
     }
 
     // 4. Notation
     if (a.pdf) {
       wrap.append(el("section", { class: "card" },
-        el("a", { class: "pdf-btn", href: a.pdf, target: "_blank", rel: "noopener" }, "📄 Open de noten (PDF)")));
+        el("a", { class: "pdf-btn", href: a.pdf, target: "_blank", rel: "noopener" }, T("pdf"))));
     }
     return wrap;
   }
