@@ -1,0 +1,19 @@
+{
+  "name": "Lotte",
+  "assignments": [
+    {
+      "id": "2026-11-14",
+      "date": "14 nov",
+      "title": "Rockgroove met accenten op de hi-hat",
+      "goal": "4x zuiver na elkaar op 80 bpm",
+      "tempos": [60, 70, 80],
+      "groove": "https://www.mikeslessons.com/groove/?TimeSig=4/4&Div=16&Tempo=80&Measures=1&H=|Xx-xX--xXx-xX--x|&S=|----O-------O---|&K=|o-------o-------|&T1=|----------------|&T4=|----------------|&Stickings=|----------------|",
+      "pdf": "pdf/t7k2m9qx-2026-11-14.pdf",
+      "focus": [
+        "Accenten luid, de andere hi-hat noten zacht.",
+        "Kick en hi-hat precies samen op tel 1 en 3.",
+        "Fout? Niet stoppen, gewoon doorspelen."
+      ]
+    }
+  ]
+}

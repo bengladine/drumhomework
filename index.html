@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Drumhuiswerk</title>
+<style>
+  :root {
+    --bg: #f6f4ef; --card: #fff; --ink: #1d1d1b; --muted: #6b6860;
+    --accent: #e4572e; --ok: #2e9e5b; --line: #e3dfd6; --radius: 16px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 17px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 560px; margin: 0 auto; padding: 16px 14px 48px; }
+  h1 { font-size: 1.5rem; margin: 8px 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 16px; }
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 16px; margin-bottom: 14px; box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  }
+  .label { font-size: .8rem; font-weight: 700; letter-spacing: .06em;
+           text-transform: uppercase; color: var(--muted); margin: 0 0 6px; }
+  .goal { font-size: 1.6rem; font-weight: 800; line-height: 1.2; margin: 0; }
+  .goal.done { color: var(--ok); }
+  .title { font-weight: 600; margin: 0 0 4px; }
+
+  /* streak */
+  .streak { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .streak-num { font-size: 2.2rem; font-weight: 800; }
+  .week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+  .day {
+    border: 2px solid var(--line); background: #fff; border-radius: 12px;
+    padding: 8px 0; text-align: center; font: inherit; font-size: .85rem; color: var(--ink);
+    min-height: 56px;
+  }
+  .day b { display: block; font-size: 1.1rem; }
+  .day.on { background: var(--ok); border-color: var(--ok); color: #fff; }
+  .day.today { border-color: var(--ink); }
+  .day:disabled { opacity: .35; }
+  .big-btn {
+    display: block; width: 100%; margin-top: 12px; padding: 16px;
+    border: 0; border-radius: 14px; font: inherit; font-weight: 700; font-size: 1.1rem;
+    background: var(--accent); color: #fff;
+  }
+  .big-btn.on { background: var(--ok); }
+
+  /* audio + tempo */
+  .groove-frame { width: 100%; height: 175px; border: 0; display: block; }
+  .ext { display: inline-block; margin-top: 6px; color: var(--muted); font-size: .9rem; }
+  .now-playing { font-size: .9rem; color: var(--muted); margin: 0 0 8px; }
+  .step {
+    display: flex; align-items: center; gap: 10px;
+    border-top: 1px solid var(--line); padding: 10px 0;
+  }
+  .step:first-of-type { border-top: 0; }
+  .play {
+    flex: 0 0 auto; min-width: 104px; padding: 12px 14px; border-radius: 12px;
+    border: 2px solid var(--ink); background: #fff; font: inherit; font-weight: 700; color: var(--ink);
+  }
+  .play.active { background: var(--ink); color: #fff; }
+  .check { display: flex; align-items: center; gap: 10px; flex: 1; font-size: 1rem; cursor: pointer; }
+  .check input { width: 30px; height: 30px; accent-color: var(--ok); }
+
+  .pdf-btn {
+    display: block; text-align: center; padding: 14px; border-radius: 14px;
+    border: 2px solid var(--ink); color: var(--ink); text-decoration: none; font-weight: 700;
+  }
+  ul.focus { margin: 0; padding-left: 20px; }
+  ul.focus li { margin: 4px 0; }
+  .celebrate {
+    background: var(--ok); color: #fff; border-radius: 12px; padding: 12px 14px;
+    font-weight: 700; margin-top: 12px;
+  }
+  details.old { background: var(--card); border-radius: var(--radius); margin-bottom: 10px; }
+  details.old > summary { padding: 14px 16px; font-weight: 600; cursor: pointer; }
+  details.old > div { padding: 0 2px 2px; }
+  .error { background: #fff; border-radius: var(--radius); padding: 20px; }
+</style>
+</head>
+<body>
+<main id="app"><p class="sub">Laden…</p></main>
+
+<script>
+(function () {
+  const app = document.getElementById("app");
+  const code = new URLSearchParams(location.search).get("s");
+
+  // ---------- storage (on the student's phone) ----------
+  const KEY = "drumhw:" + code;
+  function load() {
+    try { return JSON.parse(localStorage.getItem(KEY)) || { days: [], tempos: {} }; }
+    catch (e) { return { days: [], tempos: {} }; }
+  }
+  function save(state) {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+  }
+  let state = load();
+
+  // ---------- dates ----------
+  const pad = n => String(n).padStart(2, "0");
+  const ymd = d => d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+  const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const todayKey = ymd(today);
+
+  function streak() {
+    const days = new Set(state.days);
+    // Today not done yet? Streak still counts up to yesterday.
+    let d = days.has(todayKey) ? today : addDays(today, -1);
+    let n = 0;
+    while (days.has(ymd(d))) { n++; d = addDays(d, -1); }
+    return n;
+  }
+  function toggleDay(key) {
+    const i = state.days.indexOf(key);
+    if (i >= 0) state.days.splice(i, 1); else state.days.push(key);
+    save(state); render();
+  }
+
+  // ---------- Groove Scribe ----------
+  // Turn a normal Groove Scribe link into the compact embed at a given tempo.
+  function grooveEmbed(url, bpm) {
+    const q = url.split("?")[1] || "";
+    let query = /(^|&)Tempo=\d+/.test(q)
+      ? q.replace(/((?:^|&)Tempo=)\d+/, "$1" + bpm)
+      : q + "&Tempo=" + bpm;
+    return "https://www.mikeslessons.com/groove/GrooveEmbed.html?" + query;
+  }
+
+  // ---------- helpers ----------
+  function el(tag, attrs, ...kids) {
+    const n = document.createElement(tag);
+    for (const k in attrs || {}) {
+      if (k === "class") n.className = attrs[k];
+      else if (k.startsWith("on")) n.addEventListener(k.slice(2), attrs[k]);
+      else n.setAttribute(k, attrs[k]);
+    }
+    for (const k of kids.flat()) if (k != null) n.append(k);
+    return n;
+  }
+
+  // ---------- render ----------
+  let data = null;
+  const playing = {}; // assignment id -> bpm currently loaded
+
+  function render() {
+    app.textContent = "";
+    app.append(el("h1", null, "Hoi " + (data.name || "") + " 👋"));
+    app.append(el("p", { class: "sub" }, "Dit is je drumhuiswerk."));
+    app.append(streakCard());
+
+    const list = data.assignments || [];
+    if (!list.length) { app.append(el("p", { class: "sub" }, "Nog geen opdracht.")); return; }
+    app.append(assignmentView(list[0]));
+
+    if (list.length > 1) {
+      app.append(el("p", { class: "label", style: "margin-top:24px" }, "Vorige opdrachten"));
+      for (const a of list.slice(1)) {
+        app.append(el("details", { class: "old" },
+          el("summary", null, (a.date ? a.date + " · " : "") + (a.title || a.goal)),
+          el("div", null, assignmentView(a))));
+      }
+    }
+  }
+
+  function streakCard() {
+    const s = streak();
+    const doneToday = state.days.includes(todayKey);
+    const monday = addDays(today, -((today.getDay() + 6) % 7));
+    const names = ["ma", "di", "wo", "do", "vr", "za", "zo"];
+    const week = el("div", { class: "week" });
+    names.forEach((nm, i) => {
+      const d = addDays(monday, i), key = ymd(d);
+      week.append(el("button", {
+        class: "day" + (state.days.includes(key) ? " on" : "") + (key === todayKey ? " today" : ""),
+        ...(d > today ? { disabled: "" } : {}),
+        "aria-label": nm + " " + d.getDate(),
+        onclick: () => toggleDay(key)
+      }, nm, el("b", null, state.days.includes(key) ? "✓" : String(d.getDate()))));
+    });
+    return el("section", { class: "card" },
+      el("div", { class: "streak" },
+        el("span", { class: "streak-num" }, "🔥 " + s),
+        el("span", null, s === 1 ? "dag op rij geoefend" : "dagen op rij geoefend")),
+      week,
+      el("button", {
+        class: "big-btn" + (doneToday ? " on" : ""),
+        onclick: () => toggleDay(todayKey)
+      }, doneToday ? "✓ Vandaag geoefend!" : "Ik heb vandaag geoefend"));
+  }
+
+  function assignmentView(a) {
+    const id = a.id || a.title || a.goal;
+    const tempos = a.tempos || [];
+    const done = state.tempos[id] || [];
+    const allDone = tempos.length > 0 && tempos.every(t => done.includes(t));
+    const wrap = el("div");
+
+    // 1. The goal
+    wrap.append(el("section", { class: "card" },
+      el("p", { class: "label" }, "Jouw doel"),
+      a.title ? el("p", { class: "title" }, a.title) : null,
+      el("p", { class: "goal" + (allDone ? " done" : "") }, a.goal),
+      allDone ? el("div", { class: "celebrate" }, "🎉 Doel gehaald! Laat het zien in de les.") : null));
+
+    // 2. Listen + tempo steps
+    if (a.groove || tempos.length) {
+      const bpm = playing[id] || tempos[0] || 80;
+      const card = el("section", { class: "card" }, el("p", { class: "label" }, "Luister & speel mee"));
+      if (a.groove) {
+        card.append(el("p", { class: "now-playing" }, "Tempo nu: " + bpm + " bpm — druk op ▶ in de noten"));
+        card.append(el("iframe", {
+          class: "groove-frame", loading: "lazy", title: "Groove",
+          src: grooveEmbed(a.groove, bpm)
+        }));
+      }
+      tempos.forEach(t => {
+        const checked = done.includes(t);
+        const box = el("input", {
+          type: "checkbox", ...(checked ? { checked: "" } : {}),
+          onchange: () => {
+            const arr = state.tempos[id] = state.tempos[id] || [];
+            const i = arr.indexOf(t);
+            if (i >= 0) arr.splice(i, 1); else arr.push(t);
+            save(state); render();
+          }
+        });
+        card.append(el("div", { class: "step" },
+          a.groove ? el("button", {
+            class: "play" + (t === bpm ? " active" : ""),
+            onclick: () => { playing[id] = t; render(); }
+          }, "▶ " + t) : el("strong", { style: "min-width:80px" }, t + " bpm"),
+          el("label", { class: "check" }, box, checked ? "Gelukt ✓" : "Gelukt op " + t)));
+      });
+      if (a.groove) card.append(el("a", { class: "ext", href: a.groove, target: "_blank", rel: "noopener" }, "Open in Groove Scribe ↗"));
+      wrap.append(card);
+    }
+
+    // 3. Focus notes
+    if (a.focus && a.focus.length) {
+      const items = Array.isArray(a.focus) ? a.focus : [a.focus];
+      wrap.append(el("section", { class: "card" },
+        el("p", { class: "label" }, "Let op"),
+        el("ul", { class: "focus" }, items.map(f => el("li", null, f)))));
+    }
+
+    // 4. Notation
+    if (a.pdf) {
+      wrap.append(el("section", { class: "card" },
+        el("a", { class: "pdf-btn", href: a.pdf, target: "_blank", rel: "noopener" }, "📄 Open de noten (PDF)")));
+    }
+    return wrap;
+  }
+
+  // ---------- boot ----------
+  if (!code || !/^[a-z0-9]+$/i.test(code)) {
+    app.innerHTML = '<div class="error">Deze link klopt niet. Vraag je drumleraar om de juiste link.</div>';
+    return;
+  }
+  fetch("s/" + code + ".json", { cache: "no-store" })
+    .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(d => { data = d; render(); })
+    .catch(() => {
+      app.innerHTML = '<div class="error">Huiswerk niet gevonden. Vraag je drumleraar om de juiste link.</div>';
+    });
+})();
+</script>
+</body>
+</html>
