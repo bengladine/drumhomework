@@ -1,0 +1,37 @@
+{
+  "name": "Voorbeeld",
+  "assignments": [
+    {
+      "id": "2026-11-14",
+      "date": "14 nov",
+      "title": "Huiswerk week 46",
+      "pdf": "pdf/voorbeeld-2026-11-14.pdf",
+      "exercises": [
+        {
+          "type": "Rudiment",
+          "title": "Paradiddles",
+          "goal": "1 minuut zonder fout op 80 bpm",
+          "tempos": [60, 70, 80],
+          "focus": ["Accent op de eerste noot van elke groep.", "Stokken laag houden bij de zachte noten."]
+        },
+        {
+          "type": "Groove",
+          "title": "Rockgroove in 4/4 en 3/4",
+          "goal": "4x zuiver, wisselend deel A en B",
+          "tempos": [60, 70, 80],
+          "groove": [
+            { "label": "Deel A (4/4)", "url": "https://www.mikeslessons.com/groove/?TimeSig=4/4&Div=16&Tempo=80&Measures=1&H=|Xx-xX--xXx-xX--x|&S=|----O-------O---|&K=|o-------o-------|&T1=|----------------|&T4=|----------------|&Stickings=|----------------|" },
+            { "label": "Deel B (3/4)", "url": "https://www.mikeslessons.com/groove/?TimeSig=3/4&Div=8&Tempo=80&Measures=1&H=|x-x-x-|&S=|--O-O-|&K=|o-----|&T1=|------|&T4=|------|&Stickings=|------|" }
+          ],
+          "focus": ["Tel hardop mee: 1-2-3-4 / 1-2-3."]
+        },
+        {
+          "type": "Liedje",
+          "title": "Meespeelnummer naar keuze",
+          "goal": "Het hele nummer meespelen zonder te stoppen",
+          "focus": ["Fout? Gewoon doorspelen."]
+        }
+      ]
+    }
+  ]
+}

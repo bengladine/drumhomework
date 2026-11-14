@@ -37,6 +37,10 @@ Exercise in several parts (e.g. 4/4 + 3/4)? Use a list for `groove`:
       ],
 ```
 
+Several exercises in one week (technique, rudiments, grooves, songs)? Use `exercises`.
+Each exercise has its own `type`, `title`, `goal`, and optional `tempos`, `groove`, `focus`, `pdf`.
+No `tempos` = one "Gelukt" checkbox. Full example: `s/voorbeeld.json` (`?s=voorbeeld`).
+
 Rules: `id` unique per assignment (the date works). Only `goal` is required.
 Mind the comma after the `}` of your new block.
 If the page says "Huiswerk niet gevonden", the JSON has a typo: paste it into https://jsonlint.com.

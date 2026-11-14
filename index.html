@@ -78,6 +78,19 @@
   details.old { background: var(--card); border-radius: var(--radius); margin-bottom: 10px; }
   details.old > summary { padding: 14px 16px; font-weight: 600; cursor: pointer; }
   details.old > div { padding: 0 2px 2px; }
+  details.ex { background: var(--card); border-radius: var(--radius); margin-bottom: 10px;
+               box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+  details.ex > summary { display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+                         cursor: pointer; list-style: none; }
+  details.ex > summary::-webkit-details-marker { display: none; }
+  .ex-mark { flex: 0 0 36px; height: 36px; border-radius: 50%; display: grid; place-items: center;
+             font-weight: 800; border: 2px solid var(--ink); }
+  details.ex.done .ex-mark { background: var(--ok); border-color: var(--ok); color: #fff; }
+  .ex-type { display: block; font-size: .75rem; font-weight: 700; letter-spacing: .06em;
+             text-transform: uppercase; color: var(--accent); }
+  .ex-title { font-weight: 700; }
+  .ex-body { padding: 0 6px 6px; }
+  .ex-body .card { box-shadow: none; border: 1px solid var(--line); margin-bottom: 8px; }
   .error { background: #fff; border-radius: var(--radius); padding: 20px; }
 </style>
 </head>
@@ -193,18 +206,63 @@
       }, doneToday ? "✓ Vandaag geoefend!" : "Ik heb vandaag geoefend"));
   }
 
+  // A week's homework is either one exercise (old format) or a list in "exercises".
+  const openEx = {}; // which exercises are unfolded (survives re-render)
+  function isDone(ex, id) {
+    // No tempo steps? Then a single "done" tick counts.
+    const t = (ex.tempos && ex.tempos.length) ? ex.tempos : ["done"], d = state.tempos[id] || [];
+    return t.every(x => d.includes(x));
+  }
   function assignmentView(a) {
-    const id = a.id || a.title || a.goal;
+    const baseId = a.id || a.title || a.goal;
+    if (!Array.isArray(a.exercises)) return exerciseView(a, baseId);
+
+    const exs = a.exercises;
+    const ids = exs.map((ex, i) => baseId + "/" + (ex.id || i));
+    const doneCount = exs.filter((ex, i) => isDone(ex, ids[i])).length;
+    const wrap = el("div");
+    wrap.append(el("section", { class: "card" },
+      el("p", { class: "label" }, "Deze week"),
+      a.title ? el("p", { class: "goal", style: "font-size:1.3rem" }, a.title) : null,
+      el("p", { class: "sub", style: "margin:6px 0 0" }, doneCount + " van " + exs.length + " doelen gehaald"),
+      doneCount === exs.length ? el("div", { class: "celebrate" }, "🎉 Alles gehaald! Laat het zien in de les.") : null,
+      a.pdf ? el("a", { class: "pdf-btn", style: "margin-top:12px", href: a.pdf, target: "_blank", rel: "noopener" }, "📄 Open de noten (PDF)") : null));
+
+    exs.forEach((ex, i) => {
+      const id = ids[i], done = isDone(ex, id);
+      const d = el("details", { class: "ex" + (done ? " done" : ""), ...(openEx[id] ? { open: "" } : {}) },
+        el("summary", null,
+          el("span", { class: "ex-mark" }, done ? "✓" : String(i + 1)),
+          el("span", null,
+            ex.type ? el("span", { class: "ex-type" }, ex.type) : null,
+            el("span", { class: "ex-title" }, ex.title || ex.goal))),
+        el("div", { class: "ex-body" }, exerciseView(Object.assign({}, ex, { title: null }), id)));
+      d.addEventListener("toggle", () => { openEx[id] = d.open; });
+      wrap.append(d);
+    });
+    return wrap;
+  }
+
+  function exerciseView(a, id) {
     const tempos = a.tempos || [];
     const done = state.tempos[id] || [];
-    const allDone = tempos.length > 0 && tempos.every(t => done.includes(t));
+    const allDone = isDone(a, id);
     const wrap = el("div");
+    const toggleTick = t => {
+      const arr = state.tempos[id] = state.tempos[id] || [];
+      const i = arr.indexOf(t);
+      if (i >= 0) arr.splice(i, 1); else arr.push(t);
+      save(state); render();
+    };
 
     // 1. The goal
     wrap.append(el("section", { class: "card" },
       el("p", { class: "label" }, "Jouw doel"),
       a.title ? el("p", { class: "title" }, a.title) : null,
       el("p", { class: "goal" + (allDone ? " done" : "") }, a.goal),
+      !tempos.length ? el("label", { class: "check", style: "margin-top:12px" },
+        el("input", { type: "checkbox", ...(allDone ? { checked: "" } : {}), onchange: () => toggleTick("done") }),
+        allDone ? "Gelukt ✓" : "Gelukt") : null,
       allDone ? el("div", { class: "celebrate" }, "🎉 Doel gehaald! Laat het zien in de les.") : null));
 
     // 2. Listen + tempo steps
@@ -228,12 +286,7 @@
         const checked = done.includes(t);
         const box = el("input", {
           type: "checkbox", ...(checked ? { checked: "" } : {}),
-          onchange: () => {
-            const arr = state.tempos[id] = state.tempos[id] || [];
-            const i = arr.indexOf(t);
-            if (i >= 0) arr.splice(i, 1); else arr.push(t);
-            save(state); render();
-          }
+          onchange: () => toggleTick(t)
         });
         card.append(el("div", { class: "step" },
           grooves.length ? el("button", {
