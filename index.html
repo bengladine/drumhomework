@@ -208,15 +208,21 @@
       allDone ? el("div", { class: "celebrate" }, "🎉 Doel gehaald! Laat het zien in de les.") : null));
 
     // 2. Listen + tempo steps
-    if (a.groove || tempos.length) {
+    // "groove" can be one URL, or a list of {label, url} for multi-part exercises
+    const grooves = !a.groove ? [] : Array.isArray(a.groove) ? a.groove : [{ url: a.groove }];
+    if (grooves.length || tempos.length) {
       const bpm = playing[id] || tempos[0] || 80;
       const card = el("section", { class: "card" }, el("p", { class: "label" }, "Luister & speel mee"));
-      if (a.groove) {
+      if (grooves.length) {
         card.append(el("p", { class: "now-playing" }, "Tempo nu: " + bpm + " bpm — druk op ▶ in de noten"));
-        card.append(el("iframe", {
-          class: "groove-frame", loading: "lazy", title: "Groove",
-          src: grooveEmbed(a.groove, bpm)
-        }));
+        grooves.forEach(g => {
+          if (g.label) card.append(el("p", { class: "title", style: "margin-top:10px" }, g.label));
+          card.append(el("iframe", {
+            class: "groove-frame", loading: "lazy", title: g.label || "Groove",
+            src: grooveEmbed(g.url, bpm)
+          }));
+          card.append(el("a", { class: "ext", href: g.url, target: "_blank", rel: "noopener" }, "Open in Groove Scribe ↗"));
+        });
       }
       tempos.forEach(t => {
         const checked = done.includes(t);
@@ -230,13 +236,12 @@
           }
         });
         card.append(el("div", { class: "step" },
-          a.groove ? el("button", {
+          grooves.length ? el("button", {
             class: "play" + (t === bpm ? " active" : ""),
             onclick: () => { playing[id] = t; render(); }
           }, "▶ " + t) : el("strong", { style: "min-width:80px" }, t + " bpm"),
           el("label", { class: "check" }, box, checked ? "Gelukt ✓" : "Gelukt op " + t)));
       });
-      if (a.groove) card.append(el("a", { class: "ext", href: a.groove, target: "_blank", rel: "noopener" }, "Open in Groove Scribe ↗"));
       wrap.append(card);
     }
 

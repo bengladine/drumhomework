@@ -29,6 +29,14 @@ pdf/<code>-<date>.pdf notation PDFs
 ```
    → Commit changes. The site updates in ~1 minute.
 
+Exercise in several parts (e.g. 4/4 + 3/4)? Use a list for `groove`:
+```json
+      "groove": [
+        { "label": "Deel A (4/4)", "url": "GROOVE SCRIBE URL 1" },
+        { "label": "Deel B (3/4)", "url": "GROOVE SCRIBE URL 2" }
+      ],
+```
+
 Rules: `id` unique per assignment (the date works). Only `goal` is required.
 Mind the comma after the `}` of your new block.
 If the page says "Huiswerk niet gevonden", the JSON has a typo: paste it into https://jsonlint.com.
