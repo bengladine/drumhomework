@@ -157,10 +157,10 @@
     const bars = num("Measures") || 1, div = num("Div") || 16;
     return Math.max(1, div >= 32 ? Math.ceil(bars * 0.75) : Math.ceil(bars / 2));
   }
-  // Notation scales with width: height ≈ controls (~70px) + 0.175 × width per staff line.
+  // Notation scales with width: height ≈ controls (~85px, with margin) + 0.18 × width per staff line.
   function sizeFrames() {
     document.querySelectorAll("iframe.groove-frame").forEach(f => {
-      f.style.height = Math.round(70 + 0.175 * f.offsetWidth * (+f.dataset.lines || 1)) + "px";
+      f.style.height = Math.round(85 + 0.18 * f.offsetWidth * (+f.dataset.lines || 1)) + "px";
     });
   }
   window.addEventListener("resize", sizeFrames);
