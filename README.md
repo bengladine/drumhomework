@@ -38,6 +38,7 @@ Exercise in several parts (e.g. 4/4 + 3/4)? Use a list for `groove`:
 ```
 
 Several exercises in one week (technique, rudiments, grooves, songs)? Use `exercises`.
+General notes for the whole week (not tied to one exercise): `"notes": ["..."]` on the week, shown at the top.
 Each exercise has its own `type`, `title`, `goal`, and optional `tempos`, `groove`, `focus`, `pdf`.
 No `tempos` = one "Gelukt" checkbox. Full example: `s/voorbeeld.json` (`?s=voorbeeld`).
 

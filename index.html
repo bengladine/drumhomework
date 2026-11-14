@@ -270,6 +270,8 @@
       el("p", { class: "label" }, T("thisWeek")),
       a.title ? el("p", { class: "goal", style: "font-size:1.3rem" }, a.title) : null,
       el("p", { class: "sub", style: "margin:6px 0 0" }, T("goalsDone")(doneCount, exs.length)),
+      a.notes ? el("ul", { class: "focus", style: "margin-top:10px" },
+        (Array.isArray(a.notes) ? a.notes : [a.notes]).map(n => el("li", null, n))) : null,
       doneCount === exs.length ? el("div", { class: "celebrate" }, T("allDone")) : null,
       a.pdf ? el("a", { class: "pdf-btn", style: "margin-top:12px", href: a.pdf, target: "_blank", rel: "noopener" }, T("pdf")) : null));
 
