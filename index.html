@@ -97,6 +97,13 @@
   .ex-title { font-weight: 700; }
   .ex-body { padding: 0 6px 6px; }
   .ex-body .card { box-shadow: none; border: 1px solid var(--line); margin-bottom: 8px; }
+  .zoom-btn { margin: 6px 12px 0 0; padding: 8px 12px; border-radius: 10px; border: 2px solid var(--ink);
+              background: #fff; font: inherit; font-size: .9rem; font-weight: 700; color: var(--ink); }
+  .overlay { position: fixed; inset: 0; z-index: 10; background: #fff; overflow: auto; padding: 8px 8px 24px; }
+  .overlay-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+  .overlay-bar .hint { color: var(--muted); font-size: .85rem; }
+  .overlay-bar button { padding: 10px 14px; border-radius: 10px; border: 0; background: var(--ink); color: #fff;
+                        font: inherit; font-weight: 700; }
   .error { background: #fff; border-radius: var(--radius); padding: 20px; }
 </style>
 </head>
@@ -166,6 +173,18 @@
   window.addEventListener("resize", sizeFrames);
   document.addEventListener("toggle", sizeFrames, true);
 
+  // Full-screen view of one groove (bigger notation, esp. with the phone sideways)
+  function openLarge(g, bpm) {
+    const ov = el("div", { class: "overlay" },
+      el("div", { class: "overlay-bar" },
+        el("span", { class: "hint" }, T("rotate")),
+        el("button", { onclick: () => ov.remove() }, T("close"))),
+      el("iframe", { class: "groove-frame", title: g.label || "Groove",
+        "data-lines": g.lines || grooveLines(g.url), src: grooveEmbed(g.url, bpm) }));
+    document.body.append(ov);
+    sizeFrames();
+  }
+
   // ---------- helpers ----------
   function el(tag, attrs, ...kids) {
     const n = document.createElement(tag);
@@ -186,14 +205,16 @@
           goalsDone: (d, n) => d + " van " + n + " doelen gehaald", allDone: "🎉 Alles gehaald! Laat het zien in de les.",
           pdf: "📄 Open de noten (PDF)", goal: "Jouw doel", done: "Gelukt", doneAt: "Gelukt op",
           goalDone: "🎉 Doel gehaald! Laat het zien in de les.", listen: "Luister & speel mee",
-          tempoNow: b => "Tempo nu: " + b + " bpm — druk op ▶ in de noten", focus: "Let op" },
+          tempoNow: b => "Tempo nu: " + b + " bpm — druk op ▶ in de noten", focus: "Let op",
+          zoom: "🔍 Groter bekijken", close: "✕ Sluiten", rotate: "Tip: draai je gsm" },
     en: { hi: "Hi", intro: "This is your drum homework.", none: "No homework yet.", previous: "Previous homework",
           days: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"], streak1: "day in a row", streakN: "days in a row",
           doneToday: "✓ Practised today!", practiceToday: "I practised today", thisWeek: "This week",
           goalsDone: (d, n) => d + " of " + n + " goals reached", allDone: "🎉 All done! Show it in your next lesson.",
           pdf: "📄 Open the sheet music (PDF)", goal: "Your goal", done: "Done", doneAt: "Done at",
           goalDone: "🎉 Goal reached! Show it in your next lesson.", listen: "Listen & play along",
-          tempoNow: b => "Tempo now: " + b + " bpm — press ▶ in the notation", focus: "Focus on" }
+          tempoNow: b => "Tempo now: " + b + " bpm — press ▶ in the notation", focus: "Focus on",
+          zoom: "🔍 View larger", close: "✕ Close", rotate: "Tip: turn your phone sideways" }
   };
   const T = k => (LABELS[(data && data.lang) || "nl"] || LABELS.nl)[k];
 
@@ -327,6 +348,7 @@
             "data-lines": g.lines || grooveLines(g.url),
             src: grooveEmbed(g.url, bpm)
           }));
+          card.append(el("button", { class: "zoom-btn", onclick: () => openLarge(g, bpm) }, T("zoom")));
           card.append(el("a", { class: "ext", href: g.url, target: "_blank", rel: "noopener" }, "Open in Groove Scribe ↗"));
         });
       }
