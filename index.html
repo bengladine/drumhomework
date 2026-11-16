@@ -158,17 +158,18 @@
     return "https://www.mikeslessons.com/groove/GrooveEmbed.html?" + query;
   }
 
-  // Estimate how many staff lines Groove Scribe draws (measured: ~2 bars of 16ths per line,
-  // ~1.3 bars of 32nds per line). Override per groove with "lines" in the JSON if it's off.
+  // Estimate how many staff lines Groove Scribe draws: in 4/4 it puts one bar per line,
+  // in shorter meters (3/4, …) two. Override per groove with "lines" in the JSON if it's off.
   function grooveLines(url) {
-    const num = k => +((url.match(new RegExp("[?&]" + k + "=(\\d+)")) || [])[1]) || 0;
-    const bars = num("Measures") || 1, div = num("Div") || 16;
-    return Math.max(1, div >= 32 ? Math.ceil(bars * 0.75) : Math.ceil(bars / 2));
+    const bars = +((url.match(/[?&]Measures=(\d+)/) || [])[1]) || 1;
+    const four = /[?&]TimeSig=4\//.test(url) || !/[?&]TimeSig=/.test(url);
+    return four ? bars : Math.ceil(bars / 2);
   }
-  // Notation scales with width: height ≈ controls (~85px, with margin) + 0.18 × width per staff line.
+  // Notation scales with width: measured ≈ 0.13 × width per staff line, plus ~70px for the
+  // play controls. A little margin on top so nothing hides behind an inner scrollbar.
   function sizeFrames() {
     document.querySelectorAll("iframe.groove-frame").forEach(f => {
-      f.style.height = Math.round(85 + 0.18 * f.offsetWidth * (+f.dataset.lines || 1)) + "px";
+      f.style.height = Math.round(85 + 0.14 * f.offsetWidth * (+f.dataset.lines || 1)) + "px";
     });
   }
   window.addEventListener("resize", sizeFrames);
