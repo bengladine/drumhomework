@@ -54,27 +54,27 @@ import {
   constant_OUR_MIDI_TOM2_NORMAL,
   constant_OUR_MIDI_TOM3_NORMAL,
   constant_OUR_MIDI_TOM4_NORMAL,
-} from './constants.js?v=1794865035';
+} from './constants.js?v=1794865549';
 import {
   getBrowserInfo as _getBrowserInfo,
   is_touch_device as _is_touch_device,
-} from './browserInfo.js?v=1794865035';
-import { createGrooveData } from './grooveData.js?v=1794865035';
+} from './browserInfo.js?v=1794865549';
+import { createGrooveData } from './grooveData.js?v=1794865549';
 import {
   getQueryVariableFromString as _getQueryVariableFromString,
   getGrooveDataFromUrlString as _urlParse,
   getUrlStringFromGrooveData as _urlBuild,
-} from './urlSerialization.js?v=1794865035';
+} from './urlSerialization.js?v=1794865549';
 import {
   MIDI_build_midi_url_count_in_track as _MIDI_build_midi_url_count_in_track,
   MIDI_from_HH_Snare_Kick_Arrays as _MIDI_from_HH_Snare_Kick_Arrays,
   create_MIDIURLFromGrooveData as _create_MIDIURLFromGrooveData,
-} from './midiFile.js?v=1794865035';
+} from './midiFile.js?v=1794865549';
 import {
   get_top_ABC_BoilerPlate as _get_top_ABC_BoilerPlate,
   create_ABC_from_snare_HH_kick_arrays as _create_ABC_from_snare_HH_kick_arrays,
   createABCFromGrooveData as _createABCFromGrooveData,
-} from './abcNotation.js?v=1794865035';
+} from './abcNotation.js?v=1794865549';
 import {
   parseTimeSigString as _parseTimeSigString,
   calc_notes_per_measure as _calc_notes_per_measure,
@@ -84,7 +84,7 @@ import {
   notesPerMeasureInFullSizeArray as _notesPerMeasureInFullSizeArray,
   getNoteScaler as _getNoteScaler,
   scaleNoteArrayToFullSize as _scaleNoteArrayToFullSize,
-} from './musicMath.js?v=1794865035';
+} from './musicMath.js?v=1794865549';
 import {
   noteArraysFromURLData as _noteArraysFromURLData,
   tabLineFromAbcNoteArray as _tabLineFromAbcNoteArray,
@@ -100,7 +100,7 @@ import {
   create_note_mapping_array_for_highlighting as _create_note_mapping_array_for_highlighting,
   figure_out_sticking_count_for_index as _figure_out_sticking_count_for_index,
   convert_sticking_counts_to_actual_counts as _convert_sticking_counts_to_actual_counts,
-} from './noteArrays.js?v=1794865035';
+} from './noteArrays.js?v=1794865549';
 
 var global_num_GrooveUtilsCreated = 0;
 // This module's own URL, used by getGrooveUtilsBaseLocation() to locate sibling
@@ -782,6 +782,10 @@ function GrooveUtils() {
         // use the bar as the default y & hack
         this.svg_highlight_y = y + 5;
         this.svg_highlight_h = h + 10;
+        // Ben: invisible barline marker so the editor can map clicks in the sheet to bars
+        root.abc_obj.out_svg('<rect class="benbar" style="fill: transparent;" x="');
+        root.abc_obj.out_sxsy(x, '" y="', y);
+        root.abc_obj.out_svg('" width="' + Math.max(w, 1).toFixed(2) + '" height="' + h.toFixed(2) + '"/>\n');
       }
       if (type == 'note' || type == 'grace') {
         y = this.svg_highlight_y;
