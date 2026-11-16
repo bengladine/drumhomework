@@ -2761,6 +2761,9 @@ function GrooveWriter() {
   root.showHideToms = function (force, showElseHide, dontRefreshScreen) {
     var OnElseOff = showHideCSS_ClassVisibility('.toms-container', force, showElseHide);
     showHideCSS_ClassVisibility('.tom-label', force, showElseHide);
+    // Ben: with 4 tom rows, hidden rows must not take up space
+    var tomRows = document.querySelectorAll('.toms-container, .tom-label');
+    for (var t = 0; t < tomRows.length; t++) tomRows[t].style.display = isTomsVisible() ? 'block' : 'none';
     if (OnElseOff) addOrRemoveKeywordFromClassById('showHideTomsButton', 'ClickToHide', true);
     else addOrRemoveKeywordFromClassById('showHideTomsButton', 'ClickToHide', false);
 

@@ -55,3 +55,12 @@ Make up a random 8-character code (letters/digits, not their name). Add file →
 ## Know
 - This repo is public: anyone can see all assignments. No last names or personal info.
 - Progress lives in the student's phone browser. Other phone/browser or cleared data = progress gone.
+
+## Groove Scribe editor (Ben's version)
+Make grooves at **https://bengladine.github.io/drumhomework/editor/** and paste the link in the notes.
+Compared to the normal Groove Scribe it has:
+- 4 toms (Tom 1 high, Tom 2 mid, Tom 3 low, Tom 4 floor) — click TOMS at the bottom
+- a time signature per bar (menu "time" above each bar), e.g. 4/4 + 3/4 in one groove
+- a grid per beat (menu "beat 1…4" above each bar): set one beat to 1/32 without the whole bar becoming 32nds
+The homework pages play grooves with this same player, so all of that works there too.
+Links from the old mikeslessons.com Groove Scribe keep working.

@@ -155,7 +155,8 @@
     let query = /(^|&)Tempo=\d+/.test(q)
       ? q.replace(/((?:^|&)Tempo=)\d+/, "$1" + bpm)
       : q + "&Tempo=" + bpm;
-    return "https://www.mikeslessons.com/groove/GrooveEmbed.html?" + query;
+    // Ben's own Groove Scribe (4 toms, mixed time signatures), hosted next to this page
+    return "editor/GrooveEmbed.html?" + query;
   }
 
   // Estimate how many staff lines Groove Scribe draws: in 4/4 it puts one bar per line,
@@ -376,7 +377,7 @@
             src: grooveEmbed(g.url, bpm)
           }));
           card.append(el("button", { class: "zoom-btn", onclick: () => openLarge(g, bpm) }, T("zoom")));
-          card.append(el("a", { class: "ext", href: g.url, target: "_blank", rel: "noopener" }, "Open in Groove Scribe ↗"));
+          card.append(el("a", { class: "ext", href: "editor/?" + (g.url.split("?")[1] || ""), target: "_blank", rel: "noopener" }, "Open in Groove Scribe ↗"));
         });
       }
       tempos.forEach(t => {
