@@ -352,7 +352,15 @@
         allDone ? T("done") + " ✓" : T("done")) : null,
       allDone ? el("div", { class: "celebrate" }, T("goalDone")) : null));
 
-    // 2. Listen + tempo steps
+    // 2. Focus notes (above the audio, so they read it before they start)
+    if (a.focus && a.focus.length) {
+      const items = Array.isArray(a.focus) ? a.focus : [a.focus];
+      wrap.append(el("section", { class: "card" },
+        el("p", { class: "label" }, T("focus")),
+        el("ul", { class: "focus" }, items.map(f => el("li", null, f)))));
+    }
+
+    // 3. Listen + tempo steps
     // "groove" can be one URL, or a list of {label, url} for multi-part exercises
     const grooves = !a.groove ? [] : Array.isArray(a.groove) ? a.groove : [{ url: a.groove }];
     if (grooves.length || tempos.length) {
@@ -385,14 +393,6 @@
           el("label", { class: "check" }, box, checked ? T("done") + " ✓" : T("doneAt") + " " + t)));
       });
       wrap.append(card);
-    }
-
-    // 3. Focus notes
-    if (a.focus && a.focus.length) {
-      const items = Array.isArray(a.focus) ? a.focus : [a.focus];
-      wrap.append(el("section", { class: "card" },
-        el("p", { class: "label" }, T("focus")),
-        el("ul", { class: "focus" }, items.map(f => el("li", null, f)))));
     }
 
     // 4. Notation
