@@ -2,6 +2,53 @@
   "name": "Casper",
   "assignments": [
     {
+      "id": "2026-11-16",
+      "date": "16 nov",
+      "title": "Huiswerk 16 nov",
+      "exercises": [
+        {
+          "type": "Fill",
+          "title": "Fills met roffels en toms",
+          "goal": "Alle 9 fills strak op 129 bpm, telkens na een beat",
+          "tempos": [
+            90,
+            110,
+            129
+          ],
+          "groove": [
+            {
+              "label": "Fills",
+              "url": "https://www.mikeslessons.com/groove/?TimeSig=4/4&Div=16&Tempo=129&Measures=9&H=|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|x---------------|&S=|-OOO-OOO-OOO-OOO|O-OOO-OOO-OOO-OO|OOO-OOO-OOO-OOO-|--OO--OO--OO--OO|OO--OO--OO--OO--|OOO-OO-OOOO-OO--|Ooo-oo-ooOooOooO|Ooo-oo-ooOooOooO|-o-o-oOo-o-o-o-o|&K=|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|o---------------|&T1=|o---o---o---o---|-o---o---o---o--|---o---o---o---o|oo--oo--oo--oo--|--o---o---o---o-|---o-------o--o-|---o------------|---o------------|--o-o---o-o-----|&T4=|----------------|----------------|----------------|----------------|---o---o---o---o|------o--------o|------o---------|------o---------|------------o-o-|&Stickings=|LRLRLRLRLRLRLRLR|LRLRLRLRLRLRLRLR|LRLRLRLRLRLRLRLR|LRLRLRLRLRLRLRLR|LRLRLRLRLRLRLRLR|LRLRLRLRLRLRLRLR|LRLRLRLRLRLRLRLR|LRLRLRLRLRLRLRLR|LRLRLRLRLRLRLRLR|"
+            }
+          ],
+          "focus": [
+            "Heel belangrijk: oefen deze fills met metronoom. Speel eerst een beat en dan de fill.",
+            "Niet versnellen of vertragen: als de drummer dat doet, doet heel de band het mee."
+          ]
+        },
+        {
+          "type": "Moeller",
+          "title": "Hi-hat beats van vorige week op ride en bel",
+          "goal": "De beats van vorige week met bel en ride afwisselend",
+          "tempos": [
+            70,
+            85,
+            100
+          ],
+          "groove": [
+            {
+              "label": "Bel → ride",
+              "url": "https://www.mikeslessons.com/groove/?TimeSig=4/4&Div=16&Tempo=100&Measures=6&H=|b-r-b-r-b-r-b-r-|b-r-b-r-b-r-b-r-|b-r-b-r-b-r-b-r-|b-r-b-r-b-r-b-r-|b-r-b-r-b-r-b-r-|b-r-b-r-b-r-b-r-|&S=|----o-------o---|----o-------o---|----o-------o---|----o-------o---|----o-------o---|----o-------o---|&K=|o-o-----o-o-----|o---------o-----|o-----o---o-----|o--o----o-o-----|o----o----o-----|o--o-o-----o----|"
+            }
+          ],
+          "focus": [
+            "Bel op de tel, ride op de 'en'. Sla de bel met de kant van de stok."
+          ],
+          "pdf": "pdf/casper-2026-11-09-hihat.pdf"
+        }
+      ]
+    },
+    {
       "id": "2026-11-09",
       "date": "9 nov",
       "title": "Huiswerk 9 nov",
