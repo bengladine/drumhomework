@@ -112,6 +112,7 @@ function GrooveWriter() {
   var class_loop_bars = {}; // bar index -> true: only these bars are played (looped)
   var class_play_timeline = []; // [{bar, slots}] of the MIDI that is playing
   var class_bar_map_start = []; // per bar: start index in note_mapping_array
+  var class_bar_stash = {}; // bar index -> notes cut off by a shorter time signature (restored when it grows again)
   var class_time_division = parseInt(root.myGrooveUtils.getQueryVariableFromURL('Div', '16'), 10); // default to 16ths
   var class_num_beats_per_measure = 4; // TimeSigTop
   var class_note_value_per_measure = 4; // TimeSigBottom
@@ -3696,6 +3697,7 @@ function GrooveWriter() {
     class_num_beats_per_measure = myGrooveData.numBeats; // TimeSigTop
     class_note_value_per_measure = myGrooveData.noteValue; // TimeSigBottom
     class_measure_meters = (myGrooveData.measureMeters || []).map((mt) => [mt[0], mt[1]]);
+    class_bar_stash = {};
     class_loop_bars = {};
     class_play_from = null;
 
@@ -4356,9 +4358,19 @@ function GrooveWriter() {
     var oldCells = bars[m].notes.H.length;
     bars[m].meter = meter;
     var newCells = (bars[m].div * meter[0]) / meter[1];
-    // keep the notes that still fit, drop the rest of a shortened bar
+    // remember notes that a shorter bar cuts off, so making it longer again brings them back
+    var stash = class_bar_stash[m];
+    if (stash && stash.div != bars[m].div) stash = null;
+    var full = {};
     BAR_INSTRUMENTS.forEach(function (inst) {
-      var arr = bars[m].notes[inst].slice(0, Math.floor(newCells));
+      var cur = bars[m].notes[inst].slice();
+      var old = stash ? stash.notes[inst] : [];
+      for (var j = cur.length; j < old.length; j++) cur.push(old[j]);
+      full[inst] = cur;
+    });
+    class_bar_stash[m] = { div: bars[m].div, notes: full };
+    BAR_INSTRUMENTS.forEach(function (inst) {
+      var arr = full[inst].slice(0, Math.floor(newCells));
       while (arr.length < newCells) arr.push('-');
       bars[m].notes[inst] = arr;
     });
@@ -4406,6 +4418,7 @@ function GrooveWriter() {
   };
 
   root.addBar = function (mode) {
+    class_bar_stash = {};
     closeAddBarMenu();
     var bars = readBars();
     var last = bars[bars.length - 1];
@@ -4417,12 +4430,14 @@ function GrooveWriter() {
   };
 
   root.duplicateBar = function (m) {
+    class_bar_stash = {};
     var bars = readBars();
     bars.splice(m + 1, 0, copyBar(bars[m]));
     commitBars(bars);
   };
 
   root.clearBar = function (m) {
+    class_bar_stash = {};
     var bars = readBars();
     bars[m] = emptyBarLike(bars[m]);
     bars[m].loop = !!class_loop_bars[m];
@@ -4430,6 +4445,7 @@ function GrooveWriter() {
   };
 
   root.deleteBar = function (m) {
+    class_bar_stash = {};
     var bars = readBars();
     if (bars.length < 2) return root.clearBar(m);
     bars.splice(m, 1);
@@ -4438,6 +4454,7 @@ function GrooveWriter() {
   };
 
   root.moveBar = function (m, dir) {
+    class_bar_stash = {};
     var bars = readBars();
     var to = m + dir;
     if (to < 0 || to >= bars.length) return;
