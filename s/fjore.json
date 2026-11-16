@@ -1,0 +1,68 @@
+{
+  "name": "Fjore",
+  "assignments": [
+    {
+      "id": "2026-11-09",
+      "date": "9 nov",
+      "title": "Huiswerk 9 nov",
+      "pdf": "pdf/fjore-2026-11-09.pdf",
+      "notes": [
+        "Je krijgt nog een liedje om de vorige en deze oefeningen op mee te spelen.",
+        "Tot binnen drie weken!"
+      ],
+      "exercises": [
+        {
+          "type": "Beat",
+          "title": "Beat met snare op de 'en'",
+          "goal": "4x na elkaar zonder fout op 100 bpm",
+          "tempos": [
+            60,
+            80,
+            100
+          ],
+          "groove": [
+            {
+              "label": "Beat",
+              "url": "https://www.mikeslessons.com/groove/?TimeSig=4/4&Div=8&Tempo=100&Measures=1&H=|x-x-x-x-|&S=|----o--o|&K=|o-------|"
+            }
+          ]
+        },
+        {
+          "type": "Basdrum",
+          "title": "Achtsten op de basdrum",
+          "goal": "Gelijke achtsten op de basdrum op 100 bpm",
+          "tempos": [
+            60,
+            80,
+            100
+          ],
+          "groove": [
+            {
+              "label": "Basdrum",
+              "url": "https://www.mikeslessons.com/groove/?TimeSig=4/4&Div=8&Tempo=100&Measures=1&K=|oooooooo|"
+            }
+          ]
+        },
+        {
+          "type": "Fill",
+          "title": "Fill op de toms",
+          "goal": "Fill en crash zonder te stoppen op 100 bpm",
+          "tempos": [
+            60,
+            80,
+            100
+          ],
+          "groove": [
+            {
+              "label": "Fill + crash",
+              "url": "https://www.mikeslessons.com/groove/?TimeSig=4/4&Div=8&Tempo=100&Measures=2&H=|--------|c-x-x-x-|&S=|--------|----o--o|&K=|--------|o-------|&T1=|-oo--oo-|--------|&T4=|o--oo--o|--------|&Stickings=|RLRLRLRL|--------|"
+            }
+          ],
+          "focus": [
+            "Volg de handzetting: R L R L."
+          ]
+        }
+      ]
+    }
+  ]
+}

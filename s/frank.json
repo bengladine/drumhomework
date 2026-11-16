@@ -1,0 +1,33 @@
+{
+  "name": "Frank",
+  "assignments": [
+    {
+      "id": "2026-11-09",
+      "date": "9 nov",
+      "title": "Huiswerk 9 nov",
+      "pdf": "pdf/frank-2026-11-09.pdf",
+      "notes": [
+        "Moeller, zoals besproken: eerst gaat je arm omhoog en de pols volgt alsof die dood is. Bij het neergaan gaat de pols omhoog, en pas bij de slag op het vel gaat die naar beneden.",
+        "Het schiet al aardig op. De dubbele basdrumtechniek is niet makkelijk en dat is normaal. Maak je dus niet druk als het even duurt: er is daarna nog genoeg om verder op in te gaan."
+      ],
+      "exercises": [
+        {
+          "type": "Basdrum",
+          "title": "Dubbele slagen op de basdrum",
+          "goal": "Alle 7 maten zuiver op 100 bpm",
+          "tempos": [
+            60,
+            80,
+            100
+          ],
+          "groove": [
+            {
+              "label": "Dubbele basdrum",
+              "url": "https://www.mikeslessons.com/groove/?TimeSig=4/4&Div=16&Tempo=100&Measures=7&H=|x-x-x-x-x-x-x-x-|x-x-x-x-x-x-x-x-|x-x-x-x-x-x-x-x-|x-x-x-x-x-x-x-x-|x-x-x-x-x-x-x-x-|x-x-x-x-x-x-x-x-|x-x-x-x-x-x-x-x-|&S=|----o-------o---|----o-------o---|----o-------o---|------o-------o-|------o-------o-|------o-------o-|------o-------o-|&K=|oo-----oo-------|oo-----oo-o-----|oo-----oo-o--o--|-oo--oo-----o---|-oo--oo-o---o---|-oo--oo-oo------|-oo--oo-oo--o---|"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

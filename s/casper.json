@@ -1,0 +1,63 @@
+{
+  "name": "Casper",
+  "assignments": [
+    {
+      "id": "2026-11-09",
+      "date": "9 nov",
+      "title": "Huiswerk 9 nov",
+      "notes": [
+        "We hebben de oefeningen van vorige keer herhaald en de Moeller-techniek verder toegepast."
+      ],
+      "exercises": [
+        {
+          "type": "Moeller",
+          "title": "Moeller op de hi-hat",
+          "goal": "Alle 6 beats vlot met de Moeller-beweging op 100 bpm",
+          "tempos": [
+            70,
+            85,
+            100
+          ],
+          "groove": [
+            {
+              "label": "Beats",
+              "url": "https://www.mikeslessons.com/groove/?TimeSig=4/4&Div=16&Tempo=100&Measures=6&H=|x-x-x-x-x-x-x-x-|x-x-x-x-x-x-x-x-|x-x-x-x-x-x-x-x-|x-x-x-x-x-x-x-x-|x-x-x-x-x-x-x-x-|x-x-x-x-x-x-x-x-|&S=|----o-------o---|----o-------o---|----o-------o---|----o-------o---|----o-------o---|----o-------o---|&K=|o-o-----o-o-----|o---------o-----|o-----o---o-----|o--o----o-o-----|o----o----o-----|o--o-o-----o----|"
+            }
+          ],
+          "focus": [
+            "Pas de Moeller-techniek toe op de hi-hat, bij deze simpele beats."
+          ],
+          "pdf": "pdf/casper-2026-11-09-hihat.pdf"
+        },
+        {
+          "type": "Rudiment",
+          "title": "Moeller met twee handen",
+          "goal": "Alle accentpatronen zuiver op 100 bpm",
+          "tempos": [
+            70,
+            85,
+            100
+          ],
+          "groove": [
+            {
+              "label": "Rudimenten",
+              "url": "https://www.mikeslessons.com/groove/?TimeSig=4/4&Div=16&Tempo=100&Measures=9&H=|x-x-x-x-x-x-x-x-|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|&S=|----o-------o---|oooooooooooooooo|OoooOoooOoooOooo|oOoooOoooOoooOoo|ooOoooOoooOoooOo|oooOoooOoooOoooO|OOooOOooOOooOOoo|OooOOooOOooOOooO|oOOooOOooOOooOOo|&K=|o-o-----o-o-----|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|&Stickings=|----------------|----------------|L---L---L---L---|-R---R---R---R--|--L---L---L---L-|---R---R---R---R|LR--LR--LR--LR--|L--RL--RL--RL--R|-RL--RL--RL--RL-|"
+            }
+          ],
+          "focus": [
+            "De Moeller-techniek kan je ook toepassen op roffels."
+          ],
+          "pdf": "pdf/casper-2026-11-09-rudimenten.pdf"
+        },
+        {
+          "type": "Techniek",
+          "title": "Moeller op de ride: bel → ride",
+          "goal": "Vlot afwisselen tussen bel en ride met de Moeller-beweging",
+          "focus": [
+            "Sla de bel met de kant van de stok, niet met de tip."
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "name": "Clea",
+  "assignments": [
+    {
+      "id": "2026-11-11",
+      "date": "11 nov",
+      "title": "Huiswerk 11 nov",
+      "pdf": "pdf/clea-2026-11-11.pdf",
+      "notes": [
+        "Kickpedaal: kom na elke slag terug in rust. Je been gaat omhoog, de bal van je voet blijft op de pedaal, je been zakt en rust na de slag. Gebruik de spieren van je dijbeen, niet je kuiten.",
+        "Handen: de stok balanceert tussen je duim en wijsvinger. De andere vingers pakken de stok vast als hij terugkaatst en laten los als hij neerkomt.",
+        "We komen hier de volgende lessen nog op terug. Veel plezier en tot binnen twee weken!"
+      ],
+      "exercises": [
+        {
+          "type": "Beat",
+          "title": "Beats in kwartnoten",
+          "goal": "Alle 10 maten zonder stoppen op 100 bpm",
+          "tempos": [
+            60,
+            80,
+            100
+          ],
+          "groove": [
+            {
+              "label": "Beats",
+              "url": "https://www.mikeslessons.com/groove/?TimeSig=4/4&Div=16&Tempo=100&Measures=10&H=|x---x---x---x---|x---x---x---x---|x---x---x---x---|x---x---x---x---|x---x-----------|x---x---x---x---|x---x---x---x---|x---x---x---x---|x---x---x---x---|x---x---x---x---|&S=|--------o-------|--------o-------|o---o-----------|o---------------|--------o-o-o-o-|--------o-------|o-------o-------|o-------o-------|o-----------o---|--------o-------|&K=|o---o-------o---|----o-----------|--------o-------|--------o-------|o---o-----------|o---o-----------|----o-------o---|----o-------o---|----o---o-------|o---o-------o---|"
+            }
+          ]
+        },
+        {
+          "type": "Fill",
+          "title": "Fill en slot",
+          "goal": "De fill en het slot zuiver op 100 bpm",
+          "tempos": [
+            60,
+            80,
+            100
+          ],
+          "groove": [
+            {
+              "label": "Fill + slot",
+              "url": "https://www.mikeslessons.com/groove/?TimeSig=4/4&Div=16&Tempo=100&Measures=3&H=|----------------|----------------|----c-------c---|&S=|o-o-----o-o-----|----------------|oooo------------|&K=|----------------|----------------|----o-------o---|&T1=|----o-o---------|----------------|--------o-o-----|&T2=|----------------|----------------|--------o-o-----|&T4=|------------o-o-|----------------|----------------|"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "name": "Bram",
+  "assignments": [
+    {
+      "id": "2026-10-26",
+      "date": "26 okt",
+      "title": "Huiswerk 26 okt",
+      "pdf": "pdf/bram-2026-10-26.pdf",
+      "exercises": [
+        {
+          "type": "Fill",
+          "title": "Mini-fills",
+          "goal": "Alle 6 mini-fills zuiver op 100 bpm",
+          "tempos": [
+            70,
+            85,
+            100
+          ],
+          "groove": [
+            {
+              "label": "Mini-fills",
+              "url": "https://www.mikeslessons.com/groove/?TimeSig=4/4&Div=16&Tempo=100&Measures=6&H=|x-x-x-x-x-x-----|x-x-x-x-x-x-----|----x-x-x-x-x-x-|----x-x-x-x-x-x-|x-x-x-----x-x-x-|x-x-x---------x-|&S=|----o-------oooo|----o-------oooo|oooo--o-------o-|oooo--o-----o---|----o-oooo--o---|----o-oo-oo-f---|&K=|o-------o-------|o-o--o----------|----o-----o-----|----o---o-------|o---------o-----|o----------o----|&T1=|----------------|----------------|----------------|----------------|----------------|--------o-------|"
+            }
+          ],
+          "focus": [
+            "Oefen zeker de derde op een metronoom, die is wat moeilijker."
+          ]
+        },
+        {
+          "type": "Liedje",
+          "title": "Intro van het liedje van je band",
+          "goal": "De intro zuiver op 100 bpm",
+          "tempos": [
+            70,
+            85,
+            100
+          ],
+          "groove": [
+            {
+              "label": "Intro",
+              "url": "https://www.mikeslessons.com/groove/?TimeSig=4/4&Div=16&Tempo=100&Measures=2&S=|------f-----f---|f-----f-----f---|&K=|o-o-o---o-o---o-|--o-o---o-o---o-|"
+            }
+          ],
+          "focus": [
+            "Let op de 16e!"
+          ]
+        }
+      ]
+    }
+  ]
+}
