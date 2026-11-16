@@ -2,6 +2,33 @@
   "name": "Bram",
   "assignments": [
     {
+      "id": "2026-11-16",
+      "date": "16 nov",
+      "title": "Huiswerk 16 nov",
+      "exercises": [
+        {
+          "type": "Fill",
+          "title": "Fills (10 maten)",
+          "goal": "Alle 10 fills zuiver op 100 bpm",
+          "tempos": [
+            60,
+            80,
+            100
+          ],
+          "groove": [
+            {
+              "label": "Fills",
+              "url": "https://www.mikeslessons.com/groove/?TimeSig=4/4&Div=16&Tempo=180&Measures=10&H=|x-x-x-x-x-x-----|x-x-x-x-x-x-----|----x-x-x-x-x-x-|----x-x-x-x-x-x-|x-x-x-----x-x-x-|x-x-x---------x-|x-x-x-----------|x-x-x-----------|x-x-x-x---------|x-x-x-x---------|&S=|----o-------oooo|----o-------oooo|oooo--o-------o-|oooo--o-----o---|----o-oooo--o---|----o-oo-oo-f---|----o-oo-o-o-o-o|----o-ooooo-oo-o|----o--oOooOOooO|----o--g-oo-oo-o|&K=|o-------o-------|o-o--o----------|----o-----o-----|----o---o-------|o---------o-----|o----------o----|o--o------------|o---------------|o-o-------------|o-o-------------|&T1=|----------------|----------------|----------------|----------------|----------------|--------o-------|--------o-o-----|-----------o----|----------------|-----------o----|&T4=|----------------|----------------|----------------|----------------|----------------|----------------|------------o-o-|--------------o-|----------------|--------o-----o-|&Stickings=|----------------|----------------|----------------|----------------|----------------|----------------|--------R-R-R-R-|----------------|-------RL--RL--R|--------L--R--L-|"
+            }
+          ],
+          "focus": [
+            "Drill vooral de laatste 6 maten.",
+            "Speel de snares in de fills veel zachter (bijna als een ghost note): zo komen de accenten harder uit en hebben ze meer impact."
+          ]
+        }
+      ]
+    },
+    {
       "id": "2026-10-26",
       "date": "26 okt",
       "title": "Huiswerk 26 okt",
