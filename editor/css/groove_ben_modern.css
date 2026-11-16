@@ -1,0 +1,273 @@
+/* Ben: modern skin for the editor. Loaded last; layout sizes (48px bars, 72px nav) stay the same.
+   Note cells are NOT restyled: the editor reads note state back from their colors. */
+:root {
+  --ben-bg: #f3f4f6;
+  --ben-surface: #ffffff;
+  --ben-ink: #111827;
+  --ben-muted: #6b7280;
+  --ben-line: #e5e7eb;
+  --ben-chrome: #0f172a;
+  --ben-chrome-2: #1e293b;
+  --ben-chrome-hover: #334155;
+  --ben-accent: #f97316;
+  --ben-accent-soft: #fff7ed;
+  --ben-green: #16a34a;
+  --ben-radius: 12px;
+  --ben-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 4px 12px rgba(15, 23, 42, 0.06);
+}
+
+body,
+#GrooveWriter {
+  background: var(--ben-bg);
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: var(--ben-ink);
+}
+
+/* ---- left nav ---- */
+#LeftHandNav {
+  background: var(--ben-chrome);
+  border-right: none;
+}
+#logoInSubdivision {
+  background: var(--ben-chrome) !important;
+}
+.left-button {
+  color: #94a3b8;
+}
+.left-button-content {
+  border-bottom: none;
+  margin: 3px 6px;
+  height: 46px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+}
+#logoInSubdivision.left-button-content {
+  margin: 0;
+  border-radius: 0;
+  height: 48px;
+}
+.left-button.buttonSelected,
+.left-button.buttonSelected:hover {
+  background: var(--ben-accent);
+  color: #fff;
+  transform: none;
+}
+.myButton:hover,
+.left-button:hover {
+  background: var(--ben-chrome-hover);
+  color: #e2e8f0;
+  transform: none;
+}
+.left-button:active,
+.myButton:active {
+  background: var(--ben-chrome-2);
+}
+.left-button.disabled,
+.left-button.disabled:hover {
+  background: transparent;
+  color: #475569;
+}
+#timeSigLabel,
+#timeSubLabel {
+  color: #4ade80;
+}
+
+/* ---- top bar + player ---- */
+#TopNav {
+  background: var(--ben-chrome);
+  border-bottom: 1px solid var(--ben-chrome-2);
+  color: #cbd5e1;
+}
+#TopNav a,
+#TopNav .rightButtons {
+  color: #cbd5e1;
+}
+#midiPlayer {
+  background: var(--ben-chrome-2);
+  border-bottom: none;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.15);
+}
+#midiPlayer .playerControl {
+  background: var(--ben-chrome-2);
+}
+
+/* ---- content ---- */
+#RightHandContent {
+  background: var(--ben-bg);
+}
+#sheetMusicDiv {
+  background: transparent;
+  padding: 14px 16px 6px 16px;
+  box-sizing: border-box;
+}
+#sheetMusicDiv .svgTarget {
+  background: var(--ben-surface);
+  border-radius: var(--ben-radius);
+  box-shadow: var(--ben-shadow);
+  padding: 8px 0;
+}
+#sheetMusicTextFields {
+  background: transparent;
+  color: var(--ben-muted);
+  font-size: 13px;
+  padding: 6px 16px;
+  box-sizing: border-box;
+}
+#sheetMusicTextFields input {
+  border: 1px solid var(--ben-line);
+  border-radius: 8px;
+  padding: 5px 8px;
+  background: var(--ben-surface);
+  font: inherit;
+  color: var(--ben-ink);
+}
+#sheetMusicTextFields input:focus {
+  outline: none;
+  border-color: var(--ben-accent);
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
+}
+#musicalInput,
+#musicalInput.expanded {
+  background: transparent;
+}
+#measureContainer {
+  gap: 12px;
+  padding: 6px 16px 16px 16px;
+}
+
+/* ---- bar cards ---- */
+.staff-container {
+  border: 1px solid var(--ben-line);
+  border-radius: var(--ben-radius);
+  box-shadow: var(--ben-shadow);
+  overflow: hidden;
+  padding-bottom: 6px;
+}
+.staff-container.ben-play-from {
+  border-color: var(--ben-green);
+  box-shadow: inset 4px 0 0 var(--ben-green), var(--ben-shadow);
+}
+.staff-container.ben-looped {
+  border-color: var(--ben-accent);
+  background: var(--ben-accent-soft);
+}
+.line-labels {
+  font-size: 15px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.ben-bar-controls {
+  gap: 6px 12px;
+  padding: 8px 10px 6px 10px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--ben-line);
+  font-size: 12px;
+  color: var(--ben-muted);
+}
+.ben-bar-controls .ben-bar-label {
+  font-weight: 700;
+  color: var(--ben-ink);
+  font-size: 13px;
+}
+.ben-bar-controls select {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid var(--ben-line);
+  border-radius: 7px;
+  background: var(--ben-surface)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%236b7280'/%3E%3C/svg%3E")
+    no-repeat right 6px center;
+  padding: 3px 18px 3px 7px;
+  font: inherit;
+  font-size: 12px;
+  color: var(--ben-ink);
+  cursor: pointer;
+}
+.ben-bar-controls select:hover {
+  border-color: #cbd5e1;
+}
+.ben-bar-controls select:focus {
+  outline: none;
+  border-color: var(--ben-accent);
+}
+.ben-bar-controls .ben-tools {
+  gap: 2px;
+}
+.ben-bar-controls .ben-tools button {
+  border: none;
+  background: transparent;
+  border-radius: 7px;
+  padding: 4px 7px;
+  color: var(--ben-muted);
+}
+.ben-bar-controls .ben-tools button:hover:not(:disabled) {
+  background: #f1f5f9;
+  color: var(--ben-ink);
+}
+.ben-bar-controls .ben-tools button.on {
+  background: var(--ben-ink);
+  color: #fff;
+}
+
+.ben-add-bar-menu {
+  border: 1px solid var(--ben-line);
+  border-radius: var(--ben-radius);
+  padding: 6px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.18);
+}
+.ben-add-bar-menu button {
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 14px;
+}
+.ben-add-bar-menu button:hover {
+  background: #f1f5f9;
+}
+
+/* ---- bottom buttons ---- */
+#bottomButtonRow {
+  background: transparent;
+  color: var(--ben-muted);
+  padding: 8px 16px 24px 16px;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.pageBottomButton {
+  margin: 0;
+  padding: 10px 16px;
+  background: var(--ben-surface);
+  border: 1px solid var(--ben-line);
+  border-radius: 10px;
+  box-shadow: var(--ben-shadow);
+  font-size: 13px;
+  font-weight: 500;
+  min-width: 84px;
+}
+.pageBottomButton:hover {
+  color: var(--ben-ink);
+  border-color: #cbd5e1;
+}
+
+/* ---- sheet cursor/loop: match accent ---- */
+.ben-sheet-loop {
+  background: rgba(249, 115, 22, 0.12);
+  border-color: rgba(249, 115, 22, 0.6);
+}
+.ben-sheet-handle::after,
+.ben-sheet-loop-off {
+  background: var(--ben-accent);
+}
+.ben-sheet-cursor,
+.ben-sheet-cursor::before {
+  background: var(--ben-green);
+}
+.ben-sheet-cursor::before {
+  background: none;
+  border-top-color: var(--ben-green);
+}
