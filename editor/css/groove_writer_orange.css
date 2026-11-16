@@ -1393,8 +1393,10 @@ input[type='checkbox']:not(:checked) + label {
   margin-left: 3px;
 }
 
-/* Ben: tom rows take no space until toms are shown (4 rows now) */
-.toms-container,
-.tom-label {
+/* Ben: the two extra tom rows take no space until toms are shown */
+#tom2-container,
+#tom3-container,
+#tom2-label,
+#tom3-label {
   display: none;
 }
