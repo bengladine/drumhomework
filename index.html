@@ -172,6 +172,20 @@
     });
   }
   window.addEventListener("resize", sizeFrames);
+
+  // Only one groove plays at a time. The player is on another site, so we can't pause it;
+  // instead we notice which player got the click (focus moves into its iframe) and
+  // reload the previously used one, which stops its sound.
+  let activeFrame = null;
+  window.addEventListener("blur", () => setTimeout(() => {
+    const f = document.activeElement;
+    if (!f || !f.classList || !f.classList.contains("groove-frame")) return;
+    if (activeFrame && activeFrame !== f && document.contains(activeFrame)) {
+      activeFrame.src = activeFrame.src;
+    }
+    activeFrame = f;
+    f.blur(); window.focus(); // give focus back to the page so the next player click is noticed too
+  }, 0));
   document.addEventListener("toggle", sizeFrames, true);
 
   // Full-screen view of one groove (bigger notation, esp. with the phone sideways)
