@@ -4387,12 +4387,16 @@ function GrooveWriter() {
     var cur = beatLevel(m, b);
     if (level == cur) return;
     var offs = beatNoteOffsets(m, b);
+    // every note already in this beat must land on the new grid
+    var cpq = cellsPerQuarter();
+    if (!offs.every((o) => Number.isInteger((o * LEVEL_CELLS[level]) / cpq))) {
+      alert(
+        'Beat ' + (b + 1) + ' has notes that do not fit on ' + LEVEL_LABELS[level] + '. Remove them first.'
+      );
+      applyGridVisibility();
+      return;
+    }
     if (levelFits(level)) {
-      if (!levelShowsOffsets(level, offs)) {
-        alert('Beat ' + (b + 1) + ' has notes that need its current grid. Remove them first.');
-        applyGridVisibility();
-        return;
-      }
       class_beat_res[m + '-' + b] = level;
       applyGridVisibility();
       return;
