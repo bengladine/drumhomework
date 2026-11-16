@@ -4,6 +4,7 @@
 // helpers below are pure. GrooveUtils delegates its ABC methods here.
 
 import { constant_NUMBER_OF_TOMS } from './constants.js';
+import { beatsForMeasure, usedSlots, addInlineMeter } from './measureBeats.js';
 import {
   isTripletDivisionFromNotesPerMeasure,
   notesPerMeasureInFullSizeArray,
@@ -855,10 +856,61 @@ export function createABCFromGrooveData(gu, myGrooveData, renderWidth) {
     myGrooveData.showLegend,
     is_triplet_division,
     myGrooveData.kickStemsUp,
-    myGrooveData.numBeats,
+    beatsForMeasure(myGrooveData.measureBeats, 0, myGrooveData.numBeats),
     myGrooveData.noteValue,
     renderWidth
   );
+
+  // Ben: mixed meters -> render measure by measure, each cut to its own length
+  if (myGrooveData.measureBeats) {
+    var slotsFull = notesPerMeasureInFullSizeArray(
+      is_triplet_division,
+      myGrooveData.numBeats,
+      myGrooveData.noteValue
+    );
+    var perLine = myGrooveData.notesPerMeasure >= 32 ? 1 : 2;
+    var prevBeats = beatsForMeasure(myGrooveData.measureBeats, 0, myGrooveData.numBeats);
+    var mapping = [];
+    for (var m = 0; m < myGrooveData.numberOfMeasures; m++) {
+      var beats = beatsForMeasure(myGrooveData.measureBeats, m, myGrooveData.numBeats);
+      var start = m * slotsFull;
+      var len = usedSlots(slotsFull, beats, myGrooveData.numBeats);
+      var cut = (arr) => arr.slice(start, start + len);
+      var tomsCut = FullNoteTomsArray.map(cut);
+      var addon;
+      if (m + 1 == myGrooveData.numberOfMeasures) addon = '|\n';
+      else if ((m + 1) % perLine === 0) addon = '\n';
+      else addon = '\\\n';
+      var chunk = gu.create_ABC_from_snare_HH_kick_arrays(
+        cut(FullNoteStickingArray),
+        cut(FullNoteHHArray),
+        cut(FullNoteSnareArray),
+        cut(FullNoteKickArray),
+        tomsCut,
+        addon,
+        len,
+        myGrooveData.timeDivision,
+        len,
+        myGrooveData.kickStemsUp,
+        beats,
+        myGrooveData.noteValue
+      );
+      if (beats != prevBeats) chunk = addInlineMeter(chunk, beats, myGrooveData.noteValue);
+      prevBeats = beats;
+      fullABC += chunk;
+      mapping = mapping.concat(
+        create_note_mapping_array_for_highlighting(
+          cut(FullNoteHHArray),
+          cut(FullNoteSnareArray),
+          cut(FullNoteKickArray),
+          tomsCut,
+          len
+        )
+      );
+    }
+    gu.note_mapping_array = mapping;
+    return fullABC;
+  }
 
   fullABC += gu.create_ABC_from_snare_HH_kick_arrays(
     FullNoteStickingArray,

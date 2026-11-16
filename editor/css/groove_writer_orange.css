@@ -1373,3 +1373,22 @@ input[type='checkbox']:not(:checked) + label {
     width: 100% !important;
   }
 }
+
+/* Ben: per-bar time signature + per-beat grid controls */
+.ben-bar-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  padding: 4px 8px 2px 8px;
+  font-size: 13px;
+  color: #555;
+}
+.ben-bar-controls .ben-bar-label {
+  font-weight: bold;
+  color: #333;
+}
+.ben-bar-controls select {
+  font-size: 13px;
+  margin-left: 3px;
+}

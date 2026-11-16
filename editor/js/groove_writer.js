@@ -24,6 +24,7 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
+import { addInlineMeter } from './measureBeats.js';
 import { GrooveUtils } from './groove_utils.js';
 import {
   constant_ABC_HH_Accent,
@@ -104,6 +105,10 @@ function GrooveWriter() {
 
   // public class vars
   var class_number_of_measures = 1;
+  // Ben: per-measure beats (mixed meters) and per-beat grid resolution in the editor
+  var class_measure_beats = []; // beats used per measure; missing = full measure
+  var class_beat_res = {}; // "measure-beat" -> 4 | 8 | 16 | 32 (cells shown in that beat)
+  var class_preserve_beat_res = false;
   var class_time_division = parseInt(root.myGrooveUtils.getQueryVariableFromURL('Div', '16'), 10); // default to 16ths
   var class_num_beats_per_measure = 4; // TimeSigTop
   var class_note_value_per_measure = 4; // TimeSigBottom
@@ -1838,20 +1843,27 @@ function GrooveWriter() {
         else
           num_notes_for_swing = (16 * class_num_beats_per_measure) / class_note_value_per_measure;
 
-        root.myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(
-          midiTrack,
-          HH_Array,
-          Snare_Array,
-          Kick_Array,
-          Toms_Array,
-          MIDI_type,
-          metronomeFrequency,
-          num_notes,
-          num_notes_for_swing,
-          swing_percentage,
-          class_num_beats_per_measure,
-          class_note_value_per_measure
-        );
+        // Ben: each bar may be shorter than the base meter
+        var midiBar = function (barIndex) {
+          var beats = measureBeatsFor(barIndex);
+          var len = Math.round((num_notes * beats) / class_num_beats_per_measure);
+          var cut = (arr) => arr.slice(0, len);
+          root.myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(
+            midiTrack,
+            cut(HH_Array),
+            cut(Snare_Array),
+            cut(Kick_Array),
+            Toms_Array.map(cut),
+            MIDI_type,
+            metronomeFrequency,
+            len,
+            (num_notes_for_swing * beats) / class_num_beats_per_measure,
+            swing_percentage,
+            beats,
+            class_note_value_per_measure
+          );
+        };
+        midiBar(0);
 
         for (i = 1; i < class_number_of_measures; i++) {
           // reset arrays
@@ -1884,20 +1896,7 @@ function GrooveWriter() {
             i
           );
 
-          root.myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(
-            midiTrack,
-            HH_Array,
-            Snare_Array,
-            Kick_Array,
-            Toms_Array,
-            MIDI_type,
-            metronomeFrequency,
-            num_notes,
-            num_notes_for_swing,
-            swing_percentage,
-            class_num_beats_per_measure,
-            class_note_value_per_measure
-          );
+          midiBar(i);
         }
         break;
     }
@@ -1922,6 +1921,7 @@ function GrooveWriter() {
     myGrooveData.notesPerMeasure = class_notes_per_measure;
     myGrooveData.timeDivision = class_time_division;
     myGrooveData.numberOfMeasures = class_number_of_measures;
+    myGrooveData.measureBeats = measureBeatsArrayOrNull();
     myGrooveData.numBeats = class_num_beats_per_measure;
     myGrooveData.noteValue = class_note_value_per_measure;
     myGrooveData.showStickings = isStickingsVisible();
@@ -1954,9 +1954,13 @@ function GrooveWriter() {
 
         if (isTomsVisible()) {
           myGrooveData.toms_array[0].push(get_tom_state(i, 1, 'ABC'));
+          myGrooveData.toms_array[1].push(get_tom_state(i, 2, 'ABC'));
+          myGrooveData.toms_array[2].push(get_tom_state(i, 3, 'ABC'));
           myGrooveData.toms_array[3].push(get_tom_state(i, 4, 'ABC'));
         } else {
           myGrooveData.toms_array[0].push(false);
+          myGrooveData.toms_array[1].push(false);
+          myGrooveData.toms_array[2].push(false);
           myGrooveData.toms_array[3].push(false);
         }
       }
@@ -2385,11 +2389,12 @@ function GrooveWriter() {
           showLegend,
           usingTriplets(),
           true,
-          class_num_beats_per_measure,
+          measureBeatsFor(0),
           class_note_value_per_measure,
           renderWidth
         );
         root.myGrooveUtils.note_mapping_array = [];
+        var prevMeasureBeats = measureBeatsFor(0);
 
         var numberOfMeasuresPerLine = 2;
         var addon_abc;
@@ -2428,27 +2433,35 @@ function GrooveWriter() {
             // continuation measure
             addon_abc = '\\\n';
           }
-          fullABC += root.myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(
-            Sticking_Array,
-            HH_Array,
-            Snare_Array,
-            Kick_Array,
-            Toms_Array,
+          // Ben: this bar may be shorter than the base meter
+          var barBeats = measureBeatsFor(i);
+          var barLen = Math.round((num_notes * barBeats) / class_num_beats_per_measure);
+          var cutBar = (arr) => arr.slice(0, barLen);
+          var barABC = root.myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(
+            cutBar(Sticking_Array),
+            cutBar(HH_Array),
+            cutBar(Snare_Array),
+            cutBar(Kick_Array),
+            Toms_Array.map(cutBar),
             addon_abc,
-            num_notes,
+            barLen,
             class_time_division,
-            num_notes,
+            barLen,
             true,
-            class_num_beats_per_measure,
+            barBeats,
             class_note_value_per_measure
           );
+          if (barBeats != prevMeasureBeats)
+            barABC = addInlineMeter(barABC, barBeats, class_note_value_per_measure);
+          prevMeasureBeats = barBeats;
+          fullABC += barABC;
           root.myGrooveUtils.note_mapping_array = root.myGrooveUtils.note_mapping_array.concat(
             root.myGrooveUtils.create_note_mapping_array_for_highlighting(
-              HH_Array,
-              Snare_Array,
-              Kick_Array,
-              Toms_Array,
-              num_notes
+              cutBar(HH_Array),
+              cutBar(Snare_Array),
+              cutBar(Kick_Array),
+              Toms_Array.map(cutBar),
+              barLen
             )
           );
         }
@@ -2591,6 +2604,8 @@ function GrooveWriter() {
     }
 
     class_number_of_measures--;
+    class_measure_beats.splice(measureNum - 1, 1);
+    class_beat_res = {};
 
     root.expandAuthoringViewWhenNecessary(class_notes_per_measure, class_number_of_measures);
 
@@ -2648,7 +2663,9 @@ function GrooveWriter() {
       uiKick += get_kick_state(i, 'URL');
     }
 
+    class_measure_beats[class_number_of_measures] = measureBeatsFor(class_number_of_measures - 1);
     class_number_of_measures++;
+    class_beat_res = {};
 
     root.expandAuthoringViewWhenNecessary(class_notes_per_measure, class_number_of_measures);
 
@@ -3465,6 +3482,7 @@ function GrooveWriter() {
 
       class_num_beats_per_measure = newTimeSigTop;
       class_note_value_per_measure = newTimeSigBottom;
+      class_measure_beats = [];
       var new_notes_per_measure = root.myGrooveUtils.calc_notes_per_measure(
         class_time_division,
         class_num_beats_per_measure,
@@ -3659,6 +3677,7 @@ function GrooveWriter() {
 
     class_num_beats_per_measure = myGrooveData.numBeats; // TimeSigTop
     class_note_value_per_measure = myGrooveData.noteValue; // TimeSigBottom
+    class_measure_beats = (myGrooveData.measureBeats || []).slice();
 
     if (
       myGrooveData.notesPerMeasure != class_notes_per_measure ||
@@ -3694,6 +3713,9 @@ function GrooveWriter() {
     root.myGrooveUtils.setSwing(myGrooveData.swingPercent);
 
     root.setMetronomeFrequency(myGrooveData.metronomeFrequency);
+
+    class_beat_res = {}; // recompute from the loaded notes
+    applyGridVisibility();
 
     updateSheetMusic();
   }
@@ -3786,6 +3808,8 @@ function GrooveWriter() {
 
     // enable or disable swing
     root.myGrooveUtils.swingEnabled(root.myGrooveUtils.doesDivisionSupportSwing(newDivision));
+
+    applyGridVisibility();
   }
 
   root.expandAuthoringViewWhenNecessary = function (numNotesPerMeasure, numberOfMeasures) {
@@ -3806,6 +3830,7 @@ function GrooveWriter() {
   // need to re-layout the html notes, change any globals and then reinitialize
   var have_shown_mixed_division_message = false;
   root.changeDivision = function (newDivision) {
+    if (!class_preserve_beat_res) class_beat_res = {};
     var uiStickings = '|';
     var uiHH = '|';
     var uiTom1 = '|';
@@ -3937,6 +3962,212 @@ function GrooveWriter() {
     );
 
     updateSheetMusic();
+  };
+
+
+  // ---------------------------------------------------------------------------
+  // Ben: per-measure time signatures + per-beat subdivision in the editor grid
+  // ---------------------------------------------------------------------------
+  function measureBeatsFor(m) {
+    var v = parseInt(class_measure_beats[m], 10);
+    var top = parseInt(class_num_beats_per_measure, 10);
+    return v >= 1 && v <= top ? v : top;
+  }
+
+  function measureBeatsArrayOrNull() {
+    var top = parseInt(class_num_beats_per_measure, 10);
+    var arr = [];
+    var mixed = false;
+    for (var m = 0; m < class_number_of_measures; m++) {
+      arr.push(measureBeatsFor(m));
+      if (arr[m] != top) mixed = true;
+    }
+    return mixed ? arr : null;
+  }
+
+  function perBeatSupported() {
+    return (
+      !usingTriplets() &&
+      class_note_value_per_measure == 4 &&
+      [4, 8, 16, 32].indexOf(parseInt(class_time_division, 10)) >= 0
+    );
+  }
+
+  function cellsPerBeat() {
+    return class_notes_per_measure / class_num_beats_per_measure;
+  }
+
+  function cellHasNote(idx) {
+    return (
+      is_hh_on(idx) ||
+      is_snare_on(idx) ||
+      is_kick_on(idx) ||
+      is_tom_on(idx, 1) ||
+      is_tom_on(idx, 2) ||
+      is_tom_on(idx, 3) ||
+      is_tom_on(idx, 4) ||
+      get_sticking_state(idx, 'URL') !== '-'
+    );
+  }
+
+  // which resolution a beat is shown in (auto: at 1/32 only beats that use 32nds show them)
+  function beatLevel(m, b) {
+    var key = m + '-' + b;
+    var div = parseInt(class_time_division, 10);
+    if (class_beat_res[key]) return Math.min(class_beat_res[key], div);
+    var level = div;
+    if (div == 32) {
+      level = 16;
+      var cpb = cellsPerBeat();
+      for (var j = 1; j < cpb; j += 2) {
+        if (cellHasNote(m * class_notes_per_measure + b * cpb + j)) level = 32;
+      }
+    }
+    class_beat_res[key] = level;
+    return level;
+  }
+
+  var CELL_ID_PREFIXES = [
+    'bg-highlight',
+    'sticking',
+    'hi-hat',
+    'tom1-',
+    'tom2-',
+    'tom3-',
+    'tom4-',
+    'snare',
+    'kick',
+  ];
+
+  function applyGridVisibility() {
+    var npm = class_notes_per_measure;
+    var cpb = cellsPerBeat();
+    var perBeat = perBeatSupported() && Number.isInteger(cpb);
+    var div = parseInt(class_time_division, 10);
+    for (var m = 0; m < class_number_of_measures; m++) {
+      var mb = measureBeatsFor(m);
+      for (var j = 0; j < npm; j++) {
+        var idx = m * npm + j;
+        var unit = Math.floor(j / cpb);
+        var show = unit < mb;
+        if (show && perBeat) show = (j % cpb) % (div / beatLevel(m, unit)) === 0;
+        for (var p = 0; p < CELL_ID_PREFIXES.length; p++) {
+          var el = document.getElementById(CELL_ID_PREFIXES[p] + idx);
+          if (el) el.style.display = show ? '' : 'none';
+        }
+      }
+      var container = document.getElementById('staff-container' + (m + 1));
+      if (!container) continue;
+      // spacers between beats of beats that are cut off
+      var spacers = container.querySelectorAll('.space_between_note_groups');
+      for (var s = 0; s < spacers.length; s++) {
+        var prev = spacers[s].previousElementSibling;
+        var num = prev && prev.id ? prev.id.match(/(\d+)$/) : null;
+        if (num) {
+          var jj = parseInt(num[1], 10) - m * npm;
+          spacers[s].style.display = Math.floor(jj / cpb) >= mb - 1 ? 'none' : '';
+        }
+      }
+      renderBarControls(container, m, perBeat);
+    }
+  }
+
+  function renderBarControls(container, m, perBeat) {
+    var bar = container.querySelector('.ben-bar-controls');
+    if (!bar) {
+      bar = document.createElement('div');
+      bar.className = 'ben-bar-controls';
+      container.insertBefore(bar, container.firstChild);
+    }
+    var top = parseInt(class_num_beats_per_measure, 10);
+    var mb = measureBeatsFor(m);
+    var html = '<span class="ben-bar-label">Bar ' + (m + 1) + '</span>';
+    html +=
+      '<label title="Time signature of this bar">time <select onchange="myGrooveWriter.setMeasureBeats(' +
+      m +
+      ', this.value)">';
+    for (var b = 1; b <= top; b++)
+      html +=
+        '<option value="' +
+        b +
+        '"' +
+        (b == mb ? ' selected' : '') +
+        '>' +
+        b +
+        '/' +
+        class_note_value_per_measure +
+        '</option>';
+    html += '</select></label>';
+    if (perBeat) {
+      var levels = [4, 8, 16, 32];
+      for (b = 0; b < mb; b++) {
+        var cur = beatLevel(m, b);
+        html +=
+          '<label title="Grid for this beat">beat ' +
+          (b + 1) +
+          ' <select onchange="myGrooveWriter.setBeatResolution(' +
+          m +
+          ',' +
+          b +
+          ', this.value)">';
+        for (var l = 0; l < levels.length; l++)
+          html +=
+            '<option value="' +
+            levels[l] +
+            '"' +
+            (levels[l] == cur ? ' selected' : '') +
+            '>1/' +
+            levels[l] +
+            '</option>';
+        html += '</select></label>';
+      }
+    }
+    bar.innerHTML = html;
+  }
+
+  root.setMeasureBeats = function (m, val) {
+    class_measure_beats[m] = parseInt(val, 10);
+    for (var k = 0; k < class_number_of_measures; k++) class_measure_beats[k] = measureBeatsFor(k);
+    applyGridVisibility();
+    updateSheetMusic();
+  };
+
+  root.setBeatResolution = function (m, b, val) {
+    val = parseInt(val, 10);
+    var div = parseInt(class_time_division, 10);
+    var cur = beatLevel(m, b);
+    if (val == cur) return;
+    if (val > div) {
+      // need a finer grid for the whole groove; keep every other beat looking the same
+      var snapshot = {};
+      for (var mm = 0; mm < class_number_of_measures; mm++)
+        for (var bb = 0; bb < measureBeatsFor(mm); bb++) snapshot[mm + '-' + bb] = beatLevel(mm, bb);
+      class_preserve_beat_res = true;
+      root.changeDivision(val);
+      class_preserve_beat_res = false;
+      if (parseInt(class_time_division, 10) != val) {
+        applyGridVisibility();
+        return;
+      }
+      class_beat_res = snapshot;
+      class_beat_res[m + '-' + b] = val;
+      applyGridVisibility();
+      updateSheetMusic();
+      return;
+    }
+    if (val < cur) {
+      var cpb = cellsPerBeat();
+      var step = div / val;
+      for (var j = 0; j < cpb; j++) {
+        if (j % step !== 0 && cellHasNote(m * class_notes_per_measure + b * cpb + j)) {
+          alert('Beat ' + (b + 1) + ' has notes on that finer grid. Remove them first.');
+          applyGridVisibility();
+          return;
+        }
+      }
+    }
+    class_beat_res[m + '-' + b] = val;
+    applyGridVisibility();
   };
 
   // public function

@@ -59,6 +59,7 @@ import {
   constant_OUR_MIDI_VELOCITY_GHOST,
   constant_OUR_MIDI_VELOCITY_NORMAL,
 } from './constants.js';
+import { beatsForMeasure, usedSlots } from './measureBeats.js';
 import { isTripletDivisionFromNotesPerMeasure, scaleNoteArrayToFullSize } from './musicMath.js';
 
 export function MIDI_build_midi_url_count_in_track(gu, timeSigTop, timeSigBottom) {
@@ -520,18 +521,22 @@ export function create_MIDIURLFromGrooveData(gu, myGrooveData, MIDI_type) {
       );
     }
 
+    // Ben: a measure may be shorter than the base meter (mixed meters)
+    var beats = beatsForMeasure(myGrooveData.measureBeats, measureIndex, myGrooveData.numBeats);
+    var used = usedSlots(measure_notes, beats, myGrooveData.numBeats);
+    var mStart = measure_notes * measureIndex;
     gu.MIDI_from_HH_Snare_Kick_Arrays(
       midiTrack,
-      FullNoteHHArray.slice(measure_notes * measureIndex, measure_notes * (measureIndex + 1)),
-      FullNoteSnareArray.slice(measure_notes * measureIndex, measure_notes * (measureIndex + 1)),
-      FullNoteKickArray.slice(measure_notes * measureIndex, measure_notes * (measureIndex + 1)),
-      FullNoteTomsArray,
+      FullNoteHHArray.slice(mStart, mStart + used),
+      FullNoteSnareArray.slice(mStart, mStart + used),
+      FullNoteKickArray.slice(mStart, mStart + used),
+      FullNoteTomsArray.map((arr) => arr.slice(0, used)),
       MIDI_type,
       myGrooveData.metronomeFrequency,
-      measure_notes,
-      myGrooveData.timeDivision,
+      used,
+      (myGrooveData.timeDivision * beats) / myGrooveData.numBeats,
       swing_percentage,
-      myGrooveData.numBeats,
+      beats,
       myGrooveData.noteValue
     );
   }
