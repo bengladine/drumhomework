@@ -1374,15 +1374,43 @@ input[type='checkbox']:not(:checked) + label {
   }
 }
 
-/* Ben: per-bar time signature + per-beat grid controls */
+/* Ben: bars flow next to each other and wrap, like on a sheet */
+#musicalInput {
+  white-space: normal;
+  text-align: left;
+}
+#measureContainer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 6px 4px;
+  padding: 4px;
+}
+.staff-container {
+  border: 1px solid #e3e3e3;
+  border-radius: 6px;
+  margin-right: 0;
+}
+.staff-container.ben-play-from {
+  border-color: #2e9e5b;
+  box-shadow: inset 4px 0 0 #2e9e5b;
+}
+.staff-container.ben-looped {
+  border-color: #e4572e;
+  background: #fff8f5;
+}
+
+/* Ben: per-bar toolbar: time signature, per-beat grid, tools */
 .ben-bar-controls {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 4px 12px;
-  padding: 4px 8px 2px 8px;
+  gap: 4px 10px;
+  padding: 5px 8px 3px 8px;
   font-size: 13px;
   color: #555;
+  white-space: normal;
+  max-width: 100%;
 }
 .ben-bar-controls .ben-bar-label {
   font-weight: bold;
@@ -1390,7 +1418,50 @@ input[type='checkbox']:not(:checked) + label {
 }
 .ben-bar-controls select {
   font-size: 13px;
-  margin-left: 3px;
+  margin: 0 1px;
+}
+.ben-bar-controls .ben-tools {
+  display: inline-flex;
+  gap: 3px;
+  margin-left: auto;
+}
+.ben-bar-controls .ben-tools button {
+  border: 1px solid #ccc;
+  background: #fff;
+  border-radius: 4px;
+  padding: 2px 6px;
+  cursor: pointer;
+  color: #444;
+}
+.ben-bar-controls .ben-tools button.on {
+  background: #333;
+  border-color: #333;
+  color: #fff;
+}
+.ben-bar-controls .ben-tools button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.ben-add-bar-menu {
+  position: fixed;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: #fff;
+  border: 1px solid #aaa;
+  border-radius: 6px;
+  padding: 6px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+}
+.ben-add-bar-menu button {
+  text-align: left;
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  background: #fafafa;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
 }
 
 /* Ben: the two extra tom rows take no space until toms are shown */

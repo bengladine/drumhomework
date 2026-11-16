@@ -4,7 +4,7 @@
 // helpers below are pure. GrooveUtils delegates its ABC methods here.
 
 import { constant_NUMBER_OF_TOMS } from './constants.js';
-import { beatsForMeasure, usedSlots, addInlineMeter } from './measureBeats.js';
+import { meterFor, usedSlots, addInlineMeter } from './meters.js';
 import {
   isTripletDivisionFromNotesPerMeasure,
   notesPerMeasureInFullSizeArray,
@@ -856,25 +856,27 @@ export function createABCFromGrooveData(gu, myGrooveData, renderWidth) {
     myGrooveData.showLegend,
     is_triplet_division,
     myGrooveData.kickStemsUp,
-    beatsForMeasure(myGrooveData.measureBeats, 0, myGrooveData.numBeats),
-    myGrooveData.noteValue,
+    meterFor(myGrooveData.measureMeters, 0, myGrooveData.numBeats, myGrooveData.noteValue)[0],
+    meterFor(myGrooveData.measureMeters, 0, myGrooveData.numBeats, myGrooveData.noteValue)[1],
     renderWidth
   );
 
   // Ben: mixed meters -> render measure by measure, each cut to its own length
-  if (myGrooveData.measureBeats) {
+  if (myGrooveData.measureMeters) {
     var slotsFull = notesPerMeasureInFullSizeArray(
       is_triplet_division,
       myGrooveData.numBeats,
       myGrooveData.noteValue
     );
     var perLine = myGrooveData.notesPerMeasure >= 32 ? 1 : 2;
-    var prevBeats = beatsForMeasure(myGrooveData.measureBeats, 0, myGrooveData.numBeats);
+    var meterOf = (mm) =>
+      meterFor(myGrooveData.measureMeters, mm, myGrooveData.numBeats, myGrooveData.noteValue);
+    var prevMeter = meterOf(0).join('/');
     var mapping = [];
     for (var m = 0; m < myGrooveData.numberOfMeasures; m++) {
-      var beats = beatsForMeasure(myGrooveData.measureBeats, m, myGrooveData.numBeats);
+      var meter = meterOf(m);
       var start = m * slotsFull;
-      var len = usedSlots(slotsFull, beats, myGrooveData.numBeats);
+      var len = usedSlots(slotsFull, meter, myGrooveData.numBeats, myGrooveData.noteValue);
       var cut = (arr) => arr.slice(start, start + len);
       var tomsCut = FullNoteTomsArray.map(cut);
       var addon;
@@ -892,11 +894,11 @@ export function createABCFromGrooveData(gu, myGrooveData, renderWidth) {
         myGrooveData.timeDivision,
         len,
         myGrooveData.kickStemsUp,
-        beats,
-        myGrooveData.noteValue
+        meter[0],
+        meter[1]
       );
-      if (beats != prevBeats) chunk = addInlineMeter(chunk, beats, myGrooveData.noteValue);
-      prevBeats = beats;
+      if (meter.join('/') != prevMeter) chunk = addInlineMeter(chunk, meter[0], meter[1]);
+      prevMeter = meter.join('/');
       fullABC += chunk;
       mapping = mapping.concat(
         create_note_mapping_array_for_highlighting(

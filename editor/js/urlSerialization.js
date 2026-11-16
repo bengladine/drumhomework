@@ -5,7 +5,7 @@
 // its instance flags through the parse function's `config` argument.
 
 import { createGrooveData } from './grooveData.js';
-import { parseMeasureBeats, measureBeatsToString } from './measureBeats.js';
+import { parseMeters, metersToString } from './meters.js';
 import { constant_DEFAULT_TEMPO, constant_MAX_MEASURES } from './constants.js';
 import { parseTimeSigString, calc_notes_per_measure } from './musicMath.js';
 import {
@@ -82,10 +82,12 @@ export function getGrooveDataFromUrlString(encodedURLData, config = {}) {
   else if (myGrooveData.numberOfMeasures > constant_MAX_MEASURES)
     myGrooveData.numberOfMeasures = constant_MAX_MEASURES;
 
-  myGrooveData.measureBeats = parseMeasureBeats(
+  myGrooveData.measureMeters = parseMeters(
+    getQueryVariableFromString('Meters', false, encodedURLData),
     getQueryVariableFromString('MeasureBeats', false, encodedURLData),
     myGrooveData.numberOfMeasures,
-    myGrooveData.numBeats
+    myGrooveData.numBeats,
+    myGrooveData.noteValue
   );
 
   Stickings_string = getQueryVariableFromString('Stickings', false, encodedURLData);
@@ -260,8 +262,12 @@ export function getUrlStringFromGrooveData(myGrooveData, url_destination) {
   // # of measures
   fullURL += '&Measures=' + myGrooveData.numberOfMeasures;
 
-  var measureBeatsString = measureBeatsToString(myGrooveData.measureBeats, myGrooveData.numBeats);
-  if (measureBeatsString) fullURL += '&MeasureBeats=' + measureBeatsString;
+  var metersString = metersToString(
+    myGrooveData.measureMeters,
+    myGrooveData.numBeats,
+    myGrooveData.noteValue
+  );
+  if (metersString) fullURL += '&Meters=' + metersString;
 
   // # metronome setting
   if (myGrooveData.metronomeFrequency !== 0) {
