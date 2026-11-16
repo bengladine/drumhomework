@@ -62,5 +62,5 @@ Compared to the normal Groove Scribe it has:
 - 4 toms (Tom 1 high, Tom 2 mid, Tom 3 low, Tom 4 floor) — click TOMS at the bottom
 - a time signature per bar (menu "time" above each bar), e.g. 4/4 + 3/4 in one groove
 - a grid per beat (menu "beat 1…4" above each bar): set one beat to 1/32 without the whole bar becoming 32nds
-The homework pages play grooves with this same player, so all of that works there too.
-Links from the old mikeslessons.com Groove Scribe keep working.
+The homework pages still play grooves with the normal Groove Scribe (mikeslessons.com) for now,
+so 4 toms (T2/T3) and mixed time signatures do NOT play correctly on the student pages yet.
