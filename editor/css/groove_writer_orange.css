@@ -1471,3 +1471,13 @@ input[type='checkbox']:not(:checked) + label {
 #tom3-label {
   display: none;
 }
+
+/* Ben: play cursor + loop range on the sheet music */
+#svgTarget { position: relative; }
+.ben-sheet-layer { position: absolute; inset: 0; z-index: 5; cursor: pointer; touch-action: pan-y; user-select: none; }
+.ben-sheet-loop { position: absolute; background: rgba(255, 140, 0, 0.16); border-top: 2px solid rgba(255, 140, 0, 0.7); border-bottom: 2px solid rgba(255, 140, 0, 0.7); box-sizing: border-box; pointer-events: none; }
+.ben-sheet-handle { position: absolute; width: 12px; cursor: ew-resize; }
+.ben-sheet-handle::after { content: ''; position: absolute; left: 4px; top: 0; bottom: 0; width: 4px; border-radius: 2px; background: #ff8c00; }
+.ben-sheet-loop-off { position: absolute; width: 18px; height: 18px; padding: 0; border: none; border-radius: 50%; background: #ff8c00; color: #fff; font-size: 14px; line-height: 18px; cursor: pointer; }
+.ben-sheet-cursor { position: absolute; width: 3px; background: #2e9e4f; pointer-events: none; }
+.ben-sheet-cursor::before { content: ''; position: absolute; top: -2px; left: -5px; border: 6px solid transparent; border-top: 8px solid #2e9e4f; }

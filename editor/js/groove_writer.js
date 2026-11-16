@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1794865549';
-import { GrooveUtils } from './groove_utils.js?v=1794865549';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1794865642';
+import { GrooveUtils } from './groove_utils.js?v=1794865642';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -85,10 +85,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1794865549';
-import * as _perm from './permutations.js?v=1794865549';
-import * as _view from './viewHtml.js?v=1794865549';
-import * as _grid from './gridState.js?v=1794865549';
+} from './constants.js?v=1794865642';
+import * as _perm from './permutations.js?v=1794865642';
+import * as _view from './viewHtml.js?v=1794865642';
+import * as _grid from './gridState.js?v=1794865642';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -2523,6 +2523,7 @@ function GrooveWriter() {
 
     diverr.innerHTML = svg_return.error_html;
     svgTarget.innerHTML = svg_return.svg;
+    renderSheetOverlay();
   };
 
   // Render an SVG that is good for download.
@@ -4268,6 +4269,7 @@ function GrooveWriter() {
       container.classList.toggle('ben-looped', !!class_loop_bars[m]);
       renderBarControls(container, m, perBeat);
     }
+    renderSheetOverlay();
   }
 
   function selectHTML(onchange, options, current) {
@@ -4529,6 +4531,183 @@ function GrooveWriter() {
     var base = baseMeter();
     return root.myGrooveUtils.calc_notes_per_measure(usingTriplets() ? 48 : 32, base[0], base[1]);
   }
+
+  // ---------------------------------------------------------------------
+  // Ben: play cursor + loop range directly on the sheet music.
+  // Click a bar = play from there. Drag across bars = loop them.
+  // Drag the loop's edge handles to change the range; x removes the loop.
+  // ---------------------------------------------------------------------
+  function loopRange() {
+    var bars = Object.keys(class_loop_bars)
+      .map(Number)
+      .filter((m) => m < class_number_of_measures)
+      .sort((a, b) => a - b);
+    return bars.length ? [bars[0], bars[bars.length - 1]] : null;
+  }
+
+  function setLoopRange(a, b) {
+    class_loop_bars = {};
+    if (a !== null) for (var m = Math.min(a, b); m <= Math.max(a, b); m++) class_loop_bars[m] = true;
+  }
+
+  // per bar: {left, right, top, bottom} in px relative to #svgTarget
+  function sheetBarRects(svgTarget) {
+    var T = svgTarget.getBoundingClientRect();
+    var marks = Array.prototype.slice.call(svgTarget.querySelectorAll('.benbar'));
+    var n = class_number_of_measures;
+    if (marks.length < n) return [];
+    marks = marks.slice(marks.length - n); // skip legend bars, if shown
+    var rects = [];
+    var prevRow = null;
+    var prevX = 0;
+    marks.forEach(function (mk) {
+      var svg = mk.ownerSVGElement;
+      var S = svg.getBoundingClientRect();
+      var r = mk.getBoundingClientRect();
+      var x = r.left + r.width / 2 - T.left;
+      var left = svg === prevRow ? prevX : S.left - T.left + 8;
+      rects.push({ left: left, right: x, top: S.top - T.top, bottom: S.bottom - T.top });
+      prevRow = svg;
+      prevX = x;
+    });
+    return rects;
+  }
+
+  function barAtPoint(rects, x, y) {
+    var best = -1;
+    var bestDist = Infinity;
+    rects.forEach(function (r, m) {
+      var dy = y < r.top ? r.top - y : y > r.bottom ? y - r.bottom : 0;
+      var dx = x < r.left ? r.left - x : x > r.right ? x - r.right : 0;
+      var d = dy * 4 + dx;
+      if (d < bestDist) {
+        bestDist = d;
+        best = m;
+      }
+    });
+    return best;
+  }
+
+  var class_sheet_drag = null;
+
+  function renderSheetOverlay() {
+    var svgTarget = document.getElementById('svgTarget');
+    if (!svgTarget || class_permutation_type != 'none') return;
+    var layer = svgTarget.querySelector('.ben-sheet-layer');
+    if (!layer) {
+      layer = document.createElement('div');
+      layer.className = 'ben-sheet-layer';
+      layer.title = 'Click a bar to play from there. Drag across bars to loop them.';
+      svgTarget.appendChild(layer);
+      layer.addEventListener('pointerdown', sheetPointerDown);
+      layer.addEventListener('pointermove', sheetPointerMove);
+      layer.addEventListener('pointerup', sheetPointerUp);
+      layer.addEventListener('pointercancel', function () {
+        class_sheet_drag = null;
+        renderSheetOverlay();
+      });
+    }
+    var rects = sheetBarRects(svgTarget);
+    layer._rects = rects;
+    var html = '';
+    var range = class_sheet_drag && class_sheet_drag.range ? class_sheet_drag.range : loopRange();
+    if (range) {
+      for (var m = range[0]; m <= range[1]; m++) {
+        var r = rects[m];
+        if (!r) continue;
+        html +=
+          '<div class="ben-sheet-loop" style="left:' + r.left + 'px;top:' + r.top + 'px;width:' +
+          (r.right - r.left) + 'px;height:' + (r.bottom - r.top) + 'px"></div>';
+      }
+      var a = rects[range[0]];
+      var b = rects[range[1]];
+      if (a && b) {
+        html += '<div class="ben-sheet-handle" data-handle="start" title="Drag to change where the loop starts" style="left:' +
+          (a.left - 6) + 'px;top:' + a.top + 'px;height:' + (a.bottom - a.top) + 'px"></div>';
+        html += '<div class="ben-sheet-handle" data-handle="end" title="Drag to change where the loop ends" style="left:' +
+          (b.right - 6) + 'px;top:' + b.top + 'px;height:' + (b.bottom - b.top) + 'px"></div>';
+        if (!class_sheet_drag)
+          html += '<button class="ben-sheet-loop-off" title="Stop looping" style="left:' + (b.right - 9) + 'px;top:' +
+            (b.top - 9) + 'px">&times;</button>';
+      }
+    }
+    var c = class_play_from !== null ? rects[class_play_from] : null;
+    if (c)
+      html += '<div class="ben-sheet-cursor" title="Playback starts here (click it again to start from the beginning)" style="left:' +
+        c.left + 'px;top:' + c.top + 'px;height:' + (c.bottom - c.top) + 'px"></div>';
+    layer.innerHTML = html;
+    var off = layer.querySelector('.ben-sheet-loop-off');
+    if (off)
+      off.addEventListener('pointerdown', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        setLoopRange(null);
+        applyGridVisibility();
+        restartPlaybackIfPlaying(false);
+      });
+  }
+
+  function layerPoint(e) {
+    var layer = e.currentTarget;
+    var L = layer.getBoundingClientRect();
+    return { layer: layer, bar: barAtPoint(layer._rects || [], e.clientX - L.left, e.clientY - L.top) };
+  }
+
+  function sheetPointerDown(e) {
+    if (e.button !== undefined && e.button !== 0) return;
+    var p = layerPoint(e);
+    if (p.bar < 0) return;
+    var handle = e.target && e.target.getAttribute && e.target.getAttribute('data-handle');
+    var range = loopRange();
+    if (handle && range) {
+      class_sheet_drag = { mode: handle, anchor: handle == 'start' ? range[1] : range[0], range: range.slice(), moved: true };
+    } else {
+      class_sheet_drag = { mode: 'new', anchor: p.bar, start: p.bar, range: null, moved: false };
+    }
+    try {
+      p.layer.setPointerCapture(e.pointerId);
+    } catch (err) {
+      /* ignore */
+    }
+    e.preventDefault();
+  }
+
+  function sheetPointerMove(e) {
+    if (!class_sheet_drag) return;
+    var p = layerPoint(e);
+    if (p.bar < 0) return;
+    var d = class_sheet_drag;
+    if (d.mode == 'new' && !d.moved && p.bar == d.start) return;
+    d.moved = true;
+    var a = d.anchor;
+    var nr = [Math.min(a, p.bar), Math.max(a, p.bar)];
+    if (!d.range || nr[0] != d.range[0] || nr[1] != d.range[1]) {
+      d.range = nr;
+      renderSheetOverlay();
+    }
+  }
+
+  function sheetPointerUp(e) {
+    var d = class_sheet_drag;
+    class_sheet_drag = null;
+    if (!d) return;
+    if (d.moved && d.range) {
+      setLoopRange(d.range[0], d.range[1]);
+      applyGridVisibility();
+      restartPlaybackIfPlaying(false);
+    } else if (!d.moved) {
+      // click: move the play cursor to this bar (click it again to go back to the start)
+      class_play_from = class_play_from === d.start ? null : d.start;
+      applyGridVisibility();
+      restartPlaybackIfPlaying(false);
+    } else {
+      renderSheetOverlay();
+    }
+  }
+
+  window.addEventListener('resize', function () {
+    setTimeout(renderSheetOverlay, 300);
+  });
 
   var originalABCHighlight = root.myGrooveUtils.highlightNoteInABCSVGFromPercentComplete;
   root.myGrooveUtils.highlightNoteInABCSVGFromPercentComplete = function (percentComplete) {
