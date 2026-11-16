@@ -293,3 +293,26 @@ body,
   background: none;
   border-top-color: var(--ben-green);
 }
+
+/* ---- add bar ---- */
+#addMeasureButton {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin: 8px;
+  border-radius: 50%;
+  border: 2px dashed #cbd5e1;
+  color: var(--ben-muted) !important;
+  font-size: 18px !important;
+  background: transparent;
+  cursor: pointer;
+  vertical-align: middle;
+  transition: all 0.12s ease;
+}
+#addMeasureButton:hover {
+  border-color: var(--ben-accent);
+  color: var(--ben-accent) !important;
+  background: var(--ben-accent-soft);
+}
