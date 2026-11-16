@@ -169,7 +169,10 @@
   // play controls. A little margin on top so nothing hides behind an inner scrollbar.
   function sizeFrames() {
     document.querySelectorAll("iframe.groove-frame").forEach(f => {
-      f.style.height = Math.round(85 + 0.14 * f.offsetWidth * (+f.dataset.lines || 1)) + "px";
+      const lines = +f.dataset.lines || 1;
+      // sticking letters (R/L) above the notes make each line taller
+      const extra = /[?&]Stickings=[^&]*[RLB]/.test(decodeURIComponent(f.src)) ? 20 : 0;
+      f.style.height = Math.round(85 + (0.14 * f.offsetWidth + extra) * lines) + "px";
     });
   }
   window.addEventListener("resize", sizeFrames);
