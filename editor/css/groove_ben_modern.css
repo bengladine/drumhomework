@@ -154,9 +154,31 @@ body,
   background: var(--ben-accent-soft);
 }
 .line-labels {
-  font-size: 15px;
   font-weight: 500;
   color: #374151;
+}
+/* rows are spaced by the label line height: keep it at the original 24px */
+.line-labels .hh-label,
+.line-labels .snare-label,
+.line-labels .kick-label,
+.line-labels .stickings-label,
+#tom1-label,
+#tom2-label,
+#tom3-label,
+#tom4-label {
+  font-size: 14px;
+  line-height: 24px;
+}
+.line-labels .hh-label:hover,
+.line-labels .snare-label:hover,
+.line-labels .kick-label:hover {
+  color: var(--ben-accent);
+}
+.closeMeasureButton {
+  color: #cbd5e1 !important;
+}
+.closeMeasureButton:hover {
+  color: #ef4444 !important;
 }
 
 .ben-bar-controls {
