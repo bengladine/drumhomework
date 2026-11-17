@@ -487,3 +487,4 @@ body,
 /* flash the grid bar you picked in the sheet */
 @keyframes ben-flash { 0% { box-shadow: 0 0 0 4px rgba(17, 24, 39, 0.35); } 100% { box-shadow: var(--ben-shadow); } }
 .staff-container.ben-flash { animation: ben-flash 0.9s ease-out; }
+#TopNav, #midiPlayer, #midiPlayer.fullWidthEle { max-width: none; }
