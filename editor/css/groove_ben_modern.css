@@ -446,3 +446,31 @@ body,
   .bg-highlight, .ben-sheet-hover, .note_part, .snare_circle, .kick_circle, .tom_circle { transition: none; }
   .snare_circle, .kick_circle, .tom_circle, .note_part { animation: none !important; }
 }
+
+/* ---- pinned sheet ---- */
+#sheetMusicDiv { position: relative; }
+#sheetMusicDiv.ben-pinned {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: linear-gradient(var(--ben-bg) 85%, rgba(243, 244, 246, 0));
+  padding-bottom: 10px;
+}
+#sheetMusicDiv.ben-pinned .svgTarget { max-height: 38vh; overflow-y: auto; scrollbar-width: thin; }
+.staff-container { scroll-margin-top: calc(var(--ben-sheet-h, 0px) + 10px); scroll-margin-bottom: 10px; }
+#benSheetPin {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  z-index: 6;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--ben-line);
+  border-radius: 8px;
+  background: var(--ben-surface);
+  color: var(--ben-muted);
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+#benSheetPin:hover { color: var(--ben-ink); border-color: #cbd5e1; }
+#benSheetPin.on { background: var(--ben-ink); color: #fff; border-color: var(--ben-ink); }

@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1794943341';
-import { GrooveUtils } from './groove_utils.js?v=1794943341';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1794943760';
+import { GrooveUtils } from './groove_utils.js?v=1794943760';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -85,10 +85,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1794943341';
-import * as _perm from './permutations.js?v=1794943341';
-import * as _view from './viewHtml.js?v=1794943341';
-import * as _grid from './gridState.js?v=1794943341';
+} from './constants.js?v=1794943760';
+import * as _perm from './permutations.js?v=1794943760';
+import * as _view from './viewHtml.js?v=1794943760';
+import * as _grid from './gridState.js?v=1794943760';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -625,6 +625,7 @@ function GrooveWriter() {
     if (class_permutation_type == 'none' && class_play_timeline.length) {
       var pos = timelinePosition(percent_complete);
       if (pos) {
+        followPlayingBar(pos.bar);
         hilight_all_notes_on_same_beat(
           instrument,
           pos.bar * class_notes_per_measure +
@@ -4694,7 +4695,8 @@ function GrooveWriter() {
       var r = mk.getBoundingClientRect();
       var x = r.left + r.width / 2 - T.left;
       var left = svg === prevRow ? prevX : S.left - T.left + 8;
-      rects.push({ left: left, right: x, top: S.top - T.top, bottom: S.bottom - T.top });
+      var st = svgTarget.scrollTop;
+      rects.push({ left: left, right: x, top: S.top - T.top + st, bottom: S.bottom - T.top + st });
       prevRow = svg;
       prevX = x;
     });
@@ -4741,6 +4743,8 @@ function GrooveWriter() {
     }
     var rects = sheetBarRects(svgTarget);
     layer._rects = rects;
+    layer.style.height = svgTarget.scrollHeight + 'px';
+    updateSheetPin();
     var html = '';
     var range = class_sheet_drag && class_sheet_drag.range ? class_sheet_drag.range : loopRange();
     if (range) {
@@ -5008,6 +5012,67 @@ function GrooveWriter() {
     },
     true
   );
+
+  // ---------------------------------------------------------------------
+  // Ben: pinned sheet (stays visible while you scroll the grid) and
+  // playback that follows the playing bar in the grid and in the sheet.
+  // ---------------------------------------------------------------------
+  var class_sheet_pinned = true;
+  try {
+    class_sheet_pinned = localStorage.getItem('benSheetPinned') !== '0';
+  } catch (e) {
+    /* storage may be unavailable */
+  }
+
+  function updateSheetPin() {
+    var div = document.getElementById('sheetMusicDiv');
+    if (!div) return;
+    div.classList.toggle('ben-pinned', class_sheet_pinned);
+    var btn = document.getElementById('benSheetPin');
+    if (!btn) {
+      btn = document.createElement('button');
+      btn.id = 'benSheetPin';
+      btn.onclick = function () {
+        class_sheet_pinned = !class_sheet_pinned;
+        try {
+          localStorage.setItem('benSheetPinned', class_sheet_pinned ? '1' : '0');
+        } catch (e) {
+          /* ignore */
+        }
+        updateSheetPin();
+      };
+      div.appendChild(btn);
+    }
+    btn.className = class_sheet_pinned ? 'on' : '';
+    btn.title = class_sheet_pinned ? 'Sheet stays on screen while you scroll (click to unpin)' : 'Pin the sheet to the top while you scroll';
+    btn.innerHTML = '<i class="fa fa-thumb-tack"></i>';
+    var h = class_sheet_pinned ? div.offsetHeight : 0;
+    document.documentElement.style.setProperty('--ben-sheet-h', h + 'px');
+  }
+
+  var class_followed_bar = -1;
+  function followPlayingBar(bar) {
+    if (bar === class_followed_bar) return;
+    class_followed_bar = bar;
+    var card = document.getElementById('staff-container' + (bar + 1));
+    var scroller = document.getElementById('RightHandContent');
+    if (card && scroller) {
+      var S = scroller.getBoundingClientRect();
+      var C = card.getBoundingClientRect();
+      var top = S.top + (class_sheet_pinned ? document.getElementById('sheetMusicDiv').offsetHeight : 0);
+      if (C.top < top || C.bottom > S.bottom) card.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+    var svgTarget = document.getElementById('svgTarget');
+    var layer = svgTarget && svgTarget.querySelector('.ben-sheet-layer');
+    var r = layer && layer._rects && layer._rects[bar];
+    if (r && svgTarget.scrollHeight > svgTarget.clientHeight + 2) {
+      if (r.top < svgTarget.scrollTop || r.bottom > svgTarget.scrollTop + svgTarget.clientHeight)
+        svgTarget.scrollTo({ top: Math.max(0, r.top - 8), behavior: 'smooth' });
+    }
+  }
+  window.addEventListener('resize', function () {
+    setTimeout(updateSheetPin, 300);
+  });
 
   var originalABCHighlight = root.myGrooveUtils.highlightNoteInABCSVGFromPercentComplete;
   root.myGrooveUtils.highlightNoteInABCSVGFromPercentComplete = function (percentComplete) {
