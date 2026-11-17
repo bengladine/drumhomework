@@ -752,3 +752,6 @@ html.ben-dark #benSheetPin { background: var(--ben-surface); border-color: var(-
 html.ben-dark #benSheetPin.on { background: #e5e7eb; color: #0b1120; }
 /* theme toggle button */
 #benThemeToggle { font-size: 15px; }
+
+/* Permutations (old practice feature) is hidden until it is tested with the new features */
+#permutationAnchor { display: none !important; }
