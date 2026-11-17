@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1794944333';
-import { GrooveUtils } from './groove_utils.js?v=1794944333';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1794945054';
+import { GrooveUtils } from './groove_utils.js?v=1794945054';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -85,10 +85,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1794944333';
-import * as _perm from './permutations.js?v=1794944333';
-import * as _view from './viewHtml.js?v=1794944333';
-import * as _grid from './gridState.js?v=1794944333';
+} from './constants.js?v=1794945054';
+import * as _perm from './permutations.js?v=1794945054';
+import * as _view from './viewHtml.js?v=1794945054';
+import * as _grid from './gridState.js?v=1794945054';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -5097,6 +5097,65 @@ function GrooveWriter() {
   window.addEventListener('resize', function () {
     setTimeout(updateSheetPin, 300);
   });
+
+  // ---------------------------------------------------------------------
+  // Ben: touch long-press = right-click (iPhone has no right-click / contextmenu)
+  // ---------------------------------------------------------------------
+  (function () {
+    var timer = null;
+    var startXY = null;
+    var suppressClickUntil = 0;
+    var suppressNativeMenuUntil = 0;
+    var CELL = '.hi-hat, .snare, .kick, .tom, .sticking, .hh-label, .snare-label, .kick-label, .tom-label, .stickings-label';
+    document.addEventListener(
+      'pointerdown',
+      function (e) {
+        if (e.pointerType !== 'touch') return;
+        var cell = e.target.closest && e.target.closest(CELL);
+        if (!cell) return;
+        startXY = [e.clientX, e.clientY];
+        clearTimeout(timer);
+        timer = setTimeout(function () {
+          timer = null;
+          suppressClickUntil = Date.now() + 700;
+          suppressNativeMenuUntil = Date.now() + 1000;
+          if (navigator.vibrate) navigator.vibrate(15);
+          cell.dispatchEvent(
+            new MouseEvent('contextmenu', { bubbles: true, cancelable: true, clientX: startXY[0], clientY: startXY[1], button: 2 })
+          );
+        }, 450);
+      },
+      true
+    );
+    var cancel = function (e) {
+      if (!timer) return;
+      if (e.type === 'pointermove' && startXY && Math.hypot(e.clientX - startXY[0], e.clientY - startXY[1]) < 10) return;
+      clearTimeout(timer);
+      timer = null;
+    };
+    ['pointerup', 'pointercancel', 'pointermove'].forEach((t) => document.addEventListener(t, cancel, true));
+    document.addEventListener(
+      'click',
+      function (e) {
+        if (Date.now() < suppressClickUntil && e.target.closest && e.target.closest(CELL)) {
+          e.stopPropagation();
+          e.preventDefault();
+        }
+      },
+      true
+    );
+    document.addEventListener(
+      'contextmenu',
+      function (e) {
+        // Android also fires its own long-press menu event: ignore it after ours
+        if (e.isTrusted && Date.now() < suppressNativeMenuUntil) {
+          e.stopPropagation();
+          e.preventDefault();
+        }
+      },
+      true
+    );
+  })();
 
   var originalABCHighlight = root.myGrooveUtils.highlightNoteInABCSVGFromPercentComplete;
   root.myGrooveUtils.highlightNoteInABCSVGFromPercentComplete = function (percentComplete) {

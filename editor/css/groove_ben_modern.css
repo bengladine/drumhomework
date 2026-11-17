@@ -488,3 +488,72 @@ body,
 @keyframes ben-flash { 0% { box-shadow: 0 0 0 4px rgba(17, 24, 39, 0.35); } 100% { box-shadow: var(--ben-shadow); } }
 .staff-container.ben-flash { animation: ben-flash 0.9s ease-out; }
 #TopNav, #midiPlayer, #midiPlayer.fullWidthEle { max-width: none; }
+
+/* =====================================================================
+   Touch screens: no sticky hover look after a tap
+   ===================================================================== */
+@media (hover: none) {
+  .snare:hover .snare_circle, .kick:hover .kick_circle, .tom:hover .tom_circle {
+    border-color: inherit;
+    box-shadow: none;
+  }
+  .snare:hover .snare_circle[style*="background-color: rgb(255, 255, 255)"],
+  .kick:hover .kick_circle[style*="background-color: rgb(255, 255, 255)"],
+  .tom:hover .tom_circle[style*="background-color: rgb(255, 255, 255)"] { border-color: #cfd5de !important; }
+  .snare:hover .snare_circle[style*="background-color: rgb(0, 0, 0)"],
+  .kick:hover .kick_circle[style*="background-color: rgb(0, 0, 0)"],
+  .tom:hover .tom_circle[style*="background-color: rgb(0, 0, 0)"] { border-color: #111827 !important; }
+  .hi-hat:hover .note_part[style*="color: rgb(204, 204, 204)"] { color: #d6dbe3 !important; }
+  .ben-sheet-hover { display: none; }
+  .hi-hat, .snare, .kick, .tom, .sticking { -webkit-tap-highlight-color: transparent; }
+}
+
+/* =====================================================================
+   Phones
+   ===================================================================== */
+@media (max-width: 720px) {
+  /* top bar: one scrollable row, icons only where possible */
+  #TopNav { height: 48px; padding: 0 8px; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; white-space: nowrap; }
+  #TopNav::-webkit-scrollbar { display: none; }
+  #logoTextUpperLeft img { height: 22px; }
+  #metronomeLabel, #metronomeOptionsAnchor, #permutationAnchor, #benGridAllLabel { display: none !important; }
+  #benGridAll { margin-left: 6px; padding-left: 6px; }
+  #benUndoRedo { margin-left: 6px; border: none; padding-right: 0; }
+  .rightButtons { padding: 6px 7px; font-size: 12px; }
+  #benUndoRedo .rightButtons { font-size: 0; }
+  #benUndoRedo .rightButtons i { font-size: 16px; }
+  .metronomeButton { padding: 4px 6px; font-size: 13px; }
+  #midiPlayer { top: 48px; }
+
+  /* sheet: smaller when pinned */
+  #sheetMusicDiv .svgTarget { padding: 6px 4px; }
+  #sheetMusicDiv.ben-pinned .svgTarget { max-height: 26vh; }
+  #RightHandContent .svgTarget svg { margin-left: 0; margin-right: 0; width: 100%; }
+  #benSheetPin { top: 6px; right: 6px; width: 28px; height: 28px; }
+
+  /* title fields stack */
+  #sheetMusicTextFields { display: flex; flex-direction: column; gap: 6px; padding: 8px 10px; }
+  #sheetMusicTextFields input { width: 100%; box-sizing: border-box; }
+  #KeyButton { display: none; }
+
+  /* bars: full width cards; swipe sideways inside a bar, labels stay put */
+  #measureContainer { padding: 6px 6px 12px 6px; gap: 10px; }
+  .staff-container { width: 100%; box-sizing: border-box; overflow-x: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
+  .staff-container .line-labels { position: sticky; left: 0; z-index: 3; background: inherit; width: 58px; box-shadow: 4px 0 6px -4px rgba(15, 23, 42, 0.15); }
+  .staff-container.ben-looped .line-labels { background: var(--ben-accent-soft); }
+  .staff-container:not(.ben-looped) .line-labels { background: var(--ben-surface); }
+  .line-labels .hh-label, .line-labels .snare-label, .line-labels .kick-label, .line-labels .stickings-label,
+  #tom1-label, #tom2-label, #tom3-label, #tom4-label { font-size: 12px; margin-left: 2px; }
+  .ben-bar-controls { position: sticky; left: 0; width: calc(100vw - 14px); box-sizing: border-box; gap: 6px 8px; }
+  .ben-bar-controls .ben-tools { margin-left: 0; width: 100%; justify-content: space-between; }
+  .ben-bar-controls .ben-tools button { padding: 6px 9px; font-size: 14px; }
+  .ben-bar-controls select { font-size: 14px; padding: 4px 18px 4px 6px; }
+
+  /* bottom buttons: compact grid */
+  #bottomButtonRow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 8px 8px 20px 8px; }
+  .pageBottomButton { min-width: 0; padding: 8px 4px; font-size: 11px; }
+  .pageBottomButton .fa-2x { font-size: 1.5em; }
+
+  /* menus fit the screen */
+  .noteContextMenu > ul.list { max-width: calc(100vw - 16px); max-height: 70vh; overflow-y: auto; }
+}
