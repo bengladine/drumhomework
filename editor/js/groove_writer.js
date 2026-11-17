@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1794942657';
-import { GrooveUtils } from './groove_utils.js?v=1794942657';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1794943064';
+import { GrooveUtils } from './groove_utils.js?v=1794943064';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -85,10 +85,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1794942657';
-import * as _perm from './permutations.js?v=1794942657';
-import * as _view from './viewHtml.js?v=1794942657';
-import * as _grid from './gridState.js?v=1794942657';
+} from './constants.js?v=1794943064';
+import * as _perm from './permutations.js?v=1794943064';
+import * as _view from './viewHtml.js?v=1794943064';
+import * as _grid from './gridState.js?v=1794943064';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -2524,7 +2524,7 @@ function GrooveWriter() {
     var svgTarget = document.getElementById('svgTarget');
     if (svgTarget) {
       renderWidth = svgTarget.offsetWidth - 100;
-      renderWidth = Math.floor(renderWidth * 0.8); // reduce width by 20% (This actually makes the notes bigger, because we scale up everything to max width)
+      renderWidth = Math.floor(renderWidth * 0.72); // reduce width by 20% (This actually makes the notes bigger, because we scale up everything to max width)
     }
 
     var fullABC = generate_ABC(renderWidth);
@@ -4730,6 +4730,10 @@ function GrooveWriter() {
       layer.addEventListener('pointerdown', sheetPointerDown);
       layer.addEventListener('pointermove', sheetPointerMove);
       layer.addEventListener('pointerup', sheetPointerUp);
+      layer.addEventListener('pointerleave', function () {
+        var hv = layer.querySelector('.ben-sheet-hover');
+        if (hv) hv.style.opacity = '0';
+      });
       layer.addEventListener('pointercancel', function () {
         class_sheet_drag = null;
         renderSheetOverlay();
@@ -4801,7 +4805,20 @@ function GrooveWriter() {
   }
 
   function sheetPointerMove(e) {
-    if (!class_sheet_drag) return;
+    if (!class_sheet_drag) {
+      var hp = layerPoint(e);
+      var hr = hp.layer._rects && hp.layer._rects[hp.bar];
+      var hv = hp.layer.querySelector('.ben-sheet-hover');
+      if (!hv) {
+        hv = document.createElement('div');
+        hv.className = 'ben-sheet-hover';
+        hp.layer.insertBefore(hv, hp.layer.firstChild);
+      }
+      if (hr) {
+        hv.style.cssText = 'left:' + hr.left + 'px;top:' + hr.top + 'px;width:' + (hr.right - hr.left) + 'px;height:' + (hr.bottom - hr.top) + 'px;opacity:1';
+      }
+      return;
+    }
     var p = layerPoint(e);
     if (p.bar < 0) return;
     var d = class_sheet_drag;

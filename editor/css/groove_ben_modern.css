@@ -378,3 +378,78 @@ body,
 #benGridAll select { background: #1e293b; color: #e2e8f0; border: 1px solid #334155; border-radius: 8px; padding: 4px 8px; font: inherit; font-size: 13px; cursor: pointer; }
 #benGridAll select:hover { border-color: #64748b; }
 .ben-bar-controls .ben-all-beats { font-weight: 600; color: var(--ben-ink); padding-right: 8px; border-right: 1px solid var(--ben-line); }
+
+/* =====================================================================
+   Smooth, "alive" grid. Pure CSS (transform/opacity only = GPU, no slowdown).
+   Note state stays in the inline styles the editor reads; we only restyle
+   what you SEE via attribute selectors, so clicking/reading is untouched.
+   ===================================================================== */
+.hi-hat, .snare, .kick, .tom, .sticking {
+  border-radius: 9px;
+  transition: background-color 0.15s ease, transform 0.12s ease, box-shadow 0.15s ease;
+  cursor: pointer;
+}
+.hi-hat:hover, .snare:hover, .kick:hover, .tom:hover, .sticking:hover {
+  background-color: #fff1e6;
+  transform: translateY(-1px) scale(1.07);
+  box-shadow: 0 3px 10px rgba(249, 115, 22, 0.18);
+  z-index: 2;
+}
+.hi-hat:active, .snare:active, .kick:active, .tom:active, .sticking:active {
+  transform: scale(0.92);
+  transition-duration: 0.05s;
+}
+
+/* circles: off = soft ring, on = accent dot that pops in */
+.snare_circle, .kick_circle, .tom_circle {
+  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.snare_circle[style*="background-color: rgb(255, 255, 255)"],
+.kick_circle[style*="background-color: rgb(255, 255, 255)"],
+.tom_circle[style*="background-color: rgb(255, 255, 255)"] {
+  border-color: #d6dbe3 !important;
+}
+.snare:hover .snare_circle[style*="background-color: rgb(255, 255, 255)"],
+.kick:hover .kick_circle[style*="background-color: rgb(255, 255, 255)"],
+.tom:hover .tom_circle[style*="background-color: rgb(255, 255, 255)"] {
+  border-color: var(--ben-accent) !important;
+}
+.snare_circle[style*="background-color: rgb(0, 0, 0)"],
+.kick_circle[style*="background-color: rgb(0, 0, 0)"],
+.tom_circle[style*="background-color: rgb(0, 0, 0)"] {
+  background: radial-gradient(circle at 35% 30%, #fdba74, var(--ben-accent) 55%, #ea580c) !important;
+  border-color: #ea580c !important;
+  box-shadow: 0 2px 6px rgba(234, 88, 12, 0.35);
+  animation: ben-pop 0.22s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+/* hi-hat / cymbal glyphs and snare ornaments that are on */
+.hi-hat .note_part[style*="color: rgb(0, 0, 0)"],
+.snare .note_part[style*="color: rgb(0, 0, 0)"],
+.kick .note_part[style*="color: rgb(0, 0, 0)"] {
+  color: var(--ben-ink) !important;
+  animation: ben-pop 0.22s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+.hi-hat .note_part[style*="color: rgb(204, 204, 204)"] { color: #d6dbe3 !important; }
+.hi-hat:hover .note_part[style*="color: rgb(204, 204, 204)"] { color: #fdba74 !important; }
+@keyframes ben-pop {
+  0% { transform: scale(0.4); opacity: 0.4; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* playback column highlight glides instead of jumping */
+.bg-highlight { transition: background-color 0.09s linear; border-radius: 8px; }
+
+/* sheet: hover shows which bar you would pick */
+.ben-sheet-hover {
+  position: absolute;
+  background: rgba(15, 23, 42, 0.04);
+  border-radius: 8px;
+  pointer-events: none;
+  transition: left 0.12s ease, top 0.12s ease, width 0.12s ease, height 0.12s ease, opacity 0.12s ease;
+}
+.ben-sheet-loop, .ben-sheet-cursor { transition: left 0.15s ease, top 0.15s ease, width 0.15s ease; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hi-hat, .snare, .kick, .tom, .sticking, .bg-highlight, .ben-sheet-hover { transition: none; }
+  .snare_circle, .kick_circle, .tom_circle, .note_part { animation: none !important; }
+}
