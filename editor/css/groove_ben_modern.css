@@ -587,6 +587,10 @@ body,
   .staff-container .hi-hat, .staff-container .snare, .staff-container .kick,
   .staff-container .tom, .staff-container .sticking { width: 26px; }
   .staff-container .bg-highlight { width: 28px !important; }
+  /* taller rows so the shrunken notes stay easy to tap */
+  .staff-container .snare-container, .staff-container .toms-container { height: 40px; }
+  .staff-container .line-labels .snare-label, .staff-container .line-labels .tom-label { margin-top: 17px; }
+  .staff-container .bg-highlight { height: 100% !important; }
   .staff-container .line-labels { width: calc(38px / var(--ben-z, 1)) !important; min-width: 0; }
   .ben-bar-controls .ben-tools button { padding: 8px 10px; }
 }
