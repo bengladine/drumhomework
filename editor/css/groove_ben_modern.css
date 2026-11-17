@@ -584,6 +584,9 @@ body,
   .staff-container .hi-hat, .staff-container .snare, .staff-container .kick,
   .staff-container .tom, .staff-container .sticking { margin-left: 0; margin-right: 0; }
   .staff-container .space_between_note_groups { width: 8px; }
-  .staff-container .line-labels { width: calc(40px / var(--ben-z, 1)) !important; min-width: 0; }
+  .staff-container .hi-hat, .staff-container .snare, .staff-container .kick,
+  .staff-container .tom, .staff-container .sticking { width: 26px; }
+  .staff-container .bg-highlight { width: 28px !important; }
+  .staff-container .line-labels { width: calc(38px / var(--ben-z, 1)) !important; min-width: 0; }
   .ben-bar-controls .ben-tools button { padding: 8px 10px; }
 }
