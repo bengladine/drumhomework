@@ -676,3 +676,8 @@ body,
   #RightHandContent > .nonPrintable > #benFooter { order: 3; }
   .ben-logo { font-size: 17px; }
 }
+
+/* metronome: make the active choice obvious */
+.metronomeButton { color: #94a3b8; font-weight: 500; transition: background 0.12s ease, color 0.12s ease; }
+.metronomeButton.buttonSelected { background: #f1f5f9; color: var(--ben-chrome) !important; font-weight: 700; }
+#metronome4ths.buttonSelected, #metronome8ths.buttonSelected, #metronome16ths.buttonSelected { background: #4ade80; color: #052e16 !important; }
