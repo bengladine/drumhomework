@@ -474,3 +474,6 @@ body,
 }
 #benSheetPin:hover { color: var(--ben-ink); border-color: #cbd5e1; }
 #benSheetPin.on { background: var(--ben-ink); color: #fff; border-color: var(--ben-ink); }
+/* sticky needs the page (not RightHandContent / the sheet's own wrapper) as its scroll box */
+#RightHandContent { overflow: visible; }
+#RightHandContent > .Printable { display: contents; }
