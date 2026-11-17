@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1794945973';
-import { GrooveUtils } from './groove_utils.js?v=1794945973';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1794946024';
+import { GrooveUtils } from './groove_utils.js?v=1794946024';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -85,10 +85,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1794945973';
-import * as _perm from './permutations.js?v=1794945973';
-import * as _view from './viewHtml.js?v=1794945973';
-import * as _grid from './gridState.js?v=1794945973';
+} from './constants.js?v=1794946024';
+import * as _perm from './permutations.js?v=1794946024';
+import * as _view from './viewHtml.js?v=1794946024';
+import * as _grid from './gridState.js?v=1794946024';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -4332,10 +4332,10 @@ function GrooveWriter() {
       var rowEl = grid.querySelector('.background-highlight-container') || grid.querySelector('.hi-hat-container');
       var natural = (rowEl ? rowEl.scrollWidth : grid.scrollWidth) + 6;
       var avail = card.clientWidth - 14 - 38;
-      var z = Math.max(0.6, Math.min(1, avail / natural));
+      var z = Math.max(0.55, Math.min(1, avail / natural));
       grid.style.zoom = z;
       card.style.setProperty('--ben-z', z);
-      card.classList.toggle('ben-fits', avail / natural >= 0.6);
+      card.classList.toggle("ben-fits", avail / natural >= 0.55);
     }
   }
   window.addEventListener('resize', function () {
