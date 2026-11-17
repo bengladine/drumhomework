@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1794952178';
-import { GrooveUtils } from './groove_utils.js?v=1794952178';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1794952218';
+import { GrooveUtils } from './groove_utils.js?v=1794952218';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -85,10 +85,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1794952178';
-import * as _perm from './permutations.js?v=1794952178';
-import * as _view from './viewHtml.js?v=1794952178';
-import * as _grid from './gridState.js?v=1794952178';
+} from './constants.js?v=1794952218';
+import * as _perm from './permutations.js?v=1794952218';
+import * as _view from './viewHtml.js?v=1794952218';
+import * as _grid from './gridState.js?v=1794952218';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -136,7 +136,7 @@ function GrooveWriter() {
   );
 
   // private vars in the scope of the class
-  var class_app_title = 'Groove Scribe';
+  var class_app_title = 'Beatsheet: free online drum notation editor';
   var class_permutation_type = 'none';
   var class_advancedEditIsOn = false;
   var class_measure_for_note_label_click = 0;
