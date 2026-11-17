@@ -368,6 +368,6 @@ body,
 }
 .noteContextMenu > ul.list li:hover { background: #f1f5f9; }
 .noteContextMenu > ul.list li.ben-convert { color: var(--ben-muted); }
-.noteContextMenu > ul.list li.ben-convert:first-of-type { border-top: 1px solid var(--ben-line); border-radius: 0 0 8px 8px; margin-top: 4px; padding-top: 9px; }
+.noteContextMenu > ul.list li:not(.ben-convert) + li.ben-convert { border-top: 1px solid var(--ben-line); border-radius: 0 0 8px 8px; margin-top: 4px; padding-top: 9px; }
 .noteContextMenu > ul.list li.ben-convert b { color: var(--ben-ink); font-weight: 600; }
 .noteContextMenu > ul.list li.ben-convert:hover { background: var(--ben-accent-soft); }
