@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1794941088';
-import { GrooveUtils } from './groove_utils.js?v=1794941088';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1794941168';
+import { GrooveUtils } from './groove_utils.js?v=1794941168';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -85,10 +85,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1794941088';
-import * as _perm from './permutations.js?v=1794941088';
-import * as _view from './viewHtml.js?v=1794941088';
-import * as _grid from './gridState.js?v=1794941088';
+} from './constants.js?v=1794941168';
+import * as _perm from './permutations.js?v=1794941168';
+import * as _view from './viewHtml.js?v=1794941168';
+import * as _grid from './gridState.js?v=1794941168';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -2524,6 +2524,7 @@ function GrooveWriter() {
     diverr.innerHTML = svg_return.error_html;
     svgTarget.innerHTML = svg_return.svg;
     renderSheetOverlay();
+    renderRideRows();
   };
 
   // Render an SVG that is good for download.
@@ -4708,6 +4709,162 @@ function GrooveWriter() {
   window.addEventListener('resize', function () {
     setTimeout(renderSheetOverlay, 300);
   });
+
+  // ---------------------------------------------------------------------
+  // Ben: optional "Ride" row. It is a view on the hi-hat lane: a slot is either
+  // hi-hat-ish or ride/ride bell, stored as r/b in H= like normal Groove Scribe,
+  // so links stay compatible with every Groove Scribe player.
+  // ---------------------------------------------------------------------
+  var class_ride_visible = null; // null = auto (show when the groove has ride notes)
+  var RIDE_GREY = 'rgb(204, 204, 204)';
+
+  function grooveHasRide() {
+    var n = class_number_of_measures * class_notes_per_measure;
+    for (var i = 0; i < n; i++) {
+      var el = document.getElementById('hi-hat' + i);
+      if (!el) continue;
+      var st = get_hh_state(i, 'URL');
+      if (st === 'r' || st === 'b') return true;
+    }
+    return false;
+  }
+
+  function isRideVisible() {
+    return class_ride_visible === null ? grooveHasRide() : class_ride_visible;
+  }
+
+  function setRideSlot(id, mode) {
+    set_hh_state(id, mode, mode != 'off');
+    updateSheetMusic();
+  }
+
+  function rideMenu(event, id) {
+    var old = document.getElementById('benRideMenu');
+    if (old) old.remove();
+    var menu = document.createElement('div');
+    menu.id = 'benRideMenu';
+    menu.className = 'ben-add-bar-menu';
+    menu.style.left = event.clientX + 'px';
+    menu.style.top = event.clientY + 'px';
+    [
+      ['ride', 'Ride'],
+      ['ride_bell', 'Ride bell'],
+      ['crash', 'Crash'],
+      ['off', 'Off'],
+    ].forEach(function (o) {
+      var b = document.createElement('button');
+      b.textContent = o[1];
+      b.onclick = function () {
+        menu.remove();
+        setRideSlot(id, o[0]);
+      };
+      menu.appendChild(b);
+    });
+    document.body.appendChild(menu);
+    setTimeout(function () {
+      document.addEventListener('pointerdown', function close(e) {
+        if (!menu.contains(e.target)) {
+          menu.remove();
+          document.removeEventListener('pointerdown', close, true);
+        }
+      }, true);
+    }, 0);
+  }
+
+  function renderRideRows() {
+    var show = isRideVisible();
+    var btn = document.getElementById('showHideRideButton');
+    if (btn) btn.classList.toggle('ClickToHide', show);
+    var npm = class_notes_per_measure;
+    for (var m = 0; m < class_number_of_measures; m++) {
+      var container = document.getElementById('staff-container' + (m + 1));
+      if (!container) continue;
+      var hhRow = container.querySelector('.hi-hat-container');
+      var row = container.querySelector('.ben-ride-container');
+      var label = container.querySelector('.ben-ride-label');
+      container.classList.toggle('ben-ride-on', show);
+      if (!show) {
+        if (row) row.remove();
+        if (label) label.remove();
+        container.querySelectorAll('.hi-hat.ben-on-ride').forEach((c) => c.classList.remove('ben-on-ride'));
+        continue;
+      }
+      if (!hhRow) continue;
+      if (!row) {
+        row = hhRow.cloneNode(true);
+        row.className = 'ben-ride-container';
+        row.querySelectorAll('[id]').forEach(function (el) {
+          el.id = 'benR_' + el.id;
+          el.removeAttribute('onclick');
+          el.removeAttribute('oncontextmenu');
+          el.removeAttribute('onmouseenter');
+        });
+        hhRow.parentNode.insertBefore(row, hhRow);
+        row.addEventListener('click', function (e) {
+          var cell = e.target.closest('.hi-hat');
+          if (!cell) return;
+          var id = parseInt(cell.id.replace('benR_hi-hat', ''), 10);
+          var st = get_hh_state(id, 'URL');
+          setRideSlot(id, st === 'r' || st === 'b' ? 'off' : 'ride');
+        });
+        row.addEventListener('contextmenu', function (e) {
+          var cell = e.target.closest('.hi-hat');
+          if (!cell) return;
+          e.preventDefault();
+          rideMenu(e, parseInt(cell.id.replace('benR_hi-hat', ''), 10));
+        });
+      }
+      if (!label) {
+        var hhLabel = container.querySelector('.hh-label');
+        if (hhLabel) {
+          label = document.createElement('div');
+          label.className = 'hh-label ben-ride-label';
+          label.textContent = 'Ride';
+          label.title = 'Click: ride on/off. Right-click: ride, ride bell, crash';
+          hhLabel.parentNode.insertBefore(label, hhLabel);
+        }
+      }
+      // sync cells, visibility and spacers with the hi-hat row
+      for (var j = 0; j < npm; j++) {
+        var id = m * npm + j;
+        var hhCell = document.getElementById('hi-hat' + id);
+        var rCell = document.getElementById('benR_hi-hat' + id);
+        if (!hhCell || !rCell) continue;
+        rCell.style.display = hhCell.style.display;
+        var st = get_hh_state(id, 'URL');
+        var isRide = st === 'r' || st === 'b';
+        hhCell.classList.toggle('ben-on-ride', isRide);
+        rCell.querySelectorAll('.note_part').forEach((p) => (p.style.color = 'transparent'));
+        var ride = document.getElementById('benR_hh_ride' + id);
+        var bell = document.getElementById('benR_hh_ride_bell' + id);
+        if (st === 'b') bell.style.color = constant_note_on_color_hex;
+        else if (ride) ride.style.color = st === "r" ? constant_note_on_color_hex : RIDE_GREY;
+      }
+      var hs = hhRow.children;
+      var rs = row.children;
+      for (var k = 0; k < hs.length && k < rs.length; k++)
+        if (hs[k].classList.contains('space_between_note_groups')) rs[k].style.display = hs[k].style.display;
+    }
+  }
+
+  root.showHideRide = function () {
+    class_ride_visible = !isRideVisible();
+    renderRideRows();
+    return false;
+  };
+
+  // clicking a hi-hat cell that holds a ride note puts a hi-hat there (the ride lives in its own row)
+  document.addEventListener(
+    'click',
+    function (e) {
+      var cell = e.target.closest && e.target.closest('.hi-hat.ben-on-ride');
+      if (!cell || !cell.id || cell.id.indexOf('benR_') === 0) return;
+      e.stopPropagation();
+      e.preventDefault();
+      setRideSlot(parseInt(cell.id.replace('hi-hat', ''), 10), 'normal');
+    },
+    true
+  );
 
   var originalABCHighlight = root.myGrooveUtils.highlightNoteInABCSVGFromPercentComplete;
   root.myGrooveUtils.highlightNoteInABCSVGFromPercentComplete = function (percentComplete) {

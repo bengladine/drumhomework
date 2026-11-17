@@ -316,3 +316,11 @@ body,
   color: var(--ben-accent) !important;
   background: var(--ben-accent-soft);
 }
+
+/* ---- ride row (view on the hi-hat lane) ---- */
+.ben-ride-container .hi-hat { cursor: pointer; }
+.hi-hat.ben-on-ride .note_part { visibility: hidden; }
+.ben-ride-on .ben-ride-label { margin-top: 16px; }
+.ben-ride-on .hh-label:not(.ben-ride-label) { margin-top: 5px; }
+.ben-ride-container { margin-bottom: 0; }
+#showHideRideButton.ClickToHide { color: var(--ben-accent); border-color: var(--ben-accent); }
