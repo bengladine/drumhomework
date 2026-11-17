@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1794941168';
-import { GrooveUtils } from './groove_utils.js?v=1794941168';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1794941230';
+import { GrooveUtils } from './groove_utils.js?v=1794941230';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -85,10 +85,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1794941168';
-import * as _perm from './permutations.js?v=1794941168';
-import * as _view from './viewHtml.js?v=1794941168';
-import * as _grid from './gridState.js?v=1794941168';
+} from './constants.js?v=1794941230';
+import * as _perm from './permutations.js?v=1794941230';
+import * as _view from './viewHtml.js?v=1794941230';
+import * as _grid from './gridState.js?v=1794941230';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -4779,7 +4779,7 @@ function GrooveWriter() {
     for (var m = 0; m < class_number_of_measures; m++) {
       var container = document.getElementById('staff-container' + (m + 1));
       if (!container) continue;
-      var hhRow = container.querySelector('.hi-hat-container');
+      var hhRow = container.querySelector('.hi-hat-container:not(.ben-ride-container)');
       var row = container.querySelector('.ben-ride-container');
       var label = container.querySelector('.ben-ride-label');
       container.classList.toggle('ben-ride-on', show);
@@ -4792,7 +4792,7 @@ function GrooveWriter() {
       if (!hhRow) continue;
       if (!row) {
         row = hhRow.cloneNode(true);
-        row.className = 'ben-ride-container';
+        row.className = 'hi-hat-container ben-ride-container';
         row.querySelectorAll('[id]').forEach(function (el) {
           el.id = 'benR_' + el.id;
           el.removeAttribute('onclick');
