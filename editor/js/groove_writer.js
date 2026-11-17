@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1794942476';
-import { GrooveUtils } from './groove_utils.js?v=1794942476';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1794942657';
+import { GrooveUtils } from './groove_utils.js?v=1794942657';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -85,10 +85,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1794942476';
-import * as _perm from './permutations.js?v=1794942476';
-import * as _view from './viewHtml.js?v=1794942476';
-import * as _grid from './gridState.js?v=1794942476';
+} from './constants.js?v=1794942657';
+import * as _perm from './permutations.js?v=1794942657';
+import * as _view from './viewHtml.js?v=1794942657';
+import * as _grid from './gridState.js?v=1794942657';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -4438,6 +4438,7 @@ function GrooveWriter() {
     // a different base grid is needed for the whole groove
     var bars = readBars();
     bars[m].levels[b] = level;
+    var stuck = relaxGridConflicts(bars, level);
     var lcm = 1;
     var gcd = (x, y) => (y ? gcd(y, x % y) : x);
     bars.forEach(function (bar) {
@@ -4448,12 +4449,51 @@ function GrooveWriter() {
     });
     var newDiv = DIV_FOR_CELLS_PER_QUARTER[lcm];
     if (!newDiv) {
-      alert('1/32 notes and triplets/sextuplets cannot be combined in one groove.');
+      alert(gridConflictMessage(stuck));
       applyGridVisibility();
       return;
     }
     commitBars(bars, newDiv);
   };
+
+  // Ben: 1/32 and triplets can't share one groove. Before giving up, move beats of the
+  // "other" kind to a plain grid when their notes allow it (empty beats always can).
+  function relaxGridConflicts(bars, keep) {
+    var cpq = cellsPerQuarter();
+    var isTrip = (lv) => lv == '8t' || lv == '16t';
+    var hasTrip = false;
+    var has32 = false;
+    bars.forEach((bar) => bar.levels.forEach((lv) => ((hasTrip = hasTrip || isTrip(lv)), (has32 = has32 || lv == '32'))));
+    if (!hasTrip || !has32) return '';
+    var keepTrip = isTrip(keep);
+    var stuck = '';
+    bars.forEach(function (bar, m) {
+      bar.levels.forEach(function (lv, b) {
+        var conflicting = keepTrip ? lv == '32' : isTrip(lv);
+        if (!conflicting) return;
+        var offs = [];
+        for (var j = 0; j < cpq; j++) {
+          var cell = b * cpq + j;
+          if (cell >= bar.notes.H.length) break;
+          if (BAR_INSTRUMENTS.some((inst) => inst != 'Stickings' && bar.notes[inst][cell] !== '-')) offs.push(j);
+        }
+        var to = ['16', '8', '4'].find(function (l) {
+          var step = cpq / LEVEL_CELLS[l];
+          return Number.isInteger(step) && offs.every((o) => o % step === 0);
+        });
+        if (to) bar.levels[b] = to;
+        else if (!stuck) stuck = 'bar ' + (m + 1) + ', beat ' + (b + 1);
+      });
+    });
+    return stuck;
+  }
+
+  function gridConflictMessage(stuck) {
+    return (
+      '1/32 notes and triplets/sextuplets cannot be combined in one groove' +
+      (stuck ? ' (' + stuck + ' still has notes that need its current grid).' : '.')
+    );
+  }
 
   // Ben: one grid for every beat of a bar (scope = bar index) or of the whole groove (scope = 'all')
   var DIV_FOR_LEVEL = { 4: 4, 8: 8, 16: 16, 32: 32, '8t': 12, '16t': 24 };
@@ -4492,6 +4532,7 @@ function GrooveWriter() {
       applyGridVisibility();
       return;
     }
+    var stuck = relaxGridConflicts(bars, level);
     var gcd = (x, y) => (y ? gcd(y, x % y) : x);
     var lcm = 1;
     bars.forEach(function (bar) {
@@ -4502,7 +4543,7 @@ function GrooveWriter() {
     });
     var newDiv = DIV_FOR_CELLS_PER_QUARTER[lcm];
     if (!newDiv) {
-      alert('1/32 notes and triplets/sextuplets cannot be combined in one groove.');
+      alert(gridConflictMessage(stuck));
       applyGridVisibility();
       return;
     }
