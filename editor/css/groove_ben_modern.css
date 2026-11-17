@@ -477,3 +477,13 @@ body,
 /* sticky needs the page (not RightHandContent / the sheet's own wrapper) as its scroll box */
 #RightHandContent { overflow: visible; }
 #RightHandContent > .Printable { display: contents; }
+
+/* ---- sheet uses the full browser width ---- */
+#sheetMusicDiv.fullWidthEle { max-width: none; padding: 0 0 6px 0; }
+#sheetMusicDiv .svgTarget { border-radius: 0; box-shadow: 0 1px 0 var(--ben-line), 0 6px 14px rgba(15, 23, 42, 0.05); padding: 10px 24px; box-sizing: border-box; }
+#sheetMusicDiv.ben-pinned { padding-bottom: 8px; }
+#benSheetPin { top: 10px; right: 14px; }
+
+/* flash the grid bar you picked in the sheet */
+@keyframes ben-flash { 0% { box-shadow: 0 0 0 4px rgba(17, 24, 39, 0.35); } 100% { box-shadow: var(--ben-shadow); } }
+.staff-container.ben-flash { animation: ben-flash 0.9s ease-out; }

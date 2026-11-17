@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1794943896';
-import { GrooveUtils } from './groove_utils.js?v=1794943896';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1794944222';
+import { GrooveUtils } from './groove_utils.js?v=1794944222';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -85,10 +85,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1794943896';
-import * as _perm from './permutations.js?v=1794943896';
-import * as _view from './viewHtml.js?v=1794943896';
-import * as _grid from './gridState.js?v=1794943896';
+} from './constants.js?v=1794944222';
+import * as _perm from './permutations.js?v=1794944222';
+import * as _view from './viewHtml.js?v=1794944222';
+import * as _grid from './gridState.js?v=1794944222';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -781,8 +781,17 @@ function GrooveWriter() {
   };
 
   root.setMetronomeFrequency = function (newFrequency) {
+    var changed = root.class_metronome_frequency != newFrequency;
     root.class_metronome_frequency = newFrequency;
     root.setMetronomeButton(newFrequency);
+    // Ben: rebuild the MIDI so the change is heard right away (it used to wait for some other edit)
+    if (changed && root.myGrooveUtils) {
+      root.myGrooveUtils.midiNoteHasChanged();
+      if (root.myGrooveUtils.isPlaying && root.myGrooveUtils.isPlaying()) {
+        root.myGrooveUtils.stopMIDI_playback();
+        root.myGrooveUtils.startMIDI_playback();
+      }
+    }
 
     // update the current URL so that reloads and history traversal and link shares and bookmarks work correctly
     root.updateCurrentURL();
@@ -2436,12 +2445,14 @@ function GrooveWriter() {
         class_bar_map_start = [];
         var prevMeter = meterFor(0).join('/');
 
-        var numberOfMeasuresPerLine = 2;
+        // Ben: more bars per line on wide screens (the sheet uses the full browser width)
+        var sheetW = (document.getElementById('svgTarget') || {}).offsetWidth || 1000;
+        var numberOfMeasuresPerLine = Math.max(1, Math.round(sheetW / 620));
         var addon_abc;
 
         if (class_notes_per_measure >= 32) {
           // Only put one measure per line for 32nd notes and above because of width issues
-          numberOfMeasuresPerLine = 1;
+          numberOfMeasuresPerLine = Math.max(1, Math.round(sheetW / 1100));
         }
 
         for (i = 0; i < class_number_of_measures; i++) {
@@ -4848,6 +4859,13 @@ function GrooveWriter() {
     } else if (!d.moved) {
       // click: move the play cursor to this bar (click it again to go back to the start)
       class_play_from = class_play_from === d.start ? null : d.start;
+      var card = document.getElementById('staff-container' + (d.start + 1));
+      if (card) {
+        card.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        card.classList.remove('ben-flash');
+        void card.offsetWidth; // restart the animation
+        card.classList.add('ben-flash');
+      }
       applyGridVisibility();
       restartPlaybackIfPlaying(false);
     } else {
