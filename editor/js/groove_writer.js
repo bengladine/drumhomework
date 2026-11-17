@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1794945738';
-import { GrooveUtils } from './groove_utils.js?v=1794945738';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1794945802';
+import { GrooveUtils } from './groove_utils.js?v=1794945802';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -85,10 +85,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1794945738';
-import * as _perm from './permutations.js?v=1794945738';
-import * as _view from './viewHtml.js?v=1794945738';
-import * as _grid from './gridState.js?v=1794945738';
+} from './constants.js?v=1794945802';
+import * as _perm from './permutations.js?v=1794945802';
+import * as _view from './viewHtml.js?v=1794945802';
+import * as _grid from './gridState.js?v=1794945802';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -4322,10 +4322,16 @@ function GrooveWriter() {
       var grid = card && card.querySelector('.notes-row-container');
       if (!grid) continue;
       grid.style.zoom = '';
-      card.style.removeProperty('--ben-z');
-      if (!phone) continue;
-      var natural = grid.scrollWidth + 4;
-      var avail = card.clientWidth - 6;
+      card.style.setProperty('--ben-z', 1);
+      if (!phone) {
+        card.style.removeProperty('--ben-z');
+        continue;
+      }
+      // measure the grid with a 40px label column, then shrink it to fit
+      var labels = grid.querySelector('.line-labels');
+      var musicW = grid.querySelector('.music-line-container');
+      var natural = (musicW ? musicW.getBoundingClientRect().width : grid.scrollWidth) + 6;
+      var avail = card.clientWidth - 6 - 40;
       var z = Math.max(0.45, Math.min(1, avail / natural));
       grid.style.zoom = z;
       card.style.setProperty('--ben-z', z);

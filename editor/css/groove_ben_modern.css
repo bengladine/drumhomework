@@ -576,9 +576,14 @@ body,
   .staff-container .line-labels .hh-label, .staff-container .line-labels .snare-label,
   .staff-container .line-labels .kick-label, .staff-container .line-labels .stickings-label,
   .staff-container .line-labels .tom-label {
-    font-size: calc(11px / var(--ben-z, 1));
+    font-size: calc(10px / var(--ben-z, 1));
     margin-left: 0;
   }
   .staff-container .closeMeasureButton { display: none; }
+  /* tighter grid on phones: no gaps between cells, small gap between beats */
+  .staff-container .hi-hat, .staff-container .snare, .staff-container .kick,
+  .staff-container .tom, .staff-container .sticking { margin-left: 0; margin-right: 0; }
+  .staff-container .space_between_note_groups { width: 8px; }
+  .staff-container .line-labels { width: calc(40px / var(--ben-z, 1)) !important; min-width: 0; }
   .ben-bar-controls .ben-tools button { padding: 8px 10px; }
 }
