@@ -557,3 +557,28 @@ body,
   /* menus fit the screen */
   .noteContextMenu > ul.list { max-width: calc(100vw - 16px); max-height: 70vh; overflow-y: auto; }
 }
+
+/* hidden toms take no room at all (they used to leave empty gaps between rows) */
+.toms-container:not([style*="visible"]),
+.tom-label:not([style*="visible"]) { display: none !important; }
+
+@media (max-width: 720px) {
+  /* title / author / comment go below the bars, out of the way */
+  #RightHandContent > .nonPrintable { display: flex; flex-direction: column; }
+  #RightHandContent > .nonPrintable > #musicalInput { order: 1; }
+  #RightHandContent > .nonPrintable > #bottomButtonRow { order: 2; }
+  #RightHandContent > .nonPrintable > #sheetMusicTextFields { order: 3; padding-bottom: 24px; }
+  #RightHandContent > .nonPrintable > * { order: 4; }
+
+  /* the whole bar fits: no sideways swiping, labels readable despite the zoom */
+  .staff-container.ben-fits { overflow-x: hidden; }
+  .staff-container.ben-fits .line-labels { position: static; box-shadow: none; width: auto; }
+  .staff-container .line-labels .hh-label, .staff-container .line-labels .snare-label,
+  .staff-container .line-labels .kick-label, .staff-container .line-labels .stickings-label,
+  .staff-container .line-labels .tom-label {
+    font-size: calc(11px / var(--ben-z, 1));
+    margin-left: 0;
+  }
+  .staff-container .closeMeasureButton { display: none; }
+  .ben-bar-controls .ben-tools button { padding: 8px 10px; }
+}

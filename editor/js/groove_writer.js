@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1794945104';
-import { GrooveUtils } from './groove_utils.js?v=1794945104';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1794945738';
+import { GrooveUtils } from './groove_utils.js?v=1794945738';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -85,10 +85,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1794945104';
-import * as _perm from './permutations.js?v=1794945104';
-import * as _view from './viewHtml.js?v=1794945104';
-import * as _grid from './gridState.js?v=1794945104';
+} from './constants.js?v=1794945738';
+import * as _perm from './permutations.js?v=1794945738';
+import * as _view from './viewHtml.js?v=1794945738';
+import * as _grid from './gridState.js?v=1794945738';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -4311,7 +4311,31 @@ function GrooveWriter() {
       renderBarControls(container, m, perBeat);
     }
     renderSheetOverlay();
+    fitBarsToScreen();
   }
+
+  // Ben: on phones, shrink the note grid of each bar so a whole bar fits the screen width
+  function fitBarsToScreen() {
+    var phone = window.innerWidth <= 720;
+    for (var m = 0; m < class_number_of_measures; m++) {
+      var card = document.getElementById('staff-container' + (m + 1));
+      var grid = card && card.querySelector('.notes-row-container');
+      if (!grid) continue;
+      grid.style.zoom = '';
+      card.style.removeProperty('--ben-z');
+      if (!phone) continue;
+      var natural = grid.scrollWidth + 4;
+      var avail = card.clientWidth - 6;
+      var z = Math.max(0.45, Math.min(1, avail / natural));
+      grid.style.zoom = z;
+      card.style.setProperty('--ben-z', z);
+      card.classList.toggle('ben-fits', avail / natural >= 0.45);
+    }
+  }
+  window.addEventListener('resize', function () {
+    clearTimeout(fitBarsToScreen._t);
+    fitBarsToScreen._t = setTimeout(fitBarsToScreen, 150);
+  });
 
   function selectHTML(onchange, options, current) {
     var html = '<select onchange="' + onchange + '">';
