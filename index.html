@@ -157,6 +157,7 @@
       : q + "&Tempo=" + bpm;
     // links made in Ben's own editor play in Ben's own player (4 toms, mixed meters, ride row...)
     if (/\/drumhomework\/editor\//.test(url)) return "editor/GrooveEmbed.html?" + query;
+    if (/\/beatsheet\//.test(url)) return "https://bengladine.github.io/beatsheet/GrooveEmbed.html?" + query;
     return "https://www.mikeslessons.com/groove/GrooveEmbed.html?" + query;
   }
 
