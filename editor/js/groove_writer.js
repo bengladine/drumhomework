@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1794941268';
-import { GrooveUtils } from './groove_utils.js?v=1794941268';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1794941315';
+import { GrooveUtils } from './groove_utils.js?v=1794941315';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -85,10 +85,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1794941268';
-import * as _perm from './permutations.js?v=1794941268';
-import * as _view from './viewHtml.js?v=1794941268';
-import * as _grid from './gridState.js?v=1794941268';
+} from './constants.js?v=1794941315';
+import * as _perm from './permutations.js?v=1794941315';
+import * as _view from './viewHtml.js?v=1794941315';
+import * as _grid from './gridState.js?v=1794941315';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -4749,7 +4749,6 @@ function GrooveWriter() {
     [
       ['ride', 'Ride'],
       ['ride_bell', 'Ride bell'],
-      ['crash', 'Crash'],
       ['off', 'Off'],
     ].forEach(function (o) {
       var b = document.createElement('button');
@@ -4820,7 +4819,7 @@ function GrooveWriter() {
           label = document.createElement('div');
           label.className = 'hh-label ben-ride-label';
           label.textContent = 'Ride';
-          label.title = 'Click: ride on/off. Right-click: ride, ride bell, crash';
+          label.title = 'Click a cell: ride on/off. Right-click a cell: ride or ride bell';
           hhLabel.parentNode.insertBefore(label, hhLabel);
         }
       }
