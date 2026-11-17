@@ -27,7 +27,7 @@
 // GrooveUtils comes from its ES module. The MIDI.js / abc2svg / jsmidgen
 // libraries and CSS are still injected at load time (below) so this file remains
 // a drop-in embed: a page only needs <script type="module" src="groove_display.js">.
-import { GrooveUtils } from './groove_utils.js?v=1794947311';
+import { GrooveUtils } from './groove_utils.js?v=1794952178';
 
 // GrooveDisplay class.   The only one in this file.
 // singleton
@@ -110,7 +110,7 @@ if (typeof GrooveDisplay === 'undefined') {
     // (groove_utils.js is imported as an ES module above, not injected.)
 
     // stylesheet
-    root.loadjscssfile('https://fonts.googleapis.com/css?family=Lato:400,700,300', 'css');
+    // Ben: no Google Fonts (privacy); system fonts are used instead
     root.loadjscssfile('../font-awesome/4.3.0/css/font-awesome.min.css', 'css');
     root.loadjscssfile('../css/groove_display.css', 'css');
 
@@ -304,7 +304,7 @@ if (typeof GrooveDisplay === 'undefined') {
 
         if (linkToEditor)
           svgTarget.innerHTML =
-            '<a style="text-decoration: none" href="http://mikeslessons.com/gscribe/' +
+            '<a style="text-decoration: none" href="' + new URL('../', import.meta.url).href +
             GrooveDefinition +
             '">' +
             svgReturn.svg +

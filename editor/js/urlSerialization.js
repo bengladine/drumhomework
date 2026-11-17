@@ -4,10 +4,10 @@
 // getGrooveDataFromUrlString / getUrlStringFromGrooveData methods here, passing
 // its instance flags through the parse function's `config` argument.
 
-import { createGrooveData } from './grooveData.js?v=1794947311';
-import { parseMeters, metersToString } from './meters.js?v=1794947311';
-import { constant_DEFAULT_TEMPO, constant_MAX_MEASURES } from './constants.js?v=1794947311';
-import { parseTimeSigString, calc_notes_per_measure } from './musicMath.js?v=1794947311';
+import { createGrooveData } from './grooveData.js?v=1794952178';
+import { parseMeters, metersToString } from './meters.js?v=1794952178';
+import { constant_DEFAULT_TEMPO, constant_MAX_MEASURES } from './constants.js?v=1794952178';
+import { parseTimeSigString, calc_notes_per_measure } from './musicMath.js?v=1794952178';
 import {
   noteArraysFromURLData,
   tabLineFromAbcNoteArray,
@@ -16,7 +16,7 @@ import {
   GetDefaultSnareGroove,
   GetDefaultKickGroove,
   GetDefaultTomGroove,
-} from './noteArrays.js?v=1794947311';
+} from './noteArrays.js?v=1794952178';
 
 export function getQueryVariableFromString(variable, def_value, my_string) {
   // Tolerate query strings with or without a leading '?'. window.location.search
@@ -232,7 +232,8 @@ export function getUrlStringFromGrooveData(myGrooveData, url_destination) {
     else fullURL += 'GrooveEmbed.html';
   } else if (url_destination == 'fullGrooveScribe') {
     // asking for the full GrooveScribe link
-    fullURL = 'https://www.mikeslessons.com/gscribe';
+    // Ben: open in this app (wherever it is hosted), not the original Groove Scribe
+    fullURL = new URL('../', import.meta.url).href;
   }
 
   fullURL += '?';
