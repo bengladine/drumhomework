@@ -7,9 +7,9 @@
 // re-exposes the public API on window for the inline HTML onclick handlers, and
 // builds the same dynamic DOM into placeholder containers after parse.
 
-import { GrooveWriter } from './groove_writer.js?v=1794943760';
-import { GrooveUtils } from './groove_utils.js?v=1794943760';
-import { grooves } from './grooves.js?v=1794943760';
+import { GrooveWriter } from './groove_writer.js?v=1794943767';
+import { GrooveUtils } from './groove_utils.js?v=1794943767';
+import { grooves } from './grooves.js?v=1794943767';
 
 // Inline HTML handlers (onclick="myGrooveWriter.…") and other consumers still
 // reference these as globals, so expose them on window.
