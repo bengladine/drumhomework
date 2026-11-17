@@ -599,3 +599,7 @@ body,
   .ben-bar-controls .ben-all-beats { border-right: none; padding-right: 0; flex: 1; }
   .ben-bar-controls .ben-all-beats select { width: 100%; }
 }
+@media (max-width: 720px) {
+  .ben-bar-controls .ben-all-beats { display: inline-flex; align-items: center; gap: 4px; flex: 0 0 auto; }
+  .ben-bar-controls .ben-all-beats select { width: 64px; }
+}
