@@ -637,3 +637,9 @@ body,
   #RightHandContent { top: 0; height: auto; }
   #sheetMusicDiv.ben-pinned { top: var(--ben-header-h, 48px) !important; }
 }
+@media (max-width: 720px), (max-height: 520px) {
+  #TopNav { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
+  #TopNav::-webkit-scrollbar { display: none; }
+  #permutationAnchor { display: none !important; }
+  #measureContainer { justify-content: center; }
+}
