@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1794942028';
-import { GrooveUtils } from './groove_utils.js?v=1794942028';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1794942476';
+import { GrooveUtils } from './groove_utils.js?v=1794942476';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -85,10 +85,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1794942028';
-import * as _perm from './permutations.js?v=1794942028';
-import * as _view from './viewHtml.js?v=1794942028';
-import * as _grid from './gridState.js?v=1794942028';
+} from './constants.js?v=1794942476';
+import * as _perm from './permutations.js?v=1794942476';
+import * as _view from './viewHtml.js?v=1794942476';
+import * as _grid from './gridState.js?v=1794942476';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -4337,6 +4337,10 @@ function GrooveWriter() {
       '</span>';
     if (perBeat) {
       var levelOptions = LEVEL_ORDER.map((l) => [l, LEVEL_LABELS[l]]);
+      html +=
+        '<label class="ben-beat ben-all-beats" title="Set every beat of this bar">all ' +
+        selectHTML('myGrooveWriter.setAllBeats(' + m + ', this.value)', [['', '…']].concat(levelOptions), '') +
+        '</label>';
       for (var b = 0; b < beatsInBar(m); b++) {
         html +=
           '<label class="ben-beat" title="Grid for beat ' + (b + 1) + '">' + (b + 1) + ' ' +
@@ -4448,6 +4452,61 @@ function GrooveWriter() {
       applyGridVisibility();
       return;
     }
+    commitBars(bars, newDiv);
+  };
+
+  // Ben: one grid for every beat of a bar (scope = bar index) or of the whole groove (scope = 'all')
+  var DIV_FOR_LEVEL = { 4: 4, 8: 8, 16: 16, 32: 32, '8t': 12, '16t': 24 };
+  root.setAllBeats = function (scope, level) {
+    if (!level || !LEVEL_CELLS[level]) return;
+    if (!perBeatSupported()) {
+      // x/8-based grooves have no per-beat grid: switch the whole groove like the old left bar did
+      originalChangeDivision(DIV_FOR_LEVEL[level]);
+      return;
+    }
+    var bars = readBars();
+    var cpq = cellsPerQuarter();
+    var step = cpq / LEVEL_CELLS[level]; // may be fractional when the grid must get finer
+    var dropped = 0;
+    bars.forEach(function (bar, m) {
+      if (scope !== 'all' && scope !== m) return;
+      for (var b = 0; b < bar.levels.length; b++) {
+        for (var j = 0; j < cpq; j++) {
+          var cell = b * cpq + j;
+          if (cell >= bar.notes.H.length) break;
+          if (Number.isInteger(j / step)) continue;
+          BAR_INSTRUMENTS.forEach(function (inst) {
+            if (bar.notes[inst][cell] !== '-' && bar.notes[inst][cell] !== undefined) {
+              if (inst !== 'Stickings') dropped++;
+              bar.notes[inst][cell] = '-';
+            }
+          });
+        }
+        bar.levels[b] = level;
+      }
+    });
+    if (
+      dropped &&
+      !confirm(dropped + ' note(s) do not fit on ' + LEVEL_LABELS[level] + ' and will be removed. Continue?')
+    ) {
+      applyGridVisibility();
+      return;
+    }
+    var gcd = (x, y) => (y ? gcd(y, x % y) : x);
+    var lcm = 1;
+    bars.forEach(function (bar) {
+      bar.levels.forEach(function (lv) {
+        var c = LEVEL_CELLS[lv];
+        lcm = (lcm * c) / gcd(lcm, c);
+      });
+    });
+    var newDiv = DIV_FOR_CELLS_PER_QUARTER[lcm];
+    if (!newDiv) {
+      alert('1/32 notes and triplets/sextuplets cannot be combined in one groove.');
+      applyGridVisibility();
+      return;
+    }
+    class_bar_stash = {};
     commitBars(bars, newDiv);
   };
 

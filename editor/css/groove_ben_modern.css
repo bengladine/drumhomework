@@ -371,3 +371,10 @@ body,
 .noteContextMenu > ul.list li:not(.ben-convert) + li.ben-convert { border-top: 1px solid var(--ben-line); border-radius: 0 0 8px 8px; margin-top: 4px; padding-top: 9px; }
 .noteContextMenu > ul.list li.ben-convert b { color: var(--ben-ink); font-weight: 600; }
 .noteContextMenu > ul.list li.ben-convert:hover { background: var(--ben-accent-soft); }
+
+/* ---- grid for all bars (replaces the old left bar) ---- */
+#benGridAll { display: inline-flex; align-items: center; gap: 6px; margin-left: 14px; padding-left: 14px; border-left: 1px solid #334155; }
+#benGridAllLabel { color: #94a3b8; font-weight: 600; font-size: 12px; letter-spacing: 0.06em; }
+#benGridAll select { background: #1e293b; color: #e2e8f0; border: 1px solid #334155; border-radius: 8px; padding: 4px 8px; font: inherit; font-size: 13px; cursor: pointer; }
+#benGridAll select:hover { border-color: #64748b; }
+.ben-bar-controls .ben-all-beats { font-weight: 600; color: var(--ben-ink); padding-right: 8px; border-right: 1px solid var(--ben-line); }

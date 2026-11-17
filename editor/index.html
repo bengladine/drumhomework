@@ -23,11 +23,11 @@
 
 		<link rel="stylesheet" type="text/css" href="font-awesome/4.7.0/css/font-awesome.min.css">
 		<link rel="stylesheet" type="text/css" href="css/share-button.min.css">
-	    <link rel="stylesheet" type="text/css" href="css/groove_writer_orange.css?v=1794942028">
-		<link rel="stylesheet" type="text/css" href="css/groove_display_orange.css?v=1794942028">
+	    <link rel="stylesheet" type="text/css" href="css/groove_writer_orange.css?v=1794942476">
+		<link rel="stylesheet" type="text/css" href="css/groove_display_orange.css?v=1794942476">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-		<link rel="stylesheet" type="text/css" href="css/groove_ben_modern.css?v=1794942028">
+		<link rel="stylesheet" type="text/css" href="css/groove_ben_modern.css?v=1794942476">
 		<link href='https://fonts.googleapis.com/css?family=Lato:400,700,300' rel='stylesheet' type='text/css'>
 
 		<!--   Other peoples JS libraries    -->
@@ -97,6 +97,18 @@
 						<span class="metronomeButton" id="metronome8ths" onclick="myGrooveWriter.setMetronomeFrequency(8);">8th</span>
 						<span class="metronomeButton" id="metronome16ths" onclick="myGrooveWriter.setMetronomeFrequency(16);">16th</span>
 						<span class="metronomeButton Options grooveDB_hidden" id="metronomeOptionsAnchor" onclick="myGrooveWriter.metronomeOptionsAnchorClick(event);">Options</span>
+					</span>
+					<span id="benGridAll" title="Set the grid of every beat in every bar">
+						<span id="benGridAllLabel">GRID</span>
+						<select onchange="myGrooveWriter.setAllBeats('all', this.value); this.value='';">
+							<option value="">all bars…</option>
+							<option value="4">1/4</option>
+							<option value="8">1/8</option>
+							<option value="16">1/16</option>
+							<option value="32">1/32</option>
+							<option value="8t">triplets</option>
+							<option value="16t">sextuplets</option>
+						</select>
 					</span>
 				</span>
 				<span id="benUndoRedo">
@@ -486,7 +498,7 @@
 
 
 		<!-- App entry point: ES module that boots the app and runs page-load init. -->
-		<script type="module" src="js/main.js?v=1794942028"></script>
+		<script type="module" src="js/main.js?v=1794942476"></script>
 
 
 	</div>
