@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1794945054';
-import { GrooveUtils } from './groove_utils.js?v=1794945054';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1794945104';
+import { GrooveUtils } from './groove_utils.js?v=1794945104';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -85,10 +85,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1794945054';
-import * as _perm from './permutations.js?v=1794945054';
-import * as _view from './viewHtml.js?v=1794945054';
-import * as _grid from './gridState.js?v=1794945054';
+} from './constants.js?v=1794945104';
+import * as _perm from './permutations.js?v=1794945104';
+import * as _view from './viewHtml.js?v=1794945104';
+import * as _grid from './gridState.js?v=1794945104';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -5156,6 +5156,20 @@ function GrooveWriter() {
       true
     );
   })();
+
+  // Ben: keep popup menus inside the screen (phones)
+  var originalShowContextMenu = root.myGrooveUtils.showContextMenu;
+  root.myGrooveUtils.showContextMenu = function (menu) {
+    var ret = originalShowContextMenu.apply(this, arguments);
+    if (menu && menu.getBoundingClientRect) {
+      var r = menu.getBoundingClientRect();
+      var left = Math.min(Math.max(8, r.left), window.innerWidth - r.width - 8);
+      var top = Math.min(Math.max(8, r.top), window.innerHeight - r.height - 8);
+      menu.style.left = Math.max(8, left) + 'px';
+      menu.style.top = Math.max(8, top) + 'px';
+    }
+    return ret;
+  };
 
   var originalABCHighlight = root.myGrooveUtils.highlightNoteInABCSVGFromPercentComplete;
   root.myGrooveUtils.highlightNoteInABCSVGFromPercentComplete = function (percentComplete) {
