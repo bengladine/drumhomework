@@ -603,3 +603,37 @@ body,
   .ben-bar-controls .ben-all-beats { display: inline-flex; align-items: center; gap: 4px; flex: 0 0 auto; }
   .ben-bar-controls .ben-all-beats select { width: 64px; }
 }
+
+/* ---- title/author/comment: only in the print/download dialog ---- */
+#RightHandContent #sheetMusicTextFields { display: none !important; }
+#totalPlayTime, #midiTextOutput { display: none !important; }
+#benDetailsDialog {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(15, 23, 42, 0.45);
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.ben-dlg-card { background: #fff; border-radius: 14px; padding: 18px; width: 100%; max-width: 420px; box-shadow: 0 20px 50px rgba(15, 23, 42, 0.3); font-family: 'Inter', system-ui, sans-serif; }
+.ben-dlg-title { font-weight: 700; font-size: 16px; color: var(--ben-ink); }
+.ben-dlg-sub { font-size: 13px; color: var(--ben-muted); margin: 4px 0 12px; }
+#benDetailsDialog #sheetMusicTextFields { display: flex !important; flex-direction: column; gap: 10px; padding: 0; background: none; max-width: none; text-align: left; }
+#benDetailsDialog .sheetMusicTextField { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--ben-muted); }
+#benDetailsDialog .sheetMusicTextField b { font-weight: 600; }
+#benDetailsDialog input.sheetMusicInputField { width: 100%; box-sizing: border-box; border: 1px solid var(--ben-line); border-radius: 8px; padding: 8px 10px; font: inherit; font-size: 14px; color: var(--ben-ink); }
+#benDetailsDialog #KeyButton { display: none; }
+.ben-dlg-buttons { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+.ben-dlg-buttons button { border-radius: 9px; padding: 9px 16px; font: inherit; font-size: 14px; cursor: pointer; border: 1px solid var(--ben-line); background: #fff; }
+.ben-dlg-buttons .ben-dlg-go { background: var(--ben-ink); color: #fff; border-color: var(--ben-ink); }
+
+/* ---- phones & short screens: the top bar scrolls away, only the player stays ---- */
+@media (max-width: 720px), (max-height: 520px) {
+  #GrooveWriter > .nonPrintable:first-child { display: contents; }
+  #TopNav { position: static; }
+  #midiPlayer { position: sticky; top: 0; z-index: 30; }
+  #RightHandContent { top: 0; height: auto; }
+  #sheetMusicDiv.ben-pinned { top: var(--ben-header-h, 48px) !important; }
+}

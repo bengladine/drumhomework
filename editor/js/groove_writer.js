@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1794946106';
-import { GrooveUtils } from './groove_utils.js?v=1794946106';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1794947266';
+import { GrooveUtils } from './groove_utils.js?v=1794947266';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -85,10 +85,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1794946106';
-import * as _perm from './permutations.js?v=1794946106';
-import * as _view from './viewHtml.js?v=1794946106';
-import * as _grid from './gridState.js?v=1794946106';
+} from './constants.js?v=1794947266';
+import * as _perm from './permutations.js?v=1794947266';
+import * as _view from './viewHtml.js?v=1794947266';
+import * as _grid from './gridState.js?v=1794947266';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -5068,7 +5068,9 @@ function GrooveWriter() {
   // ---------------------------------------------------------------------
   var class_sheet_pinned = true;
   try {
-    class_sheet_pinned = localStorage.getItem('benSheetPinned') !== '0';
+    var savedPin = localStorage.getItem('benSheetPinned');
+    // default: pinned on computers, not on phones (screen space)
+    class_sheet_pinned = savedPin === null ? !window.matchMedia('(max-width: 720px), (max-height: 520px)').matches : savedPin !== '0';
   } catch (e) {
     /* storage may be unavailable */
   }
@@ -5101,9 +5103,14 @@ function GrooveWriter() {
   }
 
   // the top bar + player are fixed; the page itself scrolls underneath them
+  function isSmallScreen() {
+    return window.matchMedia('(max-width: 720px), (max-height: 520px)').matches;
+  }
   function headerBottom() {
     var p = document.getElementById('midiPlayer');
-    return p ? Math.max(0, Math.round(p.getBoundingClientRect().bottom)) : 0;
+    if (!p) return 0;
+    if (isSmallScreen()) return p.offsetHeight; // only the sticky player stays on top
+    return Math.max(0, Math.round(p.getBoundingClientRect().bottom));
   }
 
   var class_followed_bar = -1;
@@ -5199,6 +5206,55 @@ function GrooveWriter() {
       menu.style.top = Math.max(8, top) + 'px';
     }
     return ret;
+  };
+
+  // ---------------------------------------------------------------------
+  // Ben: title / author / comment only matter for print & download, so they
+  // live in a small dialog that opens when you print or download.
+  // ---------------------------------------------------------------------
+  function sheetDetailsDialog(actionLabel, onGo) {
+    var fields = document.getElementById('sheetMusicTextFields');
+    var dlg = document.getElementById('benDetailsDialog');
+    if (!dlg) {
+      dlg = document.createElement('div');
+      dlg.id = 'benDetailsDialog';
+      dlg.innerHTML =
+        '<div class="ben-dlg-card"><div class="ben-dlg-title">Sheet details</div>' +
+        '<div class="ben-dlg-sub">Optional: shown on top of the printed / downloaded sheet.</div>' +
+        '<div class="ben-dlg-fields"></div>' +
+        '<div class="ben-dlg-buttons"><button class="ben-dlg-cancel">Cancel</button><button class="ben-dlg-go"></button></div></div>';
+      document.body.appendChild(dlg);
+      dlg.addEventListener('click', function (e) {
+        if (e.target === dlg) dlg.style.display = 'none';
+      });
+      dlg.querySelector('.ben-dlg-cancel').onclick = function () {
+        dlg.style.display = 'none';
+      };
+    }
+    if (fields && fields.parentNode !== dlg.querySelector('.ben-dlg-fields')) dlg.querySelector('.ben-dlg-fields').appendChild(fields);
+    var go = dlg.querySelector('.ben-dlg-go');
+    go.textContent = actionLabel;
+    go.onclick = function () {
+      dlg.style.display = 'none';
+      root.refresh_ABC();
+      setTimeout(onGo, 50);
+    };
+    dlg.style.display = 'flex';
+    var first = document.getElementById('tuneTitle');
+    if (first && window.innerWidth > 720) first.focus();
+  }
+  var originalPrintMusic = root.printMusic;
+  root.printMusic = function () {
+    var args = arguments;
+    sheetDetailsDialog('Print', function () {
+      originalPrintMusic.apply(root, args);
+    });
+  };
+  var originalDownloadAnchorClick = root.DownloadAnchorClick;
+  root.DownloadAnchorClick = function (event) {
+    sheetDetailsDialog('Download…', function () {
+      originalDownloadAnchorClick.call(root, event);
+    });
   };
 
   var originalABCHighlight = root.myGrooveUtils.highlightNoteInABCSVGFromPercentComplete;

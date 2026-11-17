@@ -10,7 +10,7 @@
 // passed in. The write side (set_*_state, which also plays sounds and refreshes)
 // stays in GrooveWriter.
 
-import { getNoteScaler } from './musicMath.js?v=1794946106';
+import { getNoteScaler } from './musicMath.js?v=1794947266';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -48,7 +48,7 @@ import {
   constant_sticking_count_on_color_rgb,
   constant_sticking_left_on_color_rgb,
   constant_sticking_right_on_color_rgb,
-} from './constants.js?v=1794946106';
+} from './constants.js?v=1794947266';
 
 export function is_snare_on(id) {
   var state = get_snare_state(id, 'ABC');
