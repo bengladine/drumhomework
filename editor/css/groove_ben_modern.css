@@ -681,3 +681,74 @@ body,
 .metronomeButton { color: #94a3b8; font-weight: 500; transition: background 0.12s ease, color 0.12s ease; }
 .metronomeButton.buttonSelected { background: #f1f5f9; color: var(--ben-chrome) !important; font-weight: 700; }
 #metronome4ths.buttonSelected, #metronome8ths.buttonSelected, #metronome16ths.buttonSelected { background: #4ade80; color: #052e16 !important; }
+
+/* =====================================================================
+   Dark mode (html.ben-dark). Only the LOOK changes: the editor reads note
+   state from inline styles, which stay untouched.
+   ===================================================================== */
+html.ben-dark {
+  --ben-bg: #0b1120;
+  --ben-surface: #151e2e;
+  --ben-ink: #e5e7eb;
+  --ben-muted: #94a3b8;
+  --ben-line: #263247;
+  --ben-accent-soft: #2a1a0c;
+  --ben-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.3);
+  color-scheme: dark;
+}
+html.ben-dark body, html.ben-dark #GrooveWriter, html.ben-dark #RightHandContent { background: var(--ben-bg); color: var(--ben-ink); }
+/* sheet music: dark paper (invert keeps hues, so colored highlights stay recognisable) */
+html.ben-dark #sheetMusicDiv .svgTarget svg { filter: invert(0.9) hue-rotate(180deg); }
+html.ben-dark #sheetMusicDiv .svgTarget { background: #151e2e; }
+html.ben-dark #sheetMusicDiv.ben-pinned { background: linear-gradient(var(--ben-bg) 85%, rgba(11, 17, 32, 0)); }
+html.ben-dark .ben-sheet-hover { background: rgba(255, 255, 255, 0.05); }
+/* bar cards */
+html.ben-dark .staff-container { background: var(--ben-surface); border-color: var(--ben-line); }
+html.ben-dark .staff-container .line-labels { background: var(--ben-surface) !important; }
+html.ben-dark .staff-container.ben-looped, html.ben-dark .staff-container.ben-looped .line-labels { background: #22180f !important; }
+html.ben-dark .line-labels, html.ben-dark .line-labels div { color: #cbd5e1; }
+html.ben-dark [class^="staff-line-"] { border-top-color: #2b3850 !important; }
+html.ben-dark .ben-bar-controls select { background-color: #0f172a; color: var(--ben-ink); border-color: var(--ben-line); }
+html.ben-dark .ben-bar-controls .ben-tools button { color: var(--ben-muted); }
+html.ben-dark .ben-bar-controls .ben-tools button:hover:not(:disabled) { background: #1e293b; color: #fff; }
+html.ben-dark .ben-bar-controls .ben-tools button.on { background: #e5e7eb; color: #0b1120; }
+/* notes: off = dim ring, on = light dot */
+html.ben-dark .snare_circle[style*="background-color: rgb(255, 255, 255)"],
+html.ben-dark .kick_circle[style*="background-color: rgb(255, 255, 255)"],
+html.ben-dark .tom_circle[style*="background-color: rgb(255, 255, 255)"] {
+  background: transparent !important;
+  border-color: #334155 !important;
+}
+html.ben-dark .snare_circle[style*="background-color: rgb(0, 0, 0)"],
+html.ben-dark .kick_circle[style*="background-color: rgb(0, 0, 0)"],
+html.ben-dark .tom_circle[style*="background-color: rgb(0, 0, 0)"] {
+  background: radial-gradient(circle at 35% 30%, #ffffff, #cbd5e1 65%) !important;
+  border-color: #e2e8f0 !important;
+}
+html.ben-dark .snare:hover .snare_circle, html.ben-dark .kick:hover .kick_circle, html.ben-dark .tom:hover .tom_circle {
+  border-color: #e5e7eb !important;
+  box-shadow: 0 0 0 3px rgba(229, 231, 235, 0.15);
+}
+html.ben-dark .hi-hat .note_part[style*="color: rgb(0, 0, 0)"],
+html.ben-dark .snare .note_part[style*="color: rgb(0, 0, 0)"],
+html.ben-dark .kick .note_part[style*="color: rgb(0, 0, 0)"],
+html.ben-dark .tom .note_part[style*="color: rgb(0, 0, 0)"] { color: #f1f5f9 !important; }
+html.ben-dark .snare .note_part[style*="color: rgb(255, 255, 255)"] { color: #0b1120 !important; }
+html.ben-dark .hi-hat .note_part[style*="color: rgb(204, 204, 204)"],
+html.ben-dark .hi-hat.ben-on-ride .hh_cross { color: #334155 !important; }
+html.ben-dark .hi-hat:hover .note_part[style*="color: rgb(204, 204, 204)"] { color: #94a3b8 !important; }
+/* bottom buttons, footer, menus, dialogs */
+html.ben-dark .pageBottomButton { background: var(--ben-surface); border-color: var(--ben-line); color: var(--ben-muted); }
+html.ben-dark .pageBottomButton:hover { color: #fff; border-color: #475569; }
+html.ben-dark #addMeasureButton { border-color: #475569; }
+html.ben-dark #benFooter .ben-coffee { background: var(--ben-surface); border-color: var(--ben-line); }
+html.ben-dark .noteContextMenu > ul.list, html.ben-dark .ben-add-bar-menu, html.ben-dark .ben-dlg-card { background: #1b2536; color: var(--ben-ink); border-color: var(--ben-line); }
+html.ben-dark .noteContextMenu > ul.list li:hover, html.ben-dark .ben-add-bar-menu button:hover { background: #263247; }
+html.ben-dark .ben-add-bar-menu button { color: var(--ben-ink); }
+html.ben-dark #benDetailsDialog input.sheetMusicInputField { background: #0f172a; color: var(--ben-ink); border-color: var(--ben-line); }
+html.ben-dark .ben-dlg-buttons button { background: #0f172a; color: var(--ben-ink); border-color: var(--ben-line); }
+html.ben-dark .ben-dlg-buttons .ben-dlg-go { background: #e5e7eb; color: #0b1120; }
+html.ben-dark #benSheetPin { background: var(--ben-surface); border-color: var(--ben-line); }
+html.ben-dark #benSheetPin.on { background: #e5e7eb; color: #0b1120; }
+/* theme toggle button */
+#benThemeToggle { font-size: 15px; }

@@ -8,6 +8,14 @@
 		<meta name="description" content="Beatsheet is a free online drum notation editor: write grooves, hear them, loop bars, mix time signatures, triplets and sextuplets, 4 toms and ride. Share, print or download.">
 
 		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<script>
+			(function () {
+				var t = null;
+				try { t = localStorage.getItem('benTheme'); } catch (e) {}
+				if (t === 'dark' || (!t && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches))
+					document.documentElement.classList.add('ben-dark');
+			})();
+		</script>
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="mobile-web-app-capable" content="yes">
 		<link rel="icon" sizes="192x192" href="images/gscribe-icon-192.png">
@@ -21,9 +29,9 @@
 
 		<link rel="stylesheet" type="text/css" href="font-awesome/4.7.0/css/font-awesome.min.css">
 		<link rel="stylesheet" type="text/css" href="css/share-button.min.css">
-	    <link rel="stylesheet" type="text/css" href="css/groove_writer_orange.css?v=1794953300">
-		<link rel="stylesheet" type="text/css" href="css/groove_display_orange.css?v=1794953300">
-		<link rel="stylesheet" type="text/css" href="css/groove_ben_modern.css?v=1794953300">
+	    <link rel="stylesheet" type="text/css" href="css/groove_writer_orange.css?v=1794954014">
+		<link rel="stylesheet" type="text/css" href="css/groove_display_orange.css?v=1794954014">
+		<link rel="stylesheet" type="text/css" href="css/groove_ben_modern.css?v=1794954014">
 
 		<!--   Other peoples JS libraries    -->
 		<!-- <script src="./MIDI.js/js/MIDI/MIDI.JS.min.js" type="text/javascript"></script> -->
@@ -109,6 +117,7 @@
 				<span id="benUndoRedo">
 					<span class="rightButtons" onclick="myGrooveWriter.undoCommand();" title="Undo (Ctrl+Z)"><i class="fa fa-undo"></i> Undo</span>
 					<span class="rightButtons" onclick="myGrooveWriter.redoCommand();" title="Redo (Ctrl+Y)"><i class="fa fa-repeat"></i> Redo</span>
+					<span class="rightButtons" id="benThemeToggle" title="Dark / light mode" onclick="(function(){var d=document.documentElement.classList.toggle('ben-dark');try{localStorage.setItem('benTheme', d?'dark':'light')}catch(e){}})();"><i class="fa fa-moon-o"></i></span>
 				</span>
 				<span id="upperRight">
 					<span class="rightButtons grooveDB_hidden" id="permutationAnchor" onclick="myGrooveWriter.permutationAnchorClick(event);"><i class="fa fa-bars"></i> Permutations</span>
@@ -499,7 +508,7 @@
 
 
 		<!-- App entry point: ES module that boots the app and runs page-load init. -->
-		<script type="module" src="js/main.js?v=1794953300"></script>
+		<script type="module" src="js/main.js?v=1794954014"></script>
 
 
 	</div>
