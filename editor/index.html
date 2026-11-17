@@ -23,11 +23,11 @@
 
 		<link rel="stylesheet" type="text/css" href="font-awesome/4.7.0/css/font-awesome.min.css">
 		<link rel="stylesheet" type="text/css" href="css/share-button.min.css">
-	    <link rel="stylesheet" type="text/css" href="css/groove_writer_orange.css?v=1794941315">
-		<link rel="stylesheet" type="text/css" href="css/groove_display_orange.css?v=1794941315">
+	    <link rel="stylesheet" type="text/css" href="css/groove_writer_orange.css?v=1794942021">
+		<link rel="stylesheet" type="text/css" href="css/groove_display_orange.css?v=1794942021">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-		<link rel="stylesheet" type="text/css" href="css/groove_ben_modern.css?v=1794941315">
+		<link rel="stylesheet" type="text/css" href="css/groove_ben_modern.css?v=1794942021">
 		<link href='https://fonts.googleapis.com/css?family=Lato:400,700,300' rel='stylesheet' type='text/css'>
 
 		<!--   Other peoples JS libraries    -->
@@ -98,6 +98,10 @@
 						<span class="metronomeButton" id="metronome16ths" onclick="myGrooveWriter.setMetronomeFrequency(16);">16th</span>
 						<span class="metronomeButton Options grooveDB_hidden" id="metronomeOptionsAnchor" onclick="myGrooveWriter.metronomeOptionsAnchorClick(event);">Options</span>
 					</span>
+				</span>
+				<span id="benUndoRedo">
+					<span class="rightButtons" onclick="myGrooveWriter.undoCommand();" title="Undo (Ctrl+Z)"><i class="fa fa-undo"></i> Undo</span>
+					<span class="rightButtons" onclick="myGrooveWriter.redoCommand();" title="Redo (Ctrl+Y)"><i class="fa fa-repeat"></i> Redo</span>
 				</span>
 				<span id="upperRight">
 					<span class="rightButtons grooveDB_hidden" id="permutationAnchor" onclick="myGrooveWriter.permutationAnchorClick(event);"><i class="fa fa-bars"></i> Permutations</span>
@@ -306,6 +310,12 @@
 			<ul id="hhLabelContextMenu" class="list">
 				<li onclick='myGrooveWriter.noteLabelPopupClick("hh", "all_off");'>all Hi-hats <b>Off</b></li>
 				<li onclick='myGrooveWriter.noteLabelPopupClick("hh", "all_on");'>all Hi-hats <b>On</b></li>
+				<li class="ben-convert" onclick='myGrooveWriter.noteLabelPopupClick("hh", "convert_normal");'>→ convert to <b>Normal</b></li>
+				<li class="ben-convert" onclick='myGrooveWriter.noteLabelPopupClick("hh", "convert_accent");'>→ convert to <b>Accent</b></li>
+				<li class="ben-convert" onclick='myGrooveWriter.noteLabelPopupClick("hh", "convert_open");'>→ convert to <b>Open</b></li>
+				<li class="ben-convert" onclick='myGrooveWriter.noteLabelPopupClick("hh", "convert_ride");'>→ convert to <b>Ride</b></li>
+				<li class="ben-convert" onclick='myGrooveWriter.noteLabelPopupClick("hh", "convert_ride_bell");'>→ convert to <b>Ride bell</b></li>
+				<li class="ben-convert" onclick='myGrooveWriter.noteLabelPopupClick("hh", "convert_crash");'>→ convert to <b>Crash</b></li>
 				<li onclick='myGrooveWriter.noteLabelPopupClick("hh", "downbeats");'>downbeats</li>
 				<li onclick='myGrooveWriter.noteLabelPopupClick("hh", "upbeats");'>upbeats</li>
 				<li id='mute_hh_menu_item' onclick='myGrooveWriter.noteLabelPopupClick("hh", "mute");'>mute HH sound</li>
@@ -346,6 +356,13 @@
 				<li onclick='myGrooveWriter.noteLabelPopupClick("snare", "all_on");'>all <b>Accented</b></li>
 				<li onclick='myGrooveWriter.noteLabelPopupClick("snare", "all_on_normal");'>all <b>Normal</b></li>
 				<li onclick='myGrooveWriter.noteLabelPopupClick("snare", "all_on_ghost");'>all <b>Ghosts</b></li>
+				<li class="ben-convert" onclick='myGrooveWriter.noteLabelPopupClick("snare", "convert_normal");'>→ convert to <b>Normal</b></li>
+				<li class="ben-convert" onclick='myGrooveWriter.noteLabelPopupClick("snare", "convert_accent");'>→ convert to <b>Accent</b></li>
+				<li class="ben-convert" onclick='myGrooveWriter.noteLabelPopupClick("snare", "convert_ghost");'>→ convert to <b>Ghost</b></li>
+				<li class="ben-convert" onclick='myGrooveWriter.noteLabelPopupClick("snare", "convert_flam");'>→ convert to <b>Flam</b></li>
+				<li class="ben-convert" onclick='myGrooveWriter.noteLabelPopupClick("snare", "convert_drag");'>→ convert to <b>Drag</b></li>
+				<li class="ben-convert" onclick='myGrooveWriter.noteLabelPopupClick("snare", "convert_xstick");'>→ convert to <b>Cross-stick</b></li>
+				<li class="ben-convert" onclick='myGrooveWriter.noteLabelPopupClick("snare", "convert_buzz");'>→ convert to <b>Buzz</b></li>
 				<li id='mute_snare_menu_item' onclick='myGrooveWriter.noteLabelPopupClick("snare", "mute");'>mute snare sound</li>
 				<li onclick='myGrooveWriter.noteLabelPopupClick("snare", "cancel");'>cancel</li>
 			</ul>
@@ -354,6 +371,9 @@
 			<ul id="kickLabelContextMenu" class="list">
 				<li onclick='myGrooveWriter.noteLabelPopupClick("kick", "all_off");'>all Kicks <b>Off</b></li>
 				<li onclick='myGrooveWriter.noteLabelPopupClick("kick", "all_on");'>all Kicks <b>On</b></li>
+				<li class="ben-convert" onclick='myGrooveWriter.noteLabelPopupClick("kick", "convert_normal");'>→ convert to <b>Kick</b></li>
+				<li class="ben-convert" onclick='myGrooveWriter.noteLabelPopupClick("kick", "convert_splash");'>→ convert to <b>HH foot</b></li>
+				<li class="ben-convert" onclick='myGrooveWriter.noteLabelPopupClick("kick", "convert_kick_and_splash");'>→ convert to <b>Kick + HH foot</b></li>
 				<li onclick='myGrooveWriter.noteLabelPopupClick("kick", "hh_foot_nums_on");'>HH foot #'s <b>On</b></li>
 				<li onclick='myGrooveWriter.noteLabelPopupClick("kick", "hh_foot_ands_on");'>HH foot &'s <b>On</b></li>
 				<li id='mute_kick_menu_item' onclick='myGrooveWriter.noteLabelPopupClick("kick", "mute");'>mute kick sound</li>
@@ -466,7 +486,7 @@
 
 
 		<!-- App entry point: ES module that boots the app and runs page-load init. -->
-		<script type="module" src="js/main.js?v=1794941315"></script>
+		<script type="module" src="js/main.js?v=1794942021"></script>
 
 
 	</div>

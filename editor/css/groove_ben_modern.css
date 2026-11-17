@@ -325,3 +325,49 @@ body,
 .ben-ride-container { margin-bottom: 0; }
 #showHideRideButton.ClickToHide { color: var(--ben-accent); border-color: var(--ben-accent); }
 .hi-hat.ben-on-ride .hh_cross { visibility: visible; color: rgb(204, 204, 204) !important; }
+
+/* ---- no left nav: per-bar/per-beat controls replace it ---- */
+#LeftHandNav { display: none !important; }
+#TopNav { width: 100%; margin-left: 0; display: flex; align-items: center; gap: 4px; height: 52px; box-sizing: border-box; padding: 0 12px; }
+#midiPlayer { left: 0; width: 100%; top: 52px; }
+#RightHandContent { left: 0; width: 100%; top: 100px; height: calc(100% - 100px); }
+#GrooveWriter { min-width: 0; }
+#logoTextUpperLeft { padding: 0 8px 0 0; display: flex; align-items: center; }
+#upperLeft, #upperRight { margin-top: 0; display: flex; align-items: center; }
+#benUndoRedo { margin-left: auto; display: flex; align-items: center; border-right: 1px solid #334155; padding-right: 8px; }
+.rightButtons {
+  padding: 6px 10px;
+  margin: 0 2px;
+  border-radius: 8px;
+  color: #cbd5e1;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 0.12s ease;
+}
+.rightButtons:hover, .metronomeButton:hover { background: #1e293b; transform: none; font-weight: 500; color: #fff; }
+.metronomeButton { border-radius: 8px; padding: 4px 8px; }
+#metronomeLabel { color: #94a3b8; font-weight: 600; font-size: 12px; letter-spacing: 0.06em; }
+
+/* ---- context menus ---- */
+.noteContextMenu > ul.list {
+  width: auto;
+  min-width: 170px;
+  background: #fff;
+  color: var(--ben-ink);
+  border: 1px solid var(--ben-line);
+  border-radius: 12px;
+  padding: 6px;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18);
+  font-size: 13px;
+}
+.noteContextMenu > ul.list li {
+  padding: 7px 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.noteContextMenu > ul.list li:hover { background: #f1f5f9; }
+.noteContextMenu > ul.list li.ben-convert { color: var(--ben-muted); }
+.noteContextMenu > ul.list li.ben-convert:first-of-type { border-top: 1px solid var(--ben-line); border-radius: 0 0 8px 8px; margin-top: 4px; padding-top: 9px; }
+.noteContextMenu > ul.list li.ben-convert b { color: var(--ben-ink); font-weight: 600; }
+.noteContextMenu > ul.list li.ben-convert:hover { background: var(--ben-accent-soft); }

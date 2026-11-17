@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1794941315';
-import { GrooveUtils } from './groove_utils.js?v=1794941315';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1794942021';
+import { GrooveUtils } from './groove_utils.js?v=1794942021';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -85,10 +85,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1794941315';
-import * as _perm from './permutations.js?v=1794941315';
-import * as _view from './viewHtml.js?v=1794941315';
-import * as _grid from './gridState.js?v=1794941315';
+} from './constants.js?v=1794942021';
+import * as _perm from './permutations.js?v=1794942021';
+import * as _view from './viewHtml.js?v=1794942021';
+import * as _grid from './gridState.js?v=1794942021';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -1183,6 +1183,23 @@ function GrooveWriter() {
     return false;
   };
 
+  function benNoteIsOn(instrument, id) {
+    switch (instrument) {
+      case 'hh':
+        return get_hh_state(id, 'ABC') !== false;
+      case 'snare':
+        return get_snare_state(id, 'ABC') !== false;
+      case 'kick':
+        return get_kick_state(id, 'ABC') !== false;
+      case 'tom1':
+      case 'tom2':
+      case 'tom3':
+      case 'tom4':
+        return get_tom_state(id, parseInt(instrument.slice(3), 10), 'ABC') !== false;
+    }
+    return false;
+  }
+
   root.noteLabelPopupClick = function (instrument, action) {
     var setFunction = false;
 
@@ -1291,6 +1308,9 @@ function GrooveWriter() {
               : 'off',
           i == startIndex + num_notes_per_count / 2
         );
+      } else if (action.indexOf('convert_') === 0) {
+        // Ben: change every note that is on into another kind (e.g. all accents -> normal)
+        if (benNoteIsOn(instrument, i)) setFunction(i, action.slice(8), false);
       } else if (action == 'all_on') {
         setFunction(i, 'normal', i == startIndex);
       } else if (action == 'cancel') {
@@ -1298,6 +1318,13 @@ function GrooveWriter() {
       } else {
         console.log('Bad IF case in noteLabelPopupClick');
       }
+    }
+
+    // Ben: never leave notes in cells the per-beat grid hides (they would play but not show)
+    var cellPrefix = { stickings: 'sticking', hh: 'hi-hat', tom1: 'tom1-', tom2: 'tom2-', tom3: 'tom3-', tom4: 'tom4-', snare: 'snare', kick: 'kick' }[instrument];
+    for (var h = startIndex; h - startIndex < class_notes_per_measure; h++) {
+      var cellEl = document.getElementById(cellPrefix + h);
+      if (cellEl && cellEl.style.display == 'none') setFunction(h, 'off', false);
     }
 
     class_measure_for_note_label_click = 0; // reset
