@@ -451,13 +451,13 @@ body,
 #sheetMusicDiv { position: relative; }
 #sheetMusicDiv.ben-pinned {
   position: sticky;
-  top: 0;
+  top: var(--ben-header-h, 100px);
   z-index: 20;
   background: linear-gradient(var(--ben-bg) 85%, rgba(243, 244, 246, 0));
   padding-bottom: 10px;
 }
-#sheetMusicDiv.ben-pinned .svgTarget { max-height: 38vh; overflow-y: auto; scrollbar-width: thin; }
-.staff-container { scroll-margin-top: calc(var(--ben-sheet-h, 0px) + 10px); scroll-margin-bottom: 10px; }
+#sheetMusicDiv.ben-pinned .svgTarget { max-height: 34vh; overflow-y: auto; scrollbar-width: thin; }
+.staff-container { scroll-margin-top: calc(var(--ben-header-h, 100px) + var(--ben-sheet-h, 0px) + 10px); scroll-margin-bottom: 10px; }
 #benSheetPin {
   position: absolute;
   top: 20px;
