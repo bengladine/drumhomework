@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795021975';
-import { GrooveUtils } from './groove_utils.js?v=1795021975';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795025489';
+import { GrooveUtils } from './groove_utils.js?v=1795025489';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -85,10 +85,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1795021975';
-import * as _perm from './permutations.js?v=1795021975';
-import * as _view from './viewHtml.js?v=1795021975';
-import * as _grid from './gridState.js?v=1795021975';
+} from './constants.js?v=1795025489';
+import * as _perm from './permutations.js?v=1795025489';
+import * as _view from './viewHtml.js?v=1795025489';
+import * as _grid from './gridState.js?v=1795025489';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -4498,26 +4498,39 @@ function GrooveWriter() {
     commitBars(bars, div);
   };
 
+  // Ben: clear the notes of one beat that do not sit on the given grid level
+  function dropBeatNotes(bar, b, level, cpq) {
+    var step = cpq / LEVEL_CELLS[level];
+    var dropped = 0;
+    for (var j = 0; j < cpq; j++) {
+      var cell = b * cpq + j;
+      if (cell >= bar.notes.H.length) break;
+      if (Number.isInteger(j / step)) continue;
+      BAR_INSTRUMENTS.forEach(function (inst) {
+        if (bar.notes[inst][cell] !== '-' && bar.notes[inst][cell] !== undefined) {
+          dropped++;
+          bar.notes[inst][cell] = '-';
+        }
+      });
+    }
+    return dropped;
+  }
+
   root.setBeatResolution = function (m, b, level) {
     var cur = beatLevel(m, b);
     if (level == cur) return;
     var offs = beatNoteOffsets(m, b);
-    // every note already in this beat must land on the new grid
     var cpq = cellsPerQuarter();
-    if (!offs.every((o) => Number.isInteger((o * LEVEL_CELLS[level]) / cpq))) {
-      alert(
-        'Beat ' + (b + 1) + ' has notes that do not fit on ' + LEVEL_LABELS[level] + '. Remove them first.'
-      );
-      applyGridVisibility();
-      return;
-    }
-    if (levelFits(level)) {
+    var allFit = offs.every((o) => Number.isInteger((o * LEVEL_CELLS[level]) / cpq));
+    if (allFit && levelFits(level)) {
       class_beat_res[m + '-' + b] = level;
       applyGridVisibility();
       return;
     }
     // a different base grid is needed for the whole groove
+    // notes that do not fit the new grid are removed (Undo brings them back)
     var bars = readBars();
+    dropBeatNotes(bars[m], b, level, cpq);
     bars[m].levels[b] = level;
     var stuck = relaxGridConflicts(bars, level);
     var lcm = 1;
@@ -4562,8 +4575,19 @@ function GrooveWriter() {
           var step = cpq / LEVEL_CELLS[l];
           return Number.isInteger(step) && offs.every((o) => o % step === 0);
         });
-        if (to) bar.levels[b] = to;
-        else if (!stuck) stuck = 'bar ' + (m + 1) + ', beat ' + (b + 1);
+        if (!to) {
+          // its notes need the old grid: move it to 1/16 anyway and drop what does not fit
+          to = '16';
+          for (var j2 = 0; j2 < cpq; j2++) {
+            var cell2 = b * cpq + j2;
+            if (cell2 >= bar.notes.H.length) break;
+            if (Number.isInteger(j2 / (cpq / LEVEL_CELLS['16']))) continue;
+            BAR_INSTRUMENTS.forEach(function (inst) {
+              if (bar.notes[inst][cell2] !== undefined) bar.notes[inst][cell2] = '-';
+            });
+          }
+        }
+        bar.levels[b] = to;
       });
     });
     return stuck;
@@ -4606,13 +4630,6 @@ function GrooveWriter() {
         bar.levels[b] = level;
       }
     });
-    if (
-      dropped &&
-      !confirm(dropped + ' note(s) do not fit on ' + LEVEL_LABELS[level] + ' and will be removed. Continue?')
-    ) {
-      applyGridVisibility();
-      return;
-    }
     var stuck = relaxGridConflicts(bars, level);
     var gcd = (x, y) => (y ? gcd(y, x % y) : x);
     var lcm = 1;
