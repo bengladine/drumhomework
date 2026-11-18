@@ -16,7 +16,10 @@
 					document.documentElement.classList.add('ben-dark');
 				var g = null;
 				try { g = localStorage.getItem('benGridStyle'); } catch (e) {}
-				if (g !== 'classic') document.documentElement.classList.add('ben-pads');
+				if (g === 'pads') document.documentElement.classList.add('ben-pads');
+				var c = null;
+				try { c = localStorage.getItem('benColour'); } catch (e) {}
+				if (c === 'purple') document.documentElement.classList.add('ben-purple');
 			})();
 		</script>
 		<meta name="apple-mobile-web-app-capable" content="yes">
@@ -33,9 +36,9 @@
 
 		<link rel="stylesheet" type="text/css" href="font-awesome/4.7.0/css/font-awesome.min.css">
 		<link rel="stylesheet" type="text/css" href="css/share-button.min.css">
-	    <link rel="stylesheet" type="text/css" href="css/groove_writer_orange.css?v=1795003583">
-		<link rel="stylesheet" type="text/css" href="css/groove_display_orange.css?v=1795003583">
-		<link rel="stylesheet" type="text/css" href="css/groove_ben_modern.css?v=1795003583">
+	    <link rel="stylesheet" type="text/css" href="css/groove_writer_orange.css?v=1795004087">
+		<link rel="stylesheet" type="text/css" href="css/groove_display_orange.css?v=1795004087">
+		<link rel="stylesheet" type="text/css" href="css/groove_ben_modern.css?v=1795004087">
 
 		<!--   Other peoples JS libraries    -->
 		<!-- <script src="./MIDI.js/js/MIDI/MIDI.JS.min.js" type="text/javascript"></script> -->
@@ -95,7 +98,7 @@
 
 			</div>
 			<div id="TopNav" class="fullWidthEle">
-				<span id="logoTextUpperLeft"><span class="ben-logo">Beat<b>sheet</b></span></span>
+				<span id="logoTextUpperLeft"><span class="ben-logo"><img class="ben-logo-icon" src="images/beatsheet-logo-64.png" alt="">Beat<b>sheet</b></span></span>
 				<span id="upperLeft">
 					<span id="metronomeContainer">
 						<span id="metronomeLabel">METRONOME:</span>
@@ -123,7 +126,7 @@
 				<span id="benUndoRedo">
 					<span class="rightButtons" onclick="myGrooveWriter.undoCommand();" title="Undo (Ctrl+Z)"><i class="fa fa-undo"></i> Undo</span>
 					<span class="rightButtons" onclick="myGrooveWriter.redoCommand();" title="Redo (Ctrl+Y)"><i class="fa fa-repeat"></i> Redo</span>
-					<span class="rightButtons" id="benGridStyleToggle" title="Grid style: pads or classic circles" onclick="(function(){var p=document.documentElement.classList.toggle('ben-pads');try{localStorage.setItem('benGridStyle', p?'pads':'classic')}catch(e){}})();"><i class="fa fa-th-large"></i></span>
+					<span class="rightButtons" id="benLookToggle" title="Look: grid style and colour" onclick="benLookMenu(event)"><i class="fa fa-paint-brush"></i></span>
 					<span class="rightButtons" id="benThemeToggle" title="Dark / light mode" onclick="(function(){var d=document.documentElement.classList.toggle('ben-dark');try{localStorage.setItem('benTheme', d?'dark':'light')}catch(e){}})();"><i class="fa fa-moon-o"></i></span>
 				</span>
 				<span id="upperRight">
@@ -172,7 +175,7 @@
 				<div id="bottomButtonRow" class="fullWidthEle">
 					<span class="pageBottomButton edit-block" id="clearAllNotesButton" onclick="event.preventDefault(); myGrooveWriter.clearAllNotes();"><span class="bottomButtonIcon"><i class="fa fa-trash fa-2x"></i></span><span class="bottomButtonLabel">CLEAR ALL</span></span>
 					<span class="pageBottomButton edit-block" id="showHideTomsButton" onclick="event.preventDefault(); myGrooveWriter.showHideToms(false, false);"><span class="bottomButtonIcon"><i class="fa fa-circle-o"></i></span><span class="bottomButtonLabel">TOMS</span></span>
-					<span class="pageBottomButton edit-block" id="showHideRideButton" onclick="event.preventDefault(); myGrooveWriter.showHideRide();"><span class="bottomButtonIcon"><i class="fa fa-dot-circle-o fa-2x"></i></span><span class="bottomButtonLabel">RIDE</span></span>
+					<span class="pageBottomButton edit-block" id="showHideRideButton" onclick="event.preventDefault(); myGrooveWriter.showHideRide();"><span class="bottomButtonIcon"><i class="fa fa-dot-circle-o fa-2x"></i></span><span class="bottomButtonLabel">CYMBALS</span></span>
 					<span class=" grooveDB_hidden pageBottomButton" id="stickingsButton" onclick="myGrooveWriter.stickingsAnchorClick();"><span class="bottomButtonIcon"><i class="fa fa-hand-paper-o"></i></span><span class="bottomButtonLabel">STICKINGS</span></span>
 					<span class=" grooveDB_hidden pageBottomButton" id="downloadButton" onclick="myGrooveWriter.DownloadAnchorClick();"><span class="bottomButtonIcon"><i class="fa fa-download fa-2x"></i></span><span class="bottomButtonLabel">DOWNLOAD</span></span>
 					<span class=" grooveDB_hidden pageBottomButton" id="printButton" onclick="myGrooveWriter.printMusic();"><span class="bottomButtonIcon"><i class="fa fa-print fa-2x"></i></span><span class="bottomButtonLabel">PRINT</span></span>
@@ -515,10 +518,50 @@
 
 
 		<!-- App entry point: ES module that boots the app and runs page-load init. -->
-		<script type="module" src="js/main.js?v=1795003583"></script>
+		<script type="module" src="js/main.js?v=1795004087"></script>
 
 
 	</div>
 
-    </body>
+    <script>
+			function benLookMenu(ev) {
+				ev.stopPropagation();
+				var old = document.getElementById('benLookMenu');
+				if (old) { old.remove(); return; }
+				var de = document.documentElement;
+				var m = document.createElement('div');
+				m.id = 'benLookMenu';
+				function group(title, key, cls, opts) {
+					var h = document.createElement('div'); h.className = 'ben-look-h'; h.textContent = title; m.appendChild(h);
+					var row = document.createElement('div'); row.className = 'ben-look-row'; m.appendChild(row);
+					opts.forEach(function (o) {
+						var b = document.createElement('button');
+						b.innerHTML = (o[2] ? '<i class="ben-swatch" style="background:' + o[2] + '"></i>' : '') + o[1];
+						var on = function () { return o[0] === 'on' ? de.classList.contains(cls) : !de.classList.contains(cls); };
+						b.className = on() ? 'on' : '';
+						b.onclick = function () {
+							de.classList.toggle(cls, o[0] === 'on');
+							try { localStorage.setItem(key, o[3]); } catch (e) {}
+							row.querySelectorAll('button').forEach(function (x) { x.className = ''; });
+							b.className = 'on';
+							window.dispatchEvent(new Event('resize'));
+						};
+						row.appendChild(b);
+					});
+				}
+				group('Grid', 'benGridStyle', 'ben-pads', [['off', 'Classic', '', 'classic'], ['on', 'Pads', '', 'pads']]);
+				group('Colour', 'benColour', 'ben-purple', [['off', 'Blue', '#2563eb', 'blue'], ['on', 'Purple', '#7c3aed', 'purple']]);
+				var r = ev.currentTarget.getBoundingClientRect();
+				m.style.top = (r.bottom + 6) + 'px';
+				m.style.right = Math.max(8, window.innerWidth - r.right) + 'px';
+				document.body.appendChild(m);
+				setTimeout(function () {
+					document.addEventListener('pointerdown', function close(e) {
+						if (!m.contains(e.target)) { m.remove(); document.removeEventListener('pointerdown', close, true); }
+					}, true);
+				}, 0);
+			}
+		</script>
+	</body>
+
 </html>

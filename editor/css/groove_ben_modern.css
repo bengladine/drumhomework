@@ -1152,3 +1152,55 @@ html.ben-pads .notes-row-container .snare .snare_ghost.note_part[style] { color:
 html.ben-pads .notes-row-container .snare:hover .snare_circle.note_part[style*="255, 255, 255"],
 html.ben-pads .notes-row-container .kick:hover .kick_circle.note_part[style*="255, 255, 255"],
 html.ben-pads .notes-row-container .tom:hover .tom_circle.note_part[style*="255, 255, 255"] { background: var(--pad-off-hover) !important; }
+
+/* cymbal rows (crash + ride): second label sits like the hi-hat label */
+.ben-ride-on .ben-ride-label + .ben-ride-label { margin-top: 18px; }
+
+/* sheet tools: fixed widths so the two selects never overlap */
+#benBarsPerLine { width: 100px; }
+#benSheetLayout { right: 160px; width: 140px; }
+@media (min-width: 721px) { html.ben-split #benSheetLayout { right: 124px; } }
+
+/* pads: crash colour, flams/buzz/xstick/drag fill the snare pad, hi-hat foot */
+:root { --pad-crash: #f59e0b; }
+html.ben-dark { --pad-crash: #fbbf24; }
+html.ben-pads .ben-cym-crash .hi-hat:has(.note_part[style*="color: rgb(0, 0, 0)"]) .hh_cross { background: var(--pad-crash); }
+html.ben-pads .ben-label-crash { color: var(--pad-crash); }
+html.ben-pads .notes-row-container .snare:has(.snare_flam[style*="color: rgb(0, 0, 0)"], .snare_buzz[style*="color: rgb(0, 0, 0)"], .snare_xstick[style*="color: rgb(0, 0, 0)"], .snare_drag[style*="color: rgb(0, 0, 0)"]) .snare_circle.note_part[style] { background: var(--pad-sn) !important; }
+html.ben-pads .snare .snare_flam[style*="color: rgb(0, 0, 0)"], html.ben-pads .snare .snare_buzz[style*="color: rgb(0, 0, 0)"],
+html.ben-pads .snare .snare_xstick[style*="color: rgb(0, 0, 0)"], html.ben-pads .snare .snare_drag[style*="color: rgb(0, 0, 0)"] {
+  left: 2px !important; top: 0 !important; width: 22px !important; height: 22px !important; display: flex !important;
+  align-items: center; justify-content: center; font-size: 13px !important; line-height: 1 !important; z-index: 2; color: #fff !important;
+}
+html.ben-pads .kick .kick_splash[style*="color: rgb(0, 0, 0)"] { color: var(--pad-hh) !important; }
+
+/* look menu (grid style + colour) */
+#benLookMenu { position: fixed; z-index: 1000; background: var(--ben-surface); color: var(--ben-ink); border: 1px solid var(--ben-line);
+  border-radius: 12px; padding: 10px 12px; box-shadow: 0 10px 30px rgba(15, 23, 42, 0.22); min-width: 200px; animation: ben-menu-in 0.16s var(--ben-ease); }
+#benLookMenu .ben-look-h { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ben-muted); margin: 4px 0 6px; }
+#benLookMenu .ben-look-row { display: flex; gap: 6px; margin-bottom: 8px; }
+#benLookMenu button { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font: inherit; font-size: 13px;
+  padding: 7px 10px; border-radius: 8px; border: 1px solid var(--ben-line); background: transparent; color: var(--ben-ink); cursor: pointer; transition: all 0.15s ease; }
+#benLookMenu button:hover { border-color: var(--ben-brand); }
+#benLookMenu button.on { background: var(--ben-brand); border-color: var(--ben-brand); color: var(--ben-brand-ink); }
+#benLookMenu .ben-swatch { width: 12px; height: 12px; border-radius: 4px; display: inline-block; }
+
+/* =====================================================================
+   Purple colour scheme (html.ben-purple)
+   ===================================================================== */
+html.ben-purple { --ben-brand: #6d28d9; --ben-brand-soft: #f5f3ff; --ben-brand-ink: #ffffff;
+  --pad-hh: #a78bfa; --pad-sn: #7c3aed; --pad-kick: #5b21b6; --pad-tom: #c084fc; --pad-off: #f1eefa; --pad-off-hover: #e4ddf6; }
+html.ben-purple.ben-dark { --ben-brand: #a78bfa; --ben-brand-soft: #2e1065; --ben-brand-ink: #120d22;
+  --ben-bg: #0d0a18; --ben-surface: #17122a; --ben-line: #2c2447; --ben-chrome: #0d0a18; --ben-staff: #2c2447;
+  --pad-hh: #c4b5fd; --pad-sn: #a78bfa; --pad-kick: #8b5cf6; --pad-tom: #e9d5ff; --pad-off: #221a3a; --pad-off-hover: #2f2550; }
+html.ben-purple.ben-dark #TopNav, html.ben-purple.ben-dark #sheetMusicDiv .svgTarget { background: #120d22; }
+html.ben-purple.ben-dark #sheetMusicDiv.ben-pinned { background: linear-gradient(var(--ben-bg) 85%, rgba(13, 10, 24, 0)); }
+html.ben-purple.ben-dark .noteContextMenu > ul.list, html.ben-purple.ben-dark .ben-add-bar-menu, html.ben-purple.ben-dark .ben-dlg-card { background: #1d1733; }
+html.ben-purple.ben-dark .ben-bar-controls select, html.ben-purple.ben-dark #benGridAll select { background-color: #120d22; }
+html.ben-purple:not(.ben-dark) .ben-logo b, html.ben-purple .ben-logo b { color: var(--ben-brand); }
+html.ben-purple:not(.ben-dark) #metronome4ths.buttonSelected, html.ben-purple:not(.ben-dark) #metronome8ths.buttonSelected,
+html.ben-purple:not(.ben-dark) #metronome16ths.buttonSelected, html.ben-purple:not(.ben-dark) #metronomeTrip.buttonSelected,
+html.ben-purple:not(.ben-dark) #metronomeSext.buttonSelected { background: var(--ben-brand); }
+.ben-logo { display: inline-flex; align-items: center; }
+.ben-logo-icon { width: 26px; height: 26px; border-radius: 7px; margin-right: 8px; }
+@media (max-width: 720px) { .ben-logo-icon { width: 22px; height: 22px; margin-right: 6px; } }

@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795003583';
-import { GrooveUtils } from './groove_utils.js?v=1795003583';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795004087';
+import { GrooveUtils } from './groove_utils.js?v=1795004087';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -85,10 +85,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1795003583';
-import * as _perm from './permutations.js?v=1795003583';
-import * as _view from './viewHtml.js?v=1795003583';
-import * as _grid from './gridState.js?v=1795003583';
+} from './constants.js?v=1795004087';
+import * as _perm from './permutations.js?v=1795004087';
+import * as _view from './viewHtml.js?v=1795004087';
+import * as _grid from './gridState.js?v=1795004087';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -5018,13 +5018,26 @@ function GrooveWriter() {
   var class_ride_visible = null; // null = auto (show when the groove has ride notes)
   var RIDE_GREY = 'rgb(204, 204, 204)';
 
+  // cymbal rows above the hi-hat: crash and ride. Each is a view on the hi-hat lane.
+  var CYM_ROWS = [
+    { key: 'crash', prefix: 'benC_', label: 'Crash', states: ['c'], on: 'crash', glyph: 'hh_crash',
+      menu: [['crash', 'Crash'], ['stacker', 'Stacker / china'], ['off', 'Off']], extra: { s: 'stacker' } },
+    { key: 'ride', prefix: 'benR_', label: 'Ride', states: ['r', 'b'], on: 'ride', glyph: 'hh_ride',
+      menu: [['ride', 'Ride'], ['ride_bell', 'Ride bell'], ['off', 'Off']], extra: { b: 'ride_bell' } },
+  ];
+  // stacker (x) is shown in the crash row as well
+  CYM_ROWS[0].states.push('s');
+  function cymRowFor(st) {
+    for (var i = 0; i < CYM_ROWS.length; i++) if (CYM_ROWS[i].states.indexOf(st) >= 0) return CYM_ROWS[i];
+    return null;
+  }
+
   function grooveHasRide() {
     var n = class_number_of_measures * class_notes_per_measure;
     for (var i = 0; i < n; i++) {
       var el = document.getElementById('hi-hat' + i);
       if (!el) continue;
-      var st = get_hh_state(i, 'URL');
-      if (st === 'r' || st === 'b') return true;
+      if (cymRowFor(get_hh_state(i, 'URL'))) return true;
     }
     return false;
   }
@@ -5038,7 +5051,7 @@ function GrooveWriter() {
     updateSheetMusic();
   }
 
-  function rideMenu(event, id) {
+  function rideMenu(event, id, cym) {
     var old = document.getElementById('benRideMenu');
     if (old) old.remove();
     var menu = document.createElement('div');
@@ -5046,11 +5059,7 @@ function GrooveWriter() {
     menu.className = 'ben-add-bar-menu';
     menu.style.left = event.clientX + 'px';
     menu.style.top = event.clientY + 'px';
-    [
-      ['ride', 'Ride'],
-      ['ride_bell', 'Ride bell'],
-      ['off', 'Off'],
-    ].forEach(function (o) {
+    cym.menu.forEach(function (o) {
       var b = document.createElement('button');
       b.textContent = o[1];
       b.onclick = function () {
@@ -5070,6 +5079,30 @@ function GrooveWriter() {
     }, 0);
   }
 
+  function buildCymRow(container, hhRow, cym) {
+    var row = hhRow.cloneNode(true);
+    row.className = 'hi-hat-container ben-ride-container ben-cym-' + cym.key;
+    row.querySelectorAll('[id]').forEach(function (el) {
+      el.id = cym.prefix + el.id;
+      el.removeAttribute('onclick');
+      el.removeAttribute('oncontextmenu');
+      el.removeAttribute('onmouseenter');
+    });
+    row.addEventListener('click', function (e) {
+      var cell = e.target.closest('.hi-hat');
+      if (!cell) return;
+      var id = parseInt(cell.id.replace(cym.prefix + 'hi-hat', ''), 10);
+      setRideSlot(id, cymRowFor(get_hh_state(id, 'URL')) === cym ? 'off' : cym.on);
+    });
+    row.addEventListener('contextmenu', function (e) {
+      var cell = e.target.closest('.hi-hat');
+      if (!cell) return;
+      e.preventDefault();
+      rideMenu(e, parseInt(cell.id.replace(cym.prefix + 'hi-hat', ''), 10), cym);
+    });
+    return row;
+  }
+
   function renderRideRows() {
     var show = isRideVisible();
     var btn = document.getElementById('showHideRideButton');
@@ -5082,70 +5115,50 @@ function GrooveWriter() {
       var container = document.getElementById('staff-container' + (m + 1));
       if (!container) continue;
       var hhRow = container.querySelector('.hi-hat-container:not(.ben-ride-container)');
-      var row = container.querySelector('.ben-ride-container');
-      var label = container.querySelector('.ben-ride-label');
       container.classList.toggle('ben-ride-on', show);
       if (!show) {
-        if (row) row.remove();
-        if (label) label.remove();
+        container.querySelectorAll('.ben-ride-container, .ben-ride-label').forEach((el) => el.remove());
         container.querySelectorAll('.hi-hat.ben-on-ride').forEach((c) => c.classList.remove('ben-on-ride'));
         continue;
       }
       if (!hhRow) continue;
-      if (!row) {
-        row = hhRow.cloneNode(true);
-        row.className = 'hi-hat-container ben-ride-container';
-        row.querySelectorAll('[id]').forEach(function (el) {
-          el.id = 'benR_' + el.id;
-          el.removeAttribute('onclick');
-          el.removeAttribute('oncontextmenu');
-          el.removeAttribute('onmouseenter');
-        });
-        hhRow.parentNode.insertBefore(row, hhRow);
-        row.addEventListener('click', function (e) {
-          var cell = e.target.closest('.hi-hat');
-          if (!cell) return;
-          var id = parseInt(cell.id.replace('benR_hi-hat', ''), 10);
-          var st = get_hh_state(id, 'URL');
-          setRideSlot(id, st === 'r' || st === 'b' ? 'off' : 'ride');
-        });
-        row.addEventListener('contextmenu', function (e) {
-          var cell = e.target.closest('.hi-hat');
-          if (!cell) return;
-          e.preventDefault();
-          rideMenu(e, parseInt(cell.id.replace('benR_hi-hat', ''), 10));
-        });
-      }
-      if (!label) {
-        var hhLabel = container.querySelector('.hh-label');
-        if (hhLabel) {
-          label = document.createElement('div');
-          label.className = 'hh-label ben-ride-label';
-          label.textContent = 'Ride';
-          label.title = 'Click a cell: ride on/off. Right-click a cell: ride or ride bell';
+      var hhLabel = container.querySelector('.hh-label:not(.ben-ride-label)');
+      CYM_ROWS.forEach(function (cym) {
+        var row = container.querySelector('.ben-cym-' + cym.key);
+        if (!row) hhRow.parentNode.insertBefore(buildCymRow(container, hhRow, cym), hhRow);
+        if (!container.querySelector('.ben-label-' + cym.key) && hhLabel) {
+          var label = document.createElement('div');
+          label.className = 'hh-label ben-ride-label ben-label-' + cym.key;
+          label.textContent = cym.label;
+          label.title = 'Click a cell: ' + cym.label.toLowerCase() + ' on/off. Right-click a cell: more options';
           hhLabel.parentNode.insertBefore(label, hhLabel);
         }
-      }
+      });
       // sync cells, visibility and spacers with the hi-hat row
       for (var j = 0; j < npm; j++) {
         var id = m * npm + j;
         var hhCell = document.getElementById('hi-hat' + id);
-        var rCell = document.getElementById('benR_hi-hat' + id);
-        if (!hhCell || !rCell) continue;
-        rCell.style.display = hhCell.style.display;
+        if (!hhCell) continue;
         var st = get_hh_state(id, 'URL');
-        var isRide = st === 'r' || st === 'b';
-        hhCell.classList.toggle('ben-on-ride', isRide);
-        rCell.querySelectorAll('.note_part').forEach((p) => (p.style.color = 'transparent'));
-        var ride = document.getElementById('benR_hh_ride' + id);
-        var bell = document.getElementById('benR_hh_ride_bell' + id);
-        if (st === 'b') bell.style.color = constant_note_on_color_hex;
-        else if (ride) ride.style.color = st === "r" ? constant_note_on_color_hex : RIDE_GREY;
+        var owner = cymRowFor(st);
+        hhCell.classList.toggle('ben-on-ride', !!owner);
+        CYM_ROWS.forEach(function (cym) {
+          var cell = document.getElementById(cym.prefix + 'hi-hat' + id);
+          if (!cell) return;
+          cell.style.display = hhCell.style.display;
+          cell.querySelectorAll('.note_part').forEach((p) => (p.style.color = 'transparent'));
+          var glyph = cym.glyph;
+          if (owner === cym && cym.extra[st]) glyph = 'hh_' + cym.extra[st];
+          var g = document.getElementById(cym.prefix + glyph + id);
+          if (g) g.style.color = owner === cym ? constant_note_on_color_hex : RIDE_GREY;
+        });
       }
       var hs = hhRow.children;
-      var rs = row.children;
-      for (var k = 0; k < hs.length && k < rs.length; k++)
-        if (hs[k].classList.contains('space_between_note_groups')) rs[k].style.display = hs[k].style.display;
+      container.querySelectorAll('.ben-ride-container').forEach(function (row) {
+        var rs = row.children;
+        for (var k = 0; k < hs.length && k < rs.length; k++)
+          if (hs[k].classList.contains('space_between_note_groups')) rs[k].style.display = hs[k].style.display;
+      });
     }
   }
 
@@ -5160,7 +5173,7 @@ function GrooveWriter() {
     'click',
     function (e) {
       var cell = e.target.closest && e.target.closest('.hi-hat.ben-on-ride');
-      if (!cell || !cell.id || cell.id.indexOf('benR_') === 0) return;
+      if (!cell || !cell.id || /^ben[RC]_/.test(cell.id)) return;
       e.stopPropagation();
       e.preventDefault();
       setRideSlot(parseInt(cell.id.replace('hi-hat', ''), 10), 'normal');
