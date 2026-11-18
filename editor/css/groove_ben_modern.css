@@ -819,3 +819,20 @@ html:not(.ben-dark) #midiPlayer input[type='range']::-moz-range-track { backgrou
 html:not(.ben-dark) #midiPlayer input[type='range']::-moz-range-thumb { background: #ffffff; border: 1px solid #cbd5e1; }
 html:not(.ben-dark) #midiPlayer .tempoOutput { color: var(--ben-ink); }
 html:not(.ben-dark) #midiPlayer [class*="tempoOutput"], html:not(.ben-dark) #midiPlayer [id*="tempoOutput"] { background: #e2e8f0 !important; color: var(--ben-ink) !important; border-radius: 4px; }
+
+/* ---- bar cards: tidy column, "+" next to the last bar ---- */
+@media (min-width: 721px) {
+  #measureContainer {
+    display: grid;
+    grid-template-columns: max-content 64px;
+    justify-content: start;
+    align-items: center;
+    column-gap: 14px;
+    row-gap: 12px;
+  }
+  #measureContainer > .staff-container { grid-column: 1; justify-self: start; box-sizing: border-box; }
+  #measureContainer > #addMeasureButton { grid-column: 2; justify-self: start; margin: 0; }
+}
+@media (max-width: 720px) {
+  #measureContainer > #addMeasureButton { margin: 4px auto 0; display: flex !important; }
+}

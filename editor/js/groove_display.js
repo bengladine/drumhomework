@@ -27,7 +27,7 @@
 // GrooveUtils comes from its ES module. The MIDI.js / abc2svg / jsmidgen
 // libraries and CSS are still injected at load time (below) so this file remains
 // a drop-in embed: a page only needs <script type="module" src="groove_display.js">.
-import { GrooveUtils } from './groove_utils.js?v=1795001102';
+import { GrooveUtils } from './groove_utils.js?v=1795001220';
 
 // GrooveDisplay class.   The only one in this file.
 // singleton

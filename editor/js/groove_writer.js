@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795001102';
-import { GrooveUtils } from './groove_utils.js?v=1795001102';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795001220';
+import { GrooveUtils } from './groove_utils.js?v=1795001220';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -85,10 +85,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1795001102';
-import * as _perm from './permutations.js?v=1795001102';
-import * as _view from './viewHtml.js?v=1795001102';
-import * as _grid from './gridState.js?v=1795001102';
+} from './constants.js?v=1795001220';
+import * as _perm from './permutations.js?v=1795001220';
+import * as _view from './viewHtml.js?v=1795001220';
+import * as _grid from './gridState.js?v=1795001220';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -4356,6 +4356,11 @@ function GrooveWriter() {
   // Ben: on phones, shrink the note grid of each bar so a whole bar fits the screen width
   function fitBarsToScreen() {
     var phone = window.innerWidth <= 720;
+    // keep the "+" button after the last bar (it is rendered inside the last bar)
+    var plus = document.getElementById('addMeasureButton');
+    var mc = document.getElementById('measureContainer');
+    if (plus && mc && plus.parentNode !== mc) mc.appendChild(plus);
+    if (plus) plus.style.gridRow = String(Math.max(1, class_number_of_measures));
     for (var m = 0; m < class_number_of_measures; m++) {
       var card = document.getElementById('staff-container' + (m + 1));
       var grid = card && card.querySelector('.notes-row-container');
@@ -4364,8 +4369,12 @@ function GrooveWriter() {
       card.style.setProperty('--ben-z', 1);
       if (!phone) {
         card.style.removeProperty('--ben-z');
+        // card as wide as its note grid (min. room for the toolbar), so all bars look tidy
+        card.style.width = '';
+        card.style.width = Math.max(grid.scrollWidth + 28, 560) + 'px';
         continue;
       }
+      card.style.width = '';
       // measure the grid with a 40px label column, then shrink it to fit
       var labels = grid.querySelector('.line-labels');
       var rowEl = grid.querySelector('.background-highlight-container') || grid.querySelector('.hi-hat-container');
@@ -5362,7 +5371,7 @@ function GrooveWriter() {
   root.DownloadAnchorClick = function () {
     sheetDetailsDialog([
       ['PDF', function () { printSheetPortrait(); }],
-      ['PNG image', function () { root.PNGSaveAs(); }],
+      ['PNG image', function () { exportPngImage(); }],
       ['Audio (WAV)', function () { exportAudioWav(); }],
       ['MIDI file', function () { root.MIDISaveAs(); }],
     ]);
@@ -5371,6 +5380,73 @@ function GrooveWriter() {
       sub.textContent =
         'Optional: shown on top of the sheet. PDF opens the print window: choose "Save as PDF". Audio plays the groove 4 times, with the metronome if it is on.';
   };
+
+  // Ben: one PNG with all lines of the sheet, on a white background (2 bars per line like print)
+  function exportPngImage() {
+    root._benPrintLayout = true;
+    root.refresh_ABC();
+    var svgs = Array.prototype.slice.call(document.querySelectorAll('#svgTarget svg')).map((el) => el.cloneNode(true));
+    root._benPrintLayout = false;
+    root.refresh_ABC();
+    var W = 1600;
+    var pad = 40;
+    var parts = svgs
+      .map(function (el) {
+        var vb = (el.getAttribute('viewBox') || '').split(/[\s,]+/).map(Number);
+        if (vb.length !== 4 || !vb[2]) return null;
+        var h = Math.round((vb[3] * (W - 2 * pad)) / vb[2]);
+        el.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+        el.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
+        el.setAttribute('width', W - 2 * pad);
+        el.setAttribute('height', h);
+        return { svg: new XMLSerializer().serializeToString(el), h: h };
+      })
+      .filter(Boolean);
+    if (!parts.length) return;
+    var H = parts.reduce((a, p) => a + p.h + 16, 2 * pad);
+    var canvas = document.createElement('canvas');
+    canvas.width = W;
+    canvas.height = H;
+    var g = canvas.getContext('2d');
+    g.fillStyle = '#ffffff';
+    g.fillRect(0, 0, W, H);
+    var y = pad;
+    var load = parts.map(function (p) {
+      return new Promise(function (resolve) {
+        var img = new Image();
+        var url = URL.createObjectURL(new Blob([p.svg], { type: 'image/svg+xml' }));
+        img.onload = function () {
+          resolve({ img: img, h: p.h, url: url });
+        };
+        img.onerror = function () {
+          resolve(null);
+        };
+        img.src = url;
+      });
+    });
+    Promise.all(load).then(function (imgs) {
+      imgs.forEach(function (it, i) {
+        if (it) {
+          g.drawImage(it.img, pad, y, W - 2 * pad, it.h);
+          URL.revokeObjectURL(it.url);
+        }
+        y += parts[i].h + 16;
+      });
+      canvas.toBlob(function (blob) {
+        var a = document.createElement('a');
+        var title = ((document.getElementById('tuneTitle') || {}).value || 'beatsheet').trim().replace(/[^\w\- ]+/g, '');
+        a.href = URL.createObjectURL(blob);
+        a.download = (title || 'beatsheet') + '.png';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function () {
+          URL.revokeObjectURL(a.href);
+          a.remove();
+        }, 4000);
+      }, 'image/png');
+    });
+  }
+  root.exportPngImage = exportPngImage;
 
   // Ben: render the groove to a WAV file in the browser (same drum samples as playback)
   function exportAudioWav() {
@@ -5516,9 +5592,12 @@ function GrooveWriter() {
       '<button onclick="document.getElementById(\'benAddBarMenu\').remove()">Cancel</button>';
     var x = event && event.clientX ? event.clientX : window.innerWidth / 2;
     var y = event && event.clientY ? event.clientY : window.innerHeight / 2;
-    menu.style.left = Math.max(8, Math.min(x - 90, window.innerWidth - 200)) + 'px';
-    menu.style.top = y + 12 + 'px';
     document.body.appendChild(menu);
+    var mr = menu.getBoundingClientRect();
+    menu.style.left = Math.max(8, Math.min(x - mr.width / 2, window.innerWidth - mr.width - 8)) + 'px';
+    var top = y + 12;
+    if (top + mr.height > window.innerHeight - 8) top = Math.max(8, y - mr.height - 12); // open upwards
+    menu.style.top = top + 'px';
   };
 
   root.closeMeasureButtonClick = function (measureNum) {
