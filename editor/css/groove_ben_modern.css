@@ -902,3 +902,5 @@ html.ben-dark #bottomButtonRow .pageBottomButton.ClickToHide, html.ben-dark #sho
 #bottomButtonRow .pageBottomButton .bottomButtonIcon i { font-size: 18px !important; line-height: 22px !important; }
 #bottomButtonRow .pageBottomButton .bottomButtonIcon img, #bottomButtonRow .pageBottomButton .bottomButtonIcon svg { height: 20px !important; width: auto !important; }
 #bottomButtonRow .pageBottomButton .bottomButtonLabel { display: block; line-height: 14px; margin: 0 !important; padding: 0 !important; }
+#bottomButtonRow .pageBottomButton:before, #bottomButtonRow .pageBottomButton:after { display: none !important; }
+#bottomButtonRow .pageBottomButton .bottomButtonIcon i { position: static !important; margin: 0 !important; }
