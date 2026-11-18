@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795004592';
-import { GrooveUtils } from './groove_utils.js?v=1795004592';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795005169';
+import { GrooveUtils } from './groove_utils.js?v=1795005169';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -85,10 +85,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1795004592';
-import * as _perm from './permutations.js?v=1795004592';
-import * as _view from './viewHtml.js?v=1795004592';
-import * as _grid from './gridState.js?v=1795004592';
+} from './constants.js?v=1795005169';
+import * as _perm from './permutations.js?v=1795005169';
+import * as _view from './viewHtml.js?v=1795005169';
+import * as _grid from './gridState.js?v=1795005169';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -3640,60 +3640,6 @@ function GrooveWriter() {
   root.show_FullURLPopup = function () {
     document.getElementById('fullURLPopup');
 
-    new ShareButton({
-      ui: {
-        flyout: 'bottom center', // change the flyout direction of the shares. chose from `top left`, `top center`, `top right`, `bottom left`, `bottom right`, `bottom center`, `middle left`, or `middle right` [Default: `top center`]
-        button_font: false, // include the Lato font set from the Google Fonts API. [Default: `true`]
-        buttonText: 'SHARE', // change the text of the button, [Default: `Share`]
-        icon_font: false, // include the minified Entypo font set. [Default: `true`]
-      },
-      networks: {
-        facebook: {
-          before: function () {
-            this.url = document.getElementById('fullURLPopupTextField').value;
-            this.description = 'Check out this groove.';
-          },
-          //app_id : "839699029418014"    // staging id
-          // app_id : "1499163983742002"   // MLDC id, lou created
-          appId: '445510575651140', // MLDC id, brad created
-          loadSdk: true,
-        },
-        googlePlus: {
-          enabled: false,
-        },
-        twitter: {
-          before: function () {
-            this.url = encodeURIComponent(document.getElementById('fullURLPopupTextField').value);
-            this.description =
-              'Check out this groove:  ' + document.getElementById('fullURLPopupTextField').value;
-          },
-        },
-        reddit: {
-          before: function () {
-            this.url = document.getElementById('fullURLPopupTextField').value;
-            this.title =
-              'Check out this groove: ' + document.getElementById('fullURLPopupTextField').value;
-          },
-        },
-        email: {
-          before: function () {
-            this.url = document.getElementById('fullURLPopupTextField').value;
-            this.description =
-              'Check out this groove. %0A%0A ' +
-              encodeURIComponent(document.getElementById('fullURLPopupTextField').value);
-          },
-        },
-        pinterest: {
-          enabled: false,
-        },
-        linkedin: {
-          enabled: false,
-        },
-        whatsapp: {
-          enabled: false,
-        },
-      },
-    });
 
     // open the popup with full url and try to load short in the background
     root.fillInFullURLInFullURLPopup();

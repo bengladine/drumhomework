@@ -4,21 +4,41 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Beatsheet help</title>
+<link rel="icon" type="image/png" href="images/favicon-32.png">
+<script>
+  (function () {
+    var d = document.documentElement, t = null, c = null;
+    try { t = localStorage.getItem('benTheme'); c = localStorage.getItem('benColour'); } catch (e) {}
+    if (t === 'dark' || (!t && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches)) d.classList.add('dark');
+    if (c === 'blue') c = '#2563eb';
+    if (!/^#[0-9a-f]{6}$/i.test(c || '')) c = '#7c3aed';
+    var r = parseInt(c.substr(1, 2), 16) / 255, g = parseInt(c.substr(3, 2), 16) / 255, b = parseInt(c.substr(5, 2), 16) / 255;
+    var mx = Math.max(r, g, b), mn = Math.min(r, g, b), h = 0, s = 0, l = (mx + mn) / 2;
+    if (mx !== mn) { var k = mx - mn; s = l > 0.5 ? k / (2 - mx - mn) : k / (mx + mn); h = (mx === r ? (g - b) / k + (g < b ? 6 : 0) : mx === g ? (b - r) / k + 2 : (r - g) / k + 4) * 60; }
+    d.style.setProperty('--h', Math.round(h));
+    d.style.setProperty('--s', Math.max(25, Math.min(85, Math.round(s * 100))) + '%');
+  })();
+</script>
 <style>
-  :root { color-scheme: light dark; }
-  body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; max-width: 760px; margin: 0 auto; padding: 28px 20px 60px; line-height: 1.55; color: #111827; background: #f8fafc; }
-  @media (prefers-color-scheme: dark) { body { color: #e5e7eb; background: #0b1120; } a { color: #93c5fd; } kbd { background: #1e293b !important; border-color: #334155 !important; } }
-  h1 { font-size: 28px; margin: 0 0 4px; }
-  h1 b { color: #16a34a; }
-  .sub { color: #6b7280; margin: 0 0 24px; }
+  :root { --brand: hsl(var(--h, 262) var(--s, 83%) 46%); --bg: #f8fafc; --ink: #111827; --muted: #6b7280; --line: #d1d5db; --card: #fff; }
+  html.dark { color-scheme: dark; --brand: hsl(var(--h, 262) var(--s, 83%) 76%); --bg: hsl(var(--h, 262) 38% 6%); --ink: #e5e7eb; --muted: #9ca3af; --line: hsl(var(--h, 262) 26% 22%); --card: hsl(var(--h, 262) 32% 12%); }
+  body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; max-width: 760px; margin: 0 auto; padding: 28px 20px 60px; line-height: 1.55; color: var(--ink); background: var(--bg); }
+  a { color: var(--brand); }
+  h1 { font-size: 28px; margin: 0 0 4px; display: flex; align-items: center; gap: 10px; }
+  h1 b { color: var(--brand); }
+  h1 img { width: 36px; height: 36px; border-radius: 9px; }
+  .sub { color: var(--muted); margin: 0 0 24px; }
   h2 { font-size: 18px; margin: 28px 0 8px; }
   ul { padding-left: 20px; }
   li { margin: 4px 0; }
-  kbd { font-family: inherit; font-size: 13px; background: #fff; border: 1px solid #d1d5db; border-radius: 6px; padding: 1px 6px; }
+  kbd { font-family: inherit; font-size: 13px; background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px; }
+  .back { display: inline-block; margin-bottom: 18px; font-size: 14px; text-decoration: none; }
 </style>
+
 </head>
 <body>
-<h1>Beat<b>sheet</b> help</h1>
+<a class="back" href="./">← Back to the editor</a>
+<h1><img src="images/beatsheet-icon-96.png" alt="">Beat<b>sheet</b>&nbsp;help</h1>
 <p class="sub">Free online drum notation editor. Everything you write is stored in the link, so bookmarking or sharing the link saves your groove.</p>
 
 <h2>Writing notes</h2>
@@ -26,7 +46,7 @@
   <li><b>Click</b> a cell to turn a note on or off.</li>
   <li><b>Right-click</b> a cell (on a phone: <b>press and hold</b>) for other kinds of notes: accent, ghost note, flam, drag, cross-stick, buzz, open hi-hat, crash, ride bell…</li>
   <li><b>Click a row name</b> (Hi-hat, Snare, Kick…) for actions on the whole bar: all on/off, and <b>“convert to …”</b> to change every note at once (e.g. all accents → normal).</li>
-  <li><b>TOMS</b> (bottom) shows 4 toms. <b>RIDE</b> shows a separate ride row (a beat holds a hi-hat or a ride, not both).</li>
+  <li><b>TOMS</b> (bottom) shows 4 toms. <b>CYMBALS</b> shows a crash row and a ride row above the hi-hat. Right-click a cymbal cell for ride bell or stacker/china. A beat holds one of hi-hat, crash or ride, not two at once.</li>
   <li><b>STICKINGS</b> adds a row for R/L stickings.</li>
 </ul>
 
@@ -41,7 +61,7 @@
 <h2>Listening and looping</h2>
 <ul>
   <li><b>Play</b> top left, tempo with the BPM slider. The metronome (OFF / 4th / 8th / 16th) is in the top bar.</li>
-  <li><b>Click a bar in the sheet music</b> to start playback there (green line). Click it again to start from the beginning again.</li>
+  <li><b>Click a bar in the sheet music</b> to start playback there (coloured line). Click it again to start from the beginning again.</li>
   <li><b>Drag across bars in the sheet music</b> to loop them (orange). Drag the orange edges to change the loop; × stops it. The ▶ and ↻ buttons in a bar's toolbar do the same.</li>
   <li>The pin (top right of the sheet) keeps the sheet on screen while you scroll.</li>
 </ul>
@@ -51,6 +71,12 @@
   <li><b>SHARE</b> gives a link (or embed code for a website).</li>
   <li><b>PRINT</b> and <b>DOWNLOAD</b> first ask for an optional title, author and comment for on the sheet.</li>
   <li>Links made with the original Groove Scribe also open in Beatsheet.</li>
+</ul>
+
+<h2>Look</h2>
+<ul>
+  <li>The <b>brush</b> in the top bar switches the grid between <b>Classic</b> (notation-like) and <b>Pads</b> (step-sequencer style), and lets you pick <b>any colour</b>.</li>
+  <li>The <b>moon</b> switches dark / light mode.</li>
 </ul>
 
 <h2>Keyboard</h2>
@@ -67,7 +93,7 @@
 </ul>
 
 <h2>Questions, bugs, ideas?</h2>
-<p>Report a bug or idea on <a href="https://github.com/bengladine/beatsheet/issues">GitHub</a>. Beatsheet is made by <a href="https://drumhof.com">Drumhof</a> (drum lessons in Gent). Like it? <a href="https://ko-fi.com/gladinathor">Buy me a coffee</a>.
+<p>Use <a href="https://github.com/bengladine/beatsheet/issues/new">Feedback</a> (bottom of the editor) to report a bug or share an idea. Beatsheet is made by <a href="https://drumhof.com">Drumhof</a> (drum lessons in Gent). Like it? <a href="https://ko-fi.com/gladinathor">Buy me a coffee</a>.
 Built on <a href="https://github.com/montulli/GrooveScribe">GrooveScribe</a> (GPL v2) · <a href="https://github.com/bengladine/beatsheet">source code</a> · <a href="gscribe_about.html">About</a></p>
 </body>
 </html>

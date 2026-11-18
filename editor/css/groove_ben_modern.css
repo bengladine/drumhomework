@@ -1220,3 +1220,5 @@ html.ben-pads .snare .snare_flam[style*="color: rgb(0, 0, 0)"] svg, html.ben-pad
 html.ben-pads .snare .snare_flam i, html.ben-pads .snare .snare_drag i { display: flex; align-items: center; justify-content: center; }
 #logoTextUpperLeft img.ben-logo-icon { display: inline-block; height: 26px; }
 @media (max-width: 720px) { #logoTextUpperLeft img.ben-logo-icon { height: 22px; } }
+#benFooter a.ben-feedback { color: var(--ben-brand); }
+#benFooter a.ben-feedback i { margin-right: 4px; }

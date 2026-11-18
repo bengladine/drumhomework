@@ -1,13 +1,40 @@
+<meta charset="utf-8">
+<link rel="icon" type="image/png" href="images/favicon-32.png">
+<script>
+  (function () {
+    var d = document.documentElement, t = null, c = null;
+    try { t = localStorage.getItem('benTheme'); c = localStorage.getItem('benColour'); } catch (e) {}
+    if (t === 'dark' || (!t && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches)) d.classList.add('dark');
+    if (c === 'blue') c = '#2563eb';
+    if (!/^#[0-9a-f]{6}$/i.test(c || '')) c = '#7c3aed';
+    var r = parseInt(c.substr(1, 2), 16) / 255, g = parseInt(c.substr(3, 2), 16) / 255, b = parseInt(c.substr(5, 2), 16) / 255;
+    var mx = Math.max(r, g, b), mn = Math.min(r, g, b), h = 0, s = 0, l = (mx + mn) / 2;
+    if (mx !== mn) { var k = mx - mn; s = l > 0.5 ? k / (2 - mx - mn) : k / (mx + mn); h = (mx === r ? (g - b) / k + (g < b ? 6 : 0) : mx === g ? (b - r) / k + 2 : (r - g) / k + 4) * 60; }
+    d.style.setProperty('--h', Math.round(h));
+    d.style.setProperty('--s', Math.max(25, Math.min(85, Math.round(s * 100))) + '%');
+  })();
+</script>
 <style>
-body {
-	margin: 30px 30px 30px 30px;
-}
-
+  :root { --brand: hsl(var(--h, 262) var(--s, 83%) 46%); --bg: #f8fafc; --ink: #111827; --muted: #6b7280; --line: #d1d5db; --card: #fff; }
+  html.dark { color-scheme: dark; --brand: hsl(var(--h, 262) var(--s, 83%) 76%); --bg: hsl(var(--h, 262) 38% 6%); --ink: #e5e7eb; --muted: #9ca3af; --line: hsl(var(--h, 262) 26% 22%); --card: hsl(var(--h, 262) 32% 12%); }
+  body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; max-width: 760px; margin: 0 auto; padding: 28px 20px 60px; line-height: 1.55; color: var(--ink); background: var(--bg); }
+  a { color: var(--brand); }
+  h1 { font-size: 28px; margin: 0 0 4px; display: flex; align-items: center; gap: 10px; }
+  h1 b { color: var(--brand); }
+  h1 img { width: 36px; height: 36px; border-radius: 9px; }
+  .sub { color: var(--muted); margin: 0 0 24px; }
+  h2 { font-size: 18px; margin: 28px 0 8px; }
+  ul { padding-left: 20px; }
+  li { margin: 4px 0; }
+  kbd { font-family: inherit; font-size: 13px; background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px; }
+  .back { display: inline-block; margin-bottom: 18px; font-size: 14px; text-decoration: none; }
 </style>
+
 
 <title>About Beatsheet</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<h1>About Beatsheet</h1>
+<a class="back" href="./">← Back to the editor</a>
+<h1><img src="images/beatsheet-icon-96.png" alt="">About Beat<b>sheet</b></h1>
 
 <p>Beatsheet is a free online drum notation editor, made by <a href="https://drumhof.com">Drumhof</a> (drum lessons in Gent, Belgium).</p>
 <p>It is built on <a href="https://github.com/montulli/GrooveScribe">GrooveScribe</a> by Lou Montulli and Mike Johnston, released under the GNU General Public License v2.
