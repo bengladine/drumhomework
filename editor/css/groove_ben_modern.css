@@ -836,3 +836,10 @@ html:not(.ben-dark) #midiPlayer [class*="tempoOutput"], html:not(.ben-dark) #mid
 @media (max-width: 720px) {
   #measureContainer > #addMeasureButton { margin: 4px auto 0; display: flex !important; }
 }
+
+/* BPM number field */
+#midiPlayer .tempoTextField {
+  background: #ffffff !important; color: var(--ben-ink) !important;
+  border: 1px solid var(--ben-line) !important; border-radius: 6px; padding: 1px 4px; text-align: center; font-weight: 600;
+}
+html.ben-dark #midiPlayer .tempoTextField { background: #0f172a !important; color: #e5e7eb !important; border-color: #334155 !important; }

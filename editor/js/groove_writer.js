@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795001220';
-import { GrooveUtils } from './groove_utils.js?v=1795001220';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795001405';
+import { GrooveUtils } from './groove_utils.js?v=1795001405';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -85,10 +85,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1795001220';
-import * as _perm from './permutations.js?v=1795001220';
-import * as _view from './viewHtml.js?v=1795001220';
-import * as _grid from './gridState.js?v=1795001220';
+} from './constants.js?v=1795001405';
+import * as _perm from './permutations.js?v=1795001405';
+import * as _view from './viewHtml.js?v=1795001405';
+import * as _grid from './gridState.js?v=1795001405';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -2464,19 +2464,10 @@ function GrooveWriter() {
         class_bar_map_start = [];
         var prevMeter = meterFor(0).join('/');
 
-        // Ben: more bars per line on wide screens (the sheet uses the full browser width)
-        var sheetW = root._benPrintLayout ? 1240 : (document.getElementById('svgTarget') || {}).offsetWidth || 1000;
-        var numberOfMeasuresPerLine = Math.max(1, Math.round(sheetW / 760));
+        var numberOfMeasuresPerLine = sheetBarsPerLine();
         var addon_abc;
-
-        if (class_notes_per_measure >= 32) {
-          // Only put one measure per line for 32nd notes and above because of width issues
-          numberOfMeasuresPerLine = Math.max(1, Math.round(sheetW / 1100));
-        }
-        // Ben: user setting "bars per line" (auto = by screen width; print auto = 2)
-        var bplSetting = getBarsPerLineSetting();
-        if (bplSetting) numberOfMeasuresPerLine = bplSetting;
-        else if (root._benPrintLayout) numberOfMeasuresPerLine = 2;
+        // Ben: a short last line keeps natural proportions instead of being stretched flat
+        fullABC = fullABC.replace('%%stretchlast 1', '%%stretchlast 0');
 
         for (i = 0; i < class_number_of_measures; i++) {
           // we already go the array states above, don't get it again.
@@ -2555,12 +2546,27 @@ function GrooveWriter() {
   // this is called by a bunch of places anytime we modify the musical notes on the page
   // this will recreate the ABC code and will then use the ABC to rerender the sheet music
   // on the page.
+  // Ben: bars per line: user setting, else by screen width (print: 2)
+  function sheetBarsPerLine() {
+    var setting = getBarsPerLineSetting();
+    if (setting) return setting;
+    if (root._benPrintLayout) return 2;
+    var sheetW = (document.getElementById('svgTarget') || {}).offsetWidth || 1000;
+    return Math.max(1, Math.round(sheetW / (class_notes_per_measure >= 32 ? 1100 : 760)));
+  }
+
   function updateSheetMusic() {
     var renderWidth = 600;
     var svgTarget = document.getElementById('svgTarget');
     if (svgTarget) {
       renderWidth = svgTarget.offsetWidth - 100;
       renderWidth = Math.floor(renderWidth * 0.6); // reduce width by 20% (This actually makes the notes bigger, because we scale up everything to max width)
+    }
+    // Ben: give every bar a fixed amount of room, so bars keep the same proportions however
+    // wide the screen is (no more flat, stretched bars). The SVG is scaled up to the screen.
+    if (class_permutation_type == 'none') {
+      var perBar = class_notes_per_measure >= 32 ? 560 : 330;
+      renderWidth = sheetBarsPerLine() * perBar + 40;
     }
 
     var fullABC = generate_ABC(renderWidth);
@@ -4447,7 +4453,8 @@ function GrooveWriter() {
     html += '<button title="Move bar left" onclick="myGrooveWriter.moveBar(' + m + ',-1)"' + (m === 0 ? ' disabled' : '') + '><i class="fa fa-arrow-left"></i></button>';
     html +=
       '<button title="Move bar right" onclick="myGrooveWriter.moveBar(' + m + ',1)"' + (m === class_number_of_measures - 1 ? ' disabled' : '') + '><i class="fa fa-arrow-right"></i></button>';
-    html += '<button title="Duplicate this bar" onclick="myGrooveWriter.duplicateBar(' + m + ')"><i class="fa fa-clone"></i></button>';
+    html += '<button title="Insert an empty bar after this one" onclick="myGrooveWriter.insertEmptyBar(' + m + ')"><i class="fa fa-plus-square-o"></i></button>';
+    html += '<button title="Duplicate this bar (the copy goes right after it)" onclick="myGrooveWriter.duplicateBar(' + m + ')"><i class="fa fa-clone"></i></button>';
     html += '<button title="Clear this bar" onclick="myGrooveWriter.clearBar(' + m + ')"><i class="fa fa-eraser"></i></button>';
     if (class_number_of_measures > 1)
       html += '<button title="Delete this bar" onclick="myGrooveWriter.deleteBar(' + m + ')"><i class="fa fa-trash"></i></button>';
@@ -4659,6 +4666,16 @@ function GrooveWriter() {
     var bars = readBars();
     bars.splice(m + 1, 0, copyBar(bars[m]));
     commitBars(bars);
+  };
+
+  root.insertEmptyBar = function (m) {
+    class_bar_stash = {};
+    var bars = readBars();
+    bars.splice(m + 1, 0, emptyBarLike(bars[m]));
+    if (commitBars(bars)) {
+      var el = document.getElementById('staff-container' + (m + 2));
+      if (el) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
   };
 
   root.clearBar = function (m) {
