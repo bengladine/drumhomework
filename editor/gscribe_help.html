@@ -37,6 +37,20 @@
   .back { display: inline-block; margin-bottom: 18px; font-size: 14px; text-decoration: none; }
 </style>
 
+<script>
+	// privacy-friendly visitor count (GoatCounter: no cookies, no personal data), only on drumsheet.app
+	if (location.hostname === 'drumsheet.app') {
+		window.goatcounter = { path: function () { return location.pathname; } }; // grooves in the link are not sent
+		var gc = document.createElement('script');
+		gc.async = true;
+		gc.src = 'https://gc.zgo.at/count.js';
+		gc.dataset.goatcounter = 'https://drumsheet.goatcounter.com/count';
+		document.head.appendChild(gc);
+	}
+	window.benCount = function (name) {
+		try { if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: name, title: name, event: true }); } catch (e) {}
+	};
+</script>
 </head>
 <body>
 <a class="back" href="./">← Back to the editor</a>

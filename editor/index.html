@@ -108,9 +108,9 @@
 
 
 		<link rel="stylesheet" type="text/css" href="font-awesome/4.7.0/css/font-awesome.min.css">
-	    <link rel="stylesheet" type="text/css" href="css/groove_writer_orange.css?v=1795026241">
-		<link rel="stylesheet" type="text/css" href="css/groove_display_orange.css?v=1795026241">
-		<link rel="stylesheet" type="text/css" href="css/groove_ben_modern.css?v=1795026241">
+	    <link rel="stylesheet" type="text/css" href="css/groove_writer_orange.css?v=1795028434">
+		<link rel="stylesheet" type="text/css" href="css/groove_display_orange.css?v=1795028434">
+		<link rel="stylesheet" type="text/css" href="css/groove_ben_modern.css?v=1795028434">
 
 		<!--   Other peoples JS libraries    -->
 		<!-- <script src="./MIDI.js/js/MIDI/MIDI.JS.min.js" type="text/javascript"></script> -->
@@ -144,7 +144,21 @@
 		       It creates window.myGrooveWriter, builds the dynamic DOM, and runs the
 		       page-load init. -->
 
-    </head>
+    <script>
+	// privacy-friendly visitor count (GoatCounter: no cookies, no personal data), only on drumsheet.app
+	if (location.hostname === 'drumsheet.app') {
+		window.goatcounter = { path: function () { return location.pathname; } }; // grooves in the link are not sent
+		var gc = document.createElement('script');
+		gc.async = true;
+		gc.src = 'https://gc.zgo.at/count.js';
+		gc.dataset.goatcounter = 'https://drumsheet.goatcounter.com/count';
+		document.head.appendChild(gc);
+	}
+	window.benCount = function (name) {
+		try { if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: name, title: name, event: true }); } catch (e) {}
+	};
+</script>
+</head>
     <body>
 
 	<div id="GrooveWriter">
@@ -588,7 +602,7 @@
 
 
 		<!-- App entry point: ES module that boots the app and runs page-load init. -->
-		<script type="module" src="js/main.js?v=1795026241"></script>
+		<script type="module" src="js/main.js?v=1795028434"></script>
 
 
 	</div>
