@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795001594';
-import { GrooveUtils } from './groove_utils.js?v=1795001594';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795001635';
+import { GrooveUtils } from './groove_utils.js?v=1795001635';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -85,10 +85,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1795001594';
-import * as _perm from './permutations.js?v=1795001594';
-import * as _view from './viewHtml.js?v=1795001594';
-import * as _grid from './gridState.js?v=1795001594';
+} from './constants.js?v=1795001635';
+import * as _perm from './permutations.js?v=1795001635';
+import * as _view from './viewHtml.js?v=1795001635';
+import * as _grid from './gridState.js?v=1795001635';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -4377,6 +4377,7 @@ function GrooveWriter() {
       var card = document.getElementById('staff-container' + (m + 1));
       var grid = card && card.querySelector('.notes-row-container');
       if (!grid) continue;
+      card.style.gridRow = phone ? '' : String(m + 1); // explicit rows so the "+" can share the last one
       grid.style.zoom = '';
       card.style.setProperty('--ben-z', 1);
       if (!phone) {
