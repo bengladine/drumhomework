@@ -17,9 +17,68 @@
 				var g = null;
 				try { g = localStorage.getItem('benGridStyle'); } catch (e) {}
 				if (g === 'pads') document.documentElement.classList.add('ben-pads');
+				// one picked colour -> whole palette (light + dark) and the icon
+				function hexHsl(hex) {
+					var r = parseInt(hex.substr(1, 2), 16) / 255, g = parseInt(hex.substr(3, 2), 16) / 255, b = parseInt(hex.substr(5, 2), 16) / 255;
+					var mx = Math.max(r, g, b), mn = Math.min(r, g, b), h = 0, s = 0, l = (mx + mn) / 2;
+					if (mx !== mn) {
+						var d = mx - mn; s = l > 0.5 ? d / (2 - mx - mn) : d / (mx + mn);
+						h = mx === r ? (g - b) / d + (g < b ? 6 : 0) : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; h *= 60;
+					}
+					return [Math.round(h), Math.round(s * 100)];
+				}
+				window.benColour = '#7c3aed';
+				window.benSetColour = function (hex) {
+					if (!/^#[0-9a-f]{6}$/i.test(hex || '')) hex = '#7c3aed';
+					window.benColour = hex;
+					var hs = hexHsl(hex), H = hs[0], S = Math.max(25, Math.min(85, hs[1])), T = (H + 28) % 360;
+					function c(h, s, l) { return 'hsl(' + h + ',' + Math.round(s) + '%,' + l + '%)'; }
+					var css = 'html.ben-tint:not(.ben-dark){--ben-brand:' + c(H, S, 46) + ';--ben-brand-soft:' + c(H, S, 97) + ';--ben-brand-ink:#fff;' +
+						'--pad-hh:' + c(H, S, 70) + ';--pad-sn:' + c(H, S, 55) + ';--pad-kick:' + c(H, S, 36) + ';--pad-tom:' + c(T, S, 66) + ';' +
+						'--pad-off:' + c(H, S * 0.4, 95) + ';--pad-off-hover:' + c(H, S * 0.4, 89) + '}' +
+						'html.ben-tint.ben-dark{--ben-brand:' + c(H, S, 76) + ';--ben-brand-soft:' + c(H, S * 0.7, 20) + ';--ben-brand-ink:' + c(H, 40, 8) + ';' +
+						'--ben-bg:' + c(H, 38, 6) + ';--ben-surface:' + c(H, 32, 12) + ';--ben-line:' + c(H, 26, 22) + ';--ben-chrome:' + c(H, 38, 6) + ';--ben-staff:' + c(H, 26, 22) + ';' +
+						'--ben-tint-top:' + c(H, 38, 9) + ';--ben-tint-menu:' + c(H, 32, 15) + ';' +
+						'--pad-hh:' + c(H, S, 82) + ';--pad-sn:' + c(H, S, 72) + ';--pad-kick:' + c(H, S, 62) + ';--pad-tom:' + c(T, S, 84) + ';' +
+						'--pad-off:' + c(H, 24, 24) + ';--pad-off-hover:' + c(H, 24, 31) + '}';
+					var st = document.getElementById('benColourStyle');
+					if (!st) { st = document.createElement('style'); st.id = 'benColourStyle'; document.head.appendChild(st); }
+					st.textContent = css;
+					document.documentElement.classList.add('ben-tint');
+					benDrawIcon(H, S);
+				};
+				// icon: dark tinted square, white drum + sticks, coloured pads
+				var glyph = null;
+				function benDrawIcon(H, S) {
+					function draw() {
+						var out = {};
+						[64, 32].forEach(function (n) {
+							var cv = document.createElement('canvas'); cv.width = cv.height = n;
+							var x = cv.getContext('2d'), k = n / 1254, rr = function (a, b, w, h, r) { x.beginPath(); x.moveTo(a + r, b); x.arcTo(a + w, b, a + w, b + h, r); x.arcTo(a + w, b + h, a, b + h, r); x.arcTo(a, b + h, a, b, r); x.arcTo(a, b, a + w, b, r); x.closePath(); x.fill(); };
+							x.fillStyle = 'hsl(' + H + ',' + Math.min(S, 50) + '%,13%)'; rr(0, 0, n, n, n * 0.2);
+							x.drawImage(glyph, 0, 0, n, n);
+							var lit = { '0,1': 1, '1,0': 1, '1,3': 1 };
+							[[168, 140], [345, 135]].forEach(function (row, ri) {
+								[233, 442, 651, 860].forEach(function (cx, ci) {
+									x.fillStyle = lit[ri + ',' + ci] ? 'hsl(' + H + ',' + S + '%,76%)' : 'hsl(' + H + ',16%,42%)';
+									rr(cx * k, row[0] * k, 160 * k, row[1] * k, 22 * k);
+								});
+							});
+							out[n] = cv.toDataURL('image/png');
+						});
+						var setLogo = function () {
+							document.querySelectorAll('link[rel="icon"]').forEach(function (l) { l.href = out[32]; });
+							var im = document.querySelector('.ben-logo-icon'); if (im) im.src = out[64];
+						};
+						setLogo(); document.addEventListener('DOMContentLoaded', setLogo);
+					}
+					if (glyph && glyph.complete) return draw();
+					glyph = new Image(); glyph.onload = draw; glyph.src = 'images/beatsheet-glyph.png';
+				}
 				var c = null;
 				try { c = localStorage.getItem('benColour'); } catch (e) {}
-				if (c === 'purple') document.documentElement.classList.add('ben-purple');
+				if (c === 'blue') c = '#2563eb';
+				window.benSetColour(c);
 			})();
 		</script>
 		<meta name="apple-mobile-web-app-capable" content="yes">
@@ -36,9 +95,9 @@
 
 		<link rel="stylesheet" type="text/css" href="font-awesome/4.7.0/css/font-awesome.min.css">
 		<link rel="stylesheet" type="text/css" href="css/share-button.min.css">
-	    <link rel="stylesheet" type="text/css" href="css/groove_writer_orange.css?v=1795004221">
-		<link rel="stylesheet" type="text/css" href="css/groove_display_orange.css?v=1795004221">
-		<link rel="stylesheet" type="text/css" href="css/groove_ben_modern.css?v=1795004221">
+	    <link rel="stylesheet" type="text/css" href="css/groove_writer_orange.css?v=1795004592">
+		<link rel="stylesheet" type="text/css" href="css/groove_display_orange.css?v=1795004592">
+		<link rel="stylesheet" type="text/css" href="css/groove_ben_modern.css?v=1795004592">
 
 		<!--   Other peoples JS libraries    -->
 		<!-- <script src="./MIDI.js/js/MIDI/MIDI.JS.min.js" type="text/javascript"></script> -->
@@ -518,7 +577,7 @@
 
 
 		<!-- App entry point: ES module that boots the app and runs page-load init. -->
-		<script type="module" src="js/main.js?v=1795004221"></script>
+		<script type="module" src="js/main.js?v=1795004592"></script>
 
 
 	</div>
@@ -550,7 +609,15 @@
 					});
 				}
 				group('Grid', 'benGridStyle', 'ben-pads', [['off', 'Classic', '', 'classic'], ['on', 'Pads', '', 'pads']]);
-				group('Colour', 'benColour', 'ben-purple', [['off', 'Blue', '#2563eb', 'blue'], ['on', 'Purple', '#7c3aed', 'purple']]);
+				var h = document.createElement('div'); h.className = 'ben-look-h'; h.textContent = 'Colour'; m.appendChild(h);
+				var inp = document.createElement('input'); inp.type = 'color'; inp.value = window.benColour; m.appendChild(inp);
+				var save = function (hex) { window.benSetColour(hex); inp.value = hex; try { localStorage.setItem('benColour', hex); } catch (e) {} };
+				inp.oninput = function () { save(inp.value); };
+				var pr = document.createElement('div'); pr.className = 'ben-look-presets'; m.appendChild(pr);
+				['#7c3aed', '#2563eb', '#0891b2', '#059669', '#d97706', '#dc2626', '#db2777', '#475569'].forEach(function (hex) {
+					var sw = document.createElement('i'); sw.style.background = hex; sw.title = hex === '#7c3aed' ? 'Beatsheet purple (default)' : hex;
+					sw.onclick = function () { save(hex); }; pr.appendChild(sw);
+				});
 				var r = ev.currentTarget.getBoundingClientRect();
 				m.style.top = (r.bottom + 6) + 'px';
 				m.style.right = Math.max(8, window.innerWidth - r.right) + 'px';

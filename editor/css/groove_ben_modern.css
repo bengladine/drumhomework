@@ -1071,7 +1071,7 @@ input[type='range'] { accent-color: var(--ben-brand); }
    The editor still reads note state from the inline styles; only the look changes.
    ===================================================================== */
 :root { --pad-off: #eef1f6; --pad-off-hover: #dfe5ee; --pad-hh: #0ea5e9; --pad-sn: #2563eb; --pad-kick: #7c3aed; --pad-tom: #14b8a6; }
-html.ben-dark { --pad-off: #1b2536; --pad-off-hover: #26334a; --pad-hh: #38bdf8; --pad-sn: #60a5fa; --pad-kick: #a78bfa; --pad-tom: #2dd4bf; }
+html.ben-dark { --pad-off: #263247; --pad-off-hover: #33415c; --pad-hh: #38bdf8; --pad-sn: #60a5fa; --pad-kick: #a78bfa; --pad-tom: #2dd4bf; }
 
 html.ben-pads .staff-container .snare-container,
 html.ben-pads .staff-container .hi-hat-container:not(.ben-ride-container) { background: none; box-shadow: none; }
@@ -1186,21 +1186,20 @@ html.ben-pads .kick .kick_splash[style*="color: rgb(0, 0, 0)"] { color: var(--pa
 #benLookMenu .ben-swatch { width: 12px; height: 12px; border-radius: 4px; display: inline-block; }
 
 /* =====================================================================
-   Purple colour scheme (html.ben-purple)
+   User colour (html.ben-tint): the variables come from benSetColour() in
+   index.html, generated from one picked colour (default purple).
    ===================================================================== */
-html.ben-purple { --ben-brand: #6d28d9; --ben-brand-soft: #f5f3ff; --ben-brand-ink: #ffffff;
-  --pad-hh: #a78bfa; --pad-sn: #7c3aed; --pad-kick: #5b21b6; --pad-tom: #c084fc; --pad-off: #f1eefa; --pad-off-hover: #e4ddf6; }
-html.ben-purple.ben-dark { --ben-brand: #a78bfa; --ben-brand-soft: #2e1065; --ben-brand-ink: #120d22;
-  --ben-bg: #0d0a18; --ben-surface: #17122a; --ben-line: #2c2447; --ben-chrome: #0d0a18; --ben-staff: #2c2447;
-  --pad-hh: #c4b5fd; --pad-sn: #a78bfa; --pad-kick: #8b5cf6; --pad-tom: #e9d5ff; --pad-off: #221a3a; --pad-off-hover: #2f2550; }
-html.ben-purple.ben-dark #TopNav, html.ben-purple.ben-dark #sheetMusicDiv .svgTarget { background: #120d22; }
-html.ben-purple.ben-dark #sheetMusicDiv.ben-pinned { background: linear-gradient(var(--ben-bg) 85%, rgba(13, 10, 24, 0)); }
-html.ben-purple.ben-dark .noteContextMenu > ul.list, html.ben-purple.ben-dark .ben-add-bar-menu, html.ben-purple.ben-dark .ben-dlg-card { background: #1d1733; }
-html.ben-purple.ben-dark .ben-bar-controls select, html.ben-purple.ben-dark #benGridAll select { background-color: #120d22; }
-html.ben-purple:not(.ben-dark) .ben-logo b, html.ben-purple .ben-logo b { color: var(--ben-brand); }
-html.ben-purple:not(.ben-dark) #metronome4ths.buttonSelected, html.ben-purple:not(.ben-dark) #metronome8ths.buttonSelected,
-html.ben-purple:not(.ben-dark) #metronome16ths.buttonSelected, html.ben-purple:not(.ben-dark) #metronomeTrip.buttonSelected,
-html.ben-purple:not(.ben-dark) #metronomeSext.buttonSelected { background: var(--ben-brand); }
+html.ben-tint.ben-dark #TopNav, html.ben-tint.ben-dark #sheetMusicDiv .svgTarget { background: var(--ben-tint-top); }
+html.ben-tint.ben-dark #sheetMusicDiv.ben-pinned { background: linear-gradient(var(--ben-bg) 85%, transparent); }
+html.ben-tint.ben-dark .noteContextMenu > ul.list, html.ben-tint.ben-dark .ben-add-bar-menu, html.ben-tint.ben-dark .ben-dlg-card { background: var(--ben-tint-menu); }
+html.ben-tint.ben-dark .ben-bar-controls select, html.ben-tint.ben-dark #benGridAll select { background-color: var(--ben-tint-top); }
+html.ben-tint .ben-logo b, html.ben-tint:not(.ben-dark) .ben-logo b { color: var(--ben-brand); }
+html.ben-tint:not(.ben-dark) #metronome4ths.buttonSelected, html.ben-tint:not(.ben-dark) #metronome8ths.buttonSelected,
+html.ben-tint:not(.ben-dark) #metronome16ths.buttonSelected, html.ben-tint:not(.ben-dark) #metronomeTrip.buttonSelected,
+html.ben-tint:not(.ben-dark) #metronomeSext.buttonSelected { background: var(--ben-brand); }
+#benLookMenu input[type=color] { width: 100%; height: 34px; padding: 2px; border: 1px solid var(--ben-line); border-radius: 8px; background: transparent; cursor: pointer; }
+#benLookMenu .ben-look-presets { display: flex; gap: 6px; margin-top: 6px; }
+#benLookMenu .ben-look-presets i { width: 20px; height: 20px; border-radius: 6px; cursor: pointer; display: inline-block; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.15); }
 .ben-logo { display: inline-flex; align-items: center; }
 .ben-logo-icon { width: 26px; height: 26px; border-radius: 7px; margin-right: 8px; }
 @media (max-width: 720px) { .ben-logo-icon { width: 22px; height: 22px; margin-right: 6px; } }
