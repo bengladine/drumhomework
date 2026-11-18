@@ -772,3 +772,8 @@ html.ben-dark { --ben-staff: #2b3850; }
 }
 .staff-container .hi-hat-container:not(.ben-ride-container) { box-shadow: inset 0 -2px 0 var(--ben-staff); }
 #metronomeTrip.buttonSelected, #metronomeSext.buttonSelected { background: #4ade80; color: #052e16 !important; }
+
+/* playback column always as tall as the rows that are shown (toms on/off, ride) */
+.staff-container .notes-container { position: relative; }
+.staff-container .background-highlight-container { height: auto !important; top: 0; bottom: 0; }
+.staff-container .bg-highlight { height: 100% !important; }

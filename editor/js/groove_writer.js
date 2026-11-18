@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795000323';
-import { GrooveUtils } from './groove_utils.js?v=1795000323';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795000495';
+import { GrooveUtils } from './groove_utils.js?v=1795000495';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -85,10 +85,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1795000323';
-import * as _perm from './permutations.js?v=1795000323';
-import * as _view from './viewHtml.js?v=1795000323';
-import * as _grid from './gridState.js?v=1795000323';
+} from './constants.js?v=1795000495';
+import * as _perm from './permutations.js?v=1795000495';
+import * as _view from './viewHtml.js?v=1795000495';
+import * as _grid from './gridState.js?v=1795000495';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -2463,7 +2463,7 @@ function GrooveWriter() {
         var prevMeter = meterFor(0).join('/');
 
         // Ben: more bars per line on wide screens (the sheet uses the full browser width)
-        var sheetW = (document.getElementById('svgTarget') || {}).offsetWidth || 1000;
+        var sheetW = root._benPrintLayout ? 1240 : (document.getElementById('svgTarget') || {}).offsetWidth || 1000;
         var numberOfMeasuresPerLine = Math.max(1, Math.round(sheetW / 620));
         var addon_abc;
 
@@ -5255,7 +5255,7 @@ function GrooveWriter() {
         '<div class="ben-dlg-card"><div class="ben-dlg-title">Sheet details</div>' +
         '<div class="ben-dlg-sub">Optional: shown on top of the printed / downloaded sheet.</div>' +
         '<div class="ben-dlg-fields"></div>' +
-        '<div class="ben-dlg-buttons"><button class="ben-dlg-cancel">Cancel</button><button class="ben-dlg-go"></button></div></div>';
+        '<div class="ben-dlg-buttons"><button class="ben-dlg-cancel">Cancel</button></div></div>';
       document.body.appendChild(dlg);
       dlg.addEventListener('click', function (e) {
         if (e.target === dlg) dlg.style.display = 'none';
@@ -5265,29 +5265,68 @@ function GrooveWriter() {
       };
     }
     if (fields && fields.parentNode !== dlg.querySelector('.ben-dlg-fields')) dlg.querySelector('.ben-dlg-fields').appendChild(fields);
-    var go = dlg.querySelector('.ben-dlg-go');
-    go.textContent = actionLabel;
-    go.onclick = function () {
-      dlg.style.display = 'none';
-      root.refresh_ABC();
-      setTimeout(onGo, 50);
-    };
+    // actionLabel/onGo may be a single action or a list of [label, fn] pairs
+    var actions = Array.isArray(actionLabel) ? actionLabel : [[actionLabel, onGo]];
+    var box = dlg.querySelector('.ben-dlg-buttons');
+    box.querySelectorAll('.ben-dlg-go').forEach((b) => b.remove());
+    actions.forEach(function (a) {
+      var go = document.createElement('button');
+      go.className = 'ben-dlg-go';
+      go.textContent = a[0];
+      go.onclick = function () {
+        dlg.style.display = 'none';
+        root.refresh_ABC();
+        setTimeout(a[1], 50);
+      };
+      box.appendChild(go);
+    });
     dlg.style.display = 'flex';
     var first = document.getElementById('tuneTitle');
     if (first && window.innerWidth > 720) first.focus();
   }
-  var originalPrintMusic = root.printMusic;
+  // Ben: print on A4 portrait, 2 bars per line, only the sheet music
+  root._benPrintLayout = false;
+  function printSheetPortrait() {
+    root._benPrintLayout = true;
+    root.refresh_ABC();
+    var svgs = Array.prototype.map
+      .call(document.querySelectorAll('#svgTarget svg'), function (el) {
+        return el.outerHTML;
+      })
+      .join('\n');
+    root._benPrintLayout = false;
+    root.refresh_ABC();
+    var title = (document.getElementById('tuneTitle') || {}).value || 'Beatsheet';
+    var html =
+      '<!DOCTYPE html><html><head><meta charset="utf-8"><title>' +
+      title.replace(/</g, '&lt;') +
+      '</title><style>@page{size:A4 portrait;margin:14mm}html,body{margin:0;background:#fff}' +
+      'svg{display:block;width:100%;height:auto;margin:0 0 4mm}</style></head><body>' +
+      svgs +
+      '</body></html>';
+    var frame = document.createElement('iframe');
+    frame.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;visibility:hidden';
+    document.body.appendChild(frame);
+    frame.onload = function () {
+      setTimeout(function () {
+        frame.contentWindow.focus();
+        frame.contentWindow.print();
+        setTimeout(function () {
+          frame.remove();
+        }, 2000);
+      }, 100);
+    };
+    frame.srcdoc = html;
+  }
   root.printMusic = function () {
-    var args = arguments;
-    sheetDetailsDialog('Print', function () {
-      originalPrintMusic.apply(root, args);
-    });
+    sheetDetailsDialog('Print', printSheetPortrait);
   };
-  var originalDownloadAnchorClick = root.DownloadAnchorClick;
-  root.DownloadAnchorClick = function (event) {
-    sheetDetailsDialog('Download…', function () {
-      originalDownloadAnchorClick.call(root, event);
-    });
+  root.DownloadAnchorClick = function () {
+    sheetDetailsDialog([
+      ['PNG image', function () { root.PNGSaveAs(); }],
+      ['SVG image', function () { root.SVGSaveAs(); }],
+      ['MIDI file', function () { root.MIDISaveAs(); }],
+    ]);
   };
 
   var originalABCHighlight = root.myGrooveUtils.highlightNoteInABCSVGFromPercentComplete;
