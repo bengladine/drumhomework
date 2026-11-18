@@ -1140,3 +1140,15 @@ html.ben-pads .line-labels .tom-label { color: var(--pad-tom); }
 
 /* style switch button */
 #benGridStyleToggle { font-size: 13px; }
+/* pads: stronger selectors so the off pad + ghost always show */
+html.ben-pads .notes-row-container .snare .snare_circle.note_part[style],
+html.ben-pads .notes-row-container .kick .kick_circle.note_part[style],
+html.ben-pads .notes-row-container .tom .tom_circle.note_part[style] { background: var(--pad-off) !important; border: none !important; }
+html.ben-pads .notes-row-container .snare .snare_circle.note_part[style*="background-color: rgb(0, 0, 0)"] { background: var(--pad-sn) !important; }
+html.ben-pads .notes-row-container .kick .kick_circle.note_part[style*="background-color: rgb(0, 0, 0)"] { background: var(--pad-kick) !important; }
+html.ben-pads .notes-row-container .tom .tom_circle.note_part[style*="background-color: rgb(0, 0, 0)"] { background: var(--pad-tom) !important; }
+html.ben-pads .notes-row-container .snare:has(.snare_ghost[style*="color: rgb(0, 0, 0)"]) .snare_circle.note_part[style] { background: var(--pad-sn) !important; opacity: 0.38; }
+html.ben-pads .notes-row-container .snare .snare_ghost.note_part[style] { color: transparent !important; }
+html.ben-pads .notes-row-container .snare:hover .snare_circle.note_part[style*="255, 255, 255"],
+html.ben-pads .notes-row-container .kick:hover .kick_circle.note_part[style*="255, 255, 255"],
+html.ben-pads .notes-row-container .tom:hover .tom_circle.note_part[style*="255, 255, 255"] { background: var(--pad-off-hover) !important; }
