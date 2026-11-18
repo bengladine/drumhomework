@@ -35,8 +35,8 @@ import {
   constant_ABC_T3_Normal,
   constant_ABC_T4_Normal,
   constant_NUMBER_OF_TOMS,
-} from './constants.js?v=1795001405';
-import { calc_notes_per_measure, isTripletDivision } from './musicMath.js?v=1795001405';
+} from './constants.js?v=1795001594';
+import { calc_notes_per_measure, isTripletDivision } from './musicMath.js?v=1795001594';
 
 function tablatureToABCNotationPerNote(drumType, tablatureChar) {
   switch (tablatureChar) {

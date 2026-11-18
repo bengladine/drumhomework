@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795001405';
-import { GrooveUtils } from './groove_utils.js?v=1795001405';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795001594';
+import { GrooveUtils } from './groove_utils.js?v=1795001594';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -85,10 +85,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1795001405';
-import * as _perm from './permutations.js?v=1795001405';
-import * as _view from './viewHtml.js?v=1795001405';
-import * as _grid from './gridState.js?v=1795001405';
+} from './constants.js?v=1795001594';
+import * as _perm from './permutations.js?v=1795001594';
+import * as _view from './viewHtml.js?v=1795001594';
+import * as _grid from './gridState.js?v=1795001594';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -4366,7 +4366,13 @@ function GrooveWriter() {
     var plus = document.getElementById('addMeasureButton');
     var mc = document.getElementById('measureContainer');
     if (plus && mc && plus.parentNode !== mc) mc.appendChild(plus);
-    if (plus) plus.style.gridRow = String(Math.max(1, class_number_of_measures));
+    if (plus) {
+      // sits right next to the last bar (same grid cell, pushed past the card)
+      var lastCard = document.getElementById('staff-container' + class_number_of_measures);
+      plus.style.gridRow = String(Math.max(1, class_number_of_measures));
+      plus.style.gridColumn = phone ? '' : '1';
+      plus.style.marginLeft = !phone && lastCard ? lastCard.offsetWidth + 16 + 'px' : '';
+    }
     for (var m = 0; m < class_number_of_measures; m++) {
       var card = document.getElementById('staff-container' + (m + 1));
       var grid = card && card.querySelector('.notes-row-container');
@@ -4391,6 +4397,10 @@ function GrooveWriter() {
       card.style.setProperty('--ben-z', z);
       card.classList.toggle("ben-fits", avail / natural >= 0.55);
     }
+    // now that the cards have their final width, put the "+" right after the last one
+    var plusBtn = document.getElementById('addMeasureButton');
+    var lastBar = document.getElementById('staff-container' + class_number_of_measures);
+    if (plusBtn && lastBar && !phone) plusBtn.style.marginLeft = lastBar.offsetWidth + 16 + 'px';
   }
   window.addEventListener('resize', function () {
     clearTimeout(fitBarsToScreen._t);

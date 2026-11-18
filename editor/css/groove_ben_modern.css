@@ -843,3 +843,58 @@ html:not(.ben-dark) #midiPlayer [class*="tempoOutput"], html:not(.ben-dark) #mid
   border: 1px solid var(--ben-line) !important; border-radius: 6px; padding: 1px 4px; text-align: center; font-weight: 600;
 }
 html.ben-dark #midiPlayer .tempoTextField { background: #0f172a !important; color: #e5e7eb !important; border-color: #334155 !important; }
+
+/* "+" shares the last bar's grid cell (pushed right with margin) */
+@media (min-width: 721px) {
+  #measureContainer { grid-template-columns: max-content; }
+  #measureContainer > #addMeasureButton { grid-column: 1; align-self: center; }
+}
+
+/* ---- action bar: a floating, centred dock that stays at the bottom of the screen ---- */
+#bottomButtonRow {
+  position: sticky;
+  bottom: 14px;
+  z-index: 25;
+  display: flex !important;
+  width: fit-content;
+  max-width: calc(100% - 24px);
+  margin: 6px auto 0 !important;
+  padding: 6px !important;
+  gap: 4px !important;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.9);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--ben-line);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.14);
+}
+#bottomButtonRow .pageBottomButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-width: 74px;
+  height: 52px;
+  margin: 0;
+  padding: 6px 10px;
+  border: none;
+  box-shadow: none;
+  border-radius: 11px;
+  background: transparent;
+  font-size: 11px;
+  letter-spacing: 0.03em;
+}
+#bottomButtonRow .pageBottomButton:hover { background: #f1f5f9; color: var(--ben-ink); }
+#bottomButtonRow .pageBottomButton .bottomButtonIcon { display: flex; align-items: center; justify-content: center; height: 22px; }
+#bottomButtonRow .pageBottomButton .bottomButtonIcon .fa-2x { font-size: 18px; }
+#bottomButtonRow .pageBottomButton.ClickToHide, #showHideRideButton.ClickToHide { background: var(--ben-ink); color: #fff; }
+html.ben-dark #bottomButtonRow { background: rgba(21, 30, 46, 0.9); border-color: var(--ben-line); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45); }
+html.ben-dark #bottomButtonRow .pageBottomButton { background: transparent; color: var(--ben-muted); }
+html.ben-dark #bottomButtonRow .pageBottomButton:hover { background: #1e293b; color: #fff; }
+html.ben-dark #bottomButtonRow .pageBottomButton.ClickToHide, html.ben-dark #showHideRideButton.ClickToHide { background: #e5e7eb; color: #0b1120; }
+@media (max-width: 720px) {
+  #bottomButtonRow { display: flex !important; flex-wrap: nowrap; overflow-x: auto; bottom: 8px; }
+  #bottomButtonRow .pageBottomButton { min-width: 56px; height: 46px; font-size: 9px; padding: 4px 6px; }
+}
