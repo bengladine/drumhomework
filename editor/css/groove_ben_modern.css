@@ -787,3 +787,27 @@ html.ben-dark { --ben-staff: #2b3850; }
 #benBarsPerLine:hover { color: var(--ben-ink); }
 html.ben-dark #benBarsPerLine { background: var(--ben-surface); border-color: var(--ben-line); }
 @media (max-width: 720px) { #benBarsPerLine { top: 6px; right: 40px; height: 28px; } }
+
+/* bigger coffee button */
+#benFooter .ben-coffee { font-size: 15px; padding: 11px 22px; font-weight: 700; }
+
+/* ---- light mode top bars: clean and light (dark mode keeps the dark bars) ---- */
+html:not(.ben-dark) #TopNav { background: #ffffff; border-bottom: 1px solid var(--ben-line); color: var(--ben-ink); }
+html:not(.ben-dark) .ben-logo { color: var(--ben-ink); }
+html:not(.ben-dark) .ben-logo b { color: #16a34a; }
+html:not(.ben-dark) .metronomeButton { color: #64748b; }
+html:not(.ben-dark) .metronomeButton:hover, html:not(.ben-dark) .rightButtons:hover { background: #f1f5f9; color: var(--ben-ink); }
+html:not(.ben-dark) .metronomeButton.buttonSelected { background: var(--ben-ink); color: #fff !important; }
+html:not(.ben-dark) #metronome4ths.buttonSelected, html:not(.ben-dark) #metronome8ths.buttonSelected,
+html:not(.ben-dark) #metronome16ths.buttonSelected, html:not(.ben-dark) #metronomeTrip.buttonSelected,
+html:not(.ben-dark) #metronomeSext.buttonSelected { background: #16a34a; color: #fff !important; }
+html:not(.ben-dark) #metronomeLabel, html:not(.ben-dark) #benGridAllLabel { color: #94a3b8; }
+html:not(.ben-dark) .rightButtons, html:not(.ben-dark) #TopNav a { color: #475569; }
+html:not(.ben-dark) #benGridAll, html:not(.ben-dark) #benUndoRedo { border-color: var(--ben-line); }
+html:not(.ben-dark) #benGridAll select { background: #f8fafc; color: var(--ben-ink); border-color: var(--ben-line); }
+html:not(.ben-dark) #midiPlayer, html:not(.ben-dark) #midiPlayer .playerControl { background: #f8fafc; box-shadow: 0 1px 0 var(--ben-line); }
+html:not(.ben-dark) #midiPlayer .midiPlayTime, html:not(.ben-dark) #midiPlayer .tempoLabel,
+html:not(.ben-dark) #midiPlayer .swingLabel, html:not(.ben-dark) #midiPlayer .tempoOutput,
+html:not(.ben-dark) #midiPlayer .swingOutput, html:not(.ben-dark) #midiPlayer span { color: #475569; }
+html:not(.ben-dark) #midiPlayer .tempoOutput { background: #e2e8f0; }
+html:not(.ben-dark) #midiPlayer .midiPlayImage { background-color: var(--ben-ink); color: #fff; }

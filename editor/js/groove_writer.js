@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795000711';
-import { GrooveUtils } from './groove_utils.js?v=1795000711';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795001025';
+import { GrooveUtils } from './groove_utils.js?v=1795001025';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -85,10 +85,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1795000711';
-import * as _perm from './permutations.js?v=1795000711';
-import * as _view from './viewHtml.js?v=1795000711';
-import * as _grid from './gridState.js?v=1795000711';
+} from './constants.js?v=1795001025';
+import * as _perm from './permutations.js?v=1795001025';
+import * as _view from './viewHtml.js?v=1795001025';
+import * as _grid from './gridState.js?v=1795001025';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -2466,7 +2466,7 @@ function GrooveWriter() {
 
         // Ben: more bars per line on wide screens (the sheet uses the full browser width)
         var sheetW = root._benPrintLayout ? 1240 : (document.getElementById('svgTarget') || {}).offsetWidth || 1000;
-        var numberOfMeasuresPerLine = Math.max(1, Math.round(sheetW / 620));
+        var numberOfMeasuresPerLine = Math.max(1, Math.round(sheetW / 760));
         var addon_abc;
 
         if (class_notes_per_measure >= 32) {
@@ -2560,7 +2560,7 @@ function GrooveWriter() {
     var svgTarget = document.getElementById('svgTarget');
     if (svgTarget) {
       renderWidth = svgTarget.offsetWidth - 100;
-      renderWidth = Math.floor(renderWidth * 0.72); // reduce width by 20% (This actually makes the notes bigger, because we scale up everything to max width)
+      renderWidth = Math.floor(renderWidth * 0.6); // reduce width by 20% (This actually makes the notes bigger, because we scale up everything to max width)
     }
 
     var fullABC = generate_ABC(renderWidth);
@@ -4713,6 +4713,7 @@ function GrooveWriter() {
 
   // bars that the play button plays: looped bars, else from the chosen bar, else all
   function barsToPlay(useSelection) {
+    if (root._benExportAll) useSelection = false; // audio export: always the whole groove
     var all = [];
     for (var m = 0; m < class_number_of_measures; m++) all.push(m);
     if (!useSelection) return all;
@@ -5355,14 +5356,135 @@ function GrooveWriter() {
   }
   root.printMusic = function () {
     sheetDetailsDialog('Print', printSheetPortrait);
+    var sub = document.querySelector('#benDetailsDialog .ben-dlg-sub');
+    if (sub) sub.textContent = 'Optional: shown on top of the printed sheet.';
   };
   root.DownloadAnchorClick = function () {
     sheetDetailsDialog([
+      ['PDF', function () { printSheetPortrait(); }],
       ['PNG image', function () { root.PNGSaveAs(); }],
-      ['SVG image', function () { root.SVGSaveAs(); }],
+      ['Audio (WAV)', function () { exportAudioWav(); }],
       ['MIDI file', function () { root.MIDISaveAs(); }],
     ]);
+    var sub = document.querySelector('#benDetailsDialog .ben-dlg-sub');
+    if (sub)
+      sub.textContent =
+        'Optional: shown on top of the sheet. PDF opens the print window: choose "Save as PDF". Audio plays the groove 4 times, with the metronome if it is on.';
   };
+
+  // Ben: render the groove to a WAV file in the browser (same drum samples as playback)
+  function exportAudioWav() {
+    var repeats = 4;
+    root._benExportAll = true;
+    var midiUrl;
+    try {
+      midiUrl = createMidiUrlFromClickableUI('our_MIDI');
+    } finally {
+      root._benExportAll = false;
+    }
+    var bin = atob(midiUrl.split('base64,')[1]);
+    var events = new Replayer(MidiFile(bin), 1).getData();
+    var hits = [];
+    var t = 0;
+    events.forEach(function (ev) {
+      t += ev[1] / 1000;
+      var e = ev[0].event;
+      if (e.subtype === 'noteOn' && e.velocity > 0) hits.push([t, e.noteNumber, e.velocity]);
+    });
+    var loopLen = t;
+    if (!hits.length || loopLen <= 0) {
+      alert('Nothing to export: the groove is empty.');
+      return;
+    }
+    var font = (window.MIDI && MIDI.Soundfont && (MIDI.Soundfont.gunshot || MIDI.Soundfont[Object.keys(MIDI.Soundfont)[0]])) || {};
+    var sr = 44100;
+    var total = loopLen * repeats + 2;
+    var ctx = new OfflineAudioContext(2, Math.ceil(total * sr), sr);
+    var notes = Array.from(new Set(hits.map((h) => h[1])));
+    Promise.all(
+      notes.map(function (n) {
+        var key = MIDI.noteToKey[n];
+        var data = key && font[key];
+        if (!data) return Promise.resolve([n, null]);
+        return fetch(data)
+          .then((r) => r.arrayBuffer())
+          .then((buf) => ctx.decodeAudioData(buf))
+          .then((ab) => [n, ab])
+          .catch(() => [n, null]);
+      })
+    )
+      .then(function (decoded) {
+        var buffers = {};
+        decoded.forEach((d) => (buffers[d[0]] = d[1]));
+        for (var r = 0; r < repeats; r++) {
+          hits.forEach(function (h) {
+            var b = buffers[h[1]];
+            if (!b) return;
+            var src = ctx.createBufferSource();
+            src.buffer = b;
+            var g = ctx.createGain();
+            g.gain.value = Math.min(1, h[2] / 127);
+            src.connect(g);
+            g.connect(ctx.destination);
+            src.start(r * loopLen + h[0]);
+          });
+        }
+        return ctx.startRendering();
+      })
+      .then(function (audio) {
+        var blob = audioBufferToWav(audio);
+        var a = document.createElement('a');
+        var title = ((document.getElementById('tuneTitle') || {}).value || 'beatsheet').trim().replace(/[^\w\- ]+/g, '');
+        a.href = URL.createObjectURL(blob);
+        a.download = (title || 'beatsheet') + '.wav';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function () {
+          URL.revokeObjectURL(a.href);
+          a.remove();
+        }, 4000);
+      })
+      .catch(function (err) {
+        alert('Sorry, the audio export failed: ' + err);
+      });
+  }
+  root.exportAudioWav = exportAudioWav;
+
+  function audioBufferToWav(audio) {
+    var ch = audio.numberOfChannels;
+    var len = audio.length;
+    var peak = 0;
+    var chans = [];
+    for (var c = 0; c < ch; c++) {
+      chans.push(audio.getChannelData(c));
+      for (var i = 0; i < len; i++) peak = Math.max(peak, Math.abs(chans[c][i]));
+    }
+    var norm = peak > 0.98 ? 0.98 / peak : 1; // avoid clipping when many notes hit together
+    var buf = new ArrayBuffer(44 + len * ch * 2);
+    var v = new DataView(buf);
+    var w = (o, str) => str.split('').forEach((x, k) => v.setUint8(o + k, x.charCodeAt(0)));
+    w(0, 'RIFF');
+    v.setUint32(4, 36 + len * ch * 2, true);
+    w(8, 'WAVE');
+    w(12, 'fmt ');
+    v.setUint32(16, 16, true);
+    v.setUint16(20, 1, true);
+    v.setUint16(22, ch, true);
+    v.setUint32(24, audio.sampleRate, true);
+    v.setUint32(28, audio.sampleRate * ch * 2, true);
+    v.setUint16(32, ch * 2, true);
+    v.setUint16(34, 16, true);
+    w(36, 'data');
+    v.setUint32(40, len * ch * 2, true);
+    var o = 44;
+    for (var j = 0; j < len; j++)
+      for (var k = 0; k < ch; k++) {
+        var x = Math.max(-1, Math.min(1, chans[k][j] * norm));
+        v.setInt16(o, x < 0 ? x * 0x8000 : x * 0x7fff, true);
+        o += 2;
+      }
+    return new Blob([buf], { type: 'audio/wav' });
+  }
 
   var originalABCHighlight = root.myGrooveUtils.highlightNoteInABCSVGFromPercentComplete;
   root.myGrooveUtils.highlightNoteInABCSVGFromPercentComplete = function (percentComplete) {
