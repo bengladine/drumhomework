@@ -992,3 +992,76 @@ body, #GrooveWriter, #RightHandContent, #TopNav, #midiPlayer, #sheetMusicDiv .sv
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
 }
+
+/* =====================================================================
+   Beatsheet palette: blue brand colour (replaces Groove Scribe's green).
+   Orange stays only for loops; amber is the dark-mode playback colour.
+   ===================================================================== */
+:root { --ben-brand: #2563eb; --ben-brand-soft: #eff6ff; --ben-brand-ink: #ffffff; --ben-green: var(--ben-brand); }
+html.ben-dark { --ben-brand: #60a5fa; --ben-brand-soft: #172554; --ben-brand-ink: #0b1120; }
+.ben-logo b, html:not(.ben-dark) .ben-logo b { color: var(--ben-brand); }
+#metronome4ths.buttonSelected, #metronome8ths.buttonSelected, #metronome16ths.buttonSelected,
+#metronomeTrip.buttonSelected, #metronomeSext.buttonSelected,
+html:not(.ben-dark) #metronome4ths.buttonSelected, html:not(.ben-dark) #metronome8ths.buttonSelected,
+html:not(.ben-dark) #metronome16ths.buttonSelected, html:not(.ben-dark) #metronomeTrip.buttonSelected,
+html:not(.ben-dark) #metronomeSext.buttonSelected { background: var(--ben-brand); color: var(--ben-brand-ink) !important; }
+.staff-container.ben-play-from { border-color: var(--ben-brand); box-shadow: inset 4px 0 0 var(--ben-brand), var(--ben-shadow); }
+.ben-sheet-cursor, .ben-sheet-cursor::before { background: var(--ben-brand); }
+.ben-sheet-cursor::before { background: none; border-top-color: var(--ben-brand); }
+#bottomButtonRow .pageBottomButton.ClickToHide, #showHideRideButton.ClickToHide,
+html.ben-dark #bottomButtonRow .pageBottomButton.ClickToHide, html.ben-dark #showHideRideButton.ClickToHide {
+  background: var(--ben-brand); color: var(--ben-brand-ink); border-color: var(--ben-brand);
+}
+.ben-bar-controls select:focus, #sheetMusicTextFields input:focus, #benDetailsDialog input.sheetMusicInputField:focus {
+  border-color: var(--ben-brand); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ben-brand) 22%, transparent); outline: none;
+}
+#addMeasureButton:hover { border-color: var(--ben-brand); color: var(--ben-brand) !important; background: var(--ben-brand-soft); }
+.noteContextMenu > ul.list li.ben-convert:hover { background: var(--ben-brand-soft); }
+.ben-dlg-buttons .ben-dlg-go, html.ben-dark .ben-dlg-buttons .ben-dlg-go { background: var(--ben-brand); border-color: var(--ben-brand); color: var(--ben-brand-ink); }
+#benSheetPin.on, html.ben-dark #benSheetPin.on { background: var(--ben-brand); border-color: var(--ben-brand); color: var(--ben-brand-ink); }
+html:not(.ben-dark) #midiPlayer .midiPlayImage { background-color: var(--ben-brand); }
+input[type='range'] { accent-color: var(--ben-brand); }
+#benFooter a { color: var(--ben-brand); }
+
+/* =====================================================================
+   Old Groove Scribe popups in the Beatsheet style
+   (Share, metronome auto speed-up, time signature, grooves list)
+   ===================================================================== */
+#fullURLPopup, #metronomeAutoSpeedupConfiguration, #timeSigPopup {
+  background: var(--ben-surface) !important; color: var(--ben-ink) !important;
+  border: 1px solid var(--ben-line) !important; border-radius: 16px !important;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.28) !important;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif !important;
+  padding: 22px 24px !important; animation: ben-menu-in 0.2s var(--ben-ease);
+}
+#fullURLPopupTitle, #metronomeAutoSpeedupOutputText, #timeSigPopupTitle {
+  font-family: inherit !important; font-size: 20px !important; font-weight: 700 !important; color: var(--ben-ink) !important;
+}
+#metronomeAutoSpeedupOutputText span { color: var(--ben-brand) !important; }
+#fullURLPopupSubTitle, #fullURLPopupSubSubTitle, #metronomeAutoSpeedupConfigurationKeepIncreasing,
+#metronomeAutoSpeedupConfigurationAmountLable, #metronomeAutoSpeedupConfigurationIntervalLable, .fullURLPopupCheckboxLabel {
+  font-family: inherit !important; color: var(--ben-muted) !important; font-size: 13px !important;
+}
+#metronomeAutoSpeedupConfiguration input[type='checkbox'], #fullURLPopup input[type='checkbox'] { accent-color: var(--ben-brand); }
+#metronomeAutoSpeedupConfiguration input[type='range']::-webkit-slider-runnable-track { background: var(--ben-line) !important; }
+#metronomeAutoSpeedupConfiguration input[type='range']::-webkit-slider-thumb { background: var(--ben-brand) !important; border: 2px solid var(--ben-surface) !important; box-shadow: 0 1px 4px rgba(0,0,0,.25); }
+#metronomeAutoSpeedupConfiguration input[type='range']::-moz-range-track { background: var(--ben-line) !important; }
+#metronomeAutoSpeedupConfiguration input[type='range']::-moz-range-thumb { background: var(--ben-brand) !important; }
+#metronomeAutoSpeedupConfigurationCloseButton, #fullURLPopupCopyButton, #timeSigPopupOK, #timeSigPopupCancel {
+  font-family: inherit !important; font-size: 14px !important; font-weight: 600 !important;
+  background: var(--ben-brand) !important; color: var(--ben-brand-ink) !important; border: none !important;
+  border-radius: 10px !important; padding: 9px 20px !important; cursor: pointer; box-shadow: none !important;
+}
+#timeSigPopupCancel { background: transparent !important; color: var(--ben-ink) !important; border: 1px solid var(--ben-line) !important; }
+#fullURLPopupTextField {
+  font-family: ui-monospace, Menlo, Consolas, monospace !important; font-size: 12px !important;
+  background: var(--ben-bg) !important; color: var(--ben-ink) !important;
+  border: 1px solid var(--ben-line) !important; border-radius: 10px !important; padding: 10px 12px !important;
+}
+#fullURLPopupCloseButton { color: var(--ben-muted) !important; }
+#fullURLPopupCloseButton:hover { color: var(--ben-ink) !important; }
+/* grooves list menu */
+#grooveListWrapper, #grooveListWrapper * { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif !important; }
+#grooveListWrapper > * { background: var(--ben-surface) !important; color: var(--ben-ink) !important; border-color: var(--ben-line) !important; }
+#grooveListWrapper a, #grooveListWrapper li { color: var(--ben-ink) !important; }
+#grooveListWrapper li:hover, #grooveListWrapper a:hover { background: var(--ben-brand-soft) !important; }
