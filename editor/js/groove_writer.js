@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795028453';
-import { GrooveUtils } from './groove_utils.js?v=1795028453';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795036889';
+import { GrooveUtils } from './groove_utils.js?v=1795036889';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -38,6 +38,7 @@ import {
   constant_ABC_HH_Ride,
   constant_ABC_HH_Ride_Bell,
   constant_ABC_HH_Stacker,
+  constant_ABC_HH_Crash2,
   constant_ABC_KI_Normal,
   constant_ABC_KI_SandK,
   constant_ABC_KI_Splash,
@@ -68,6 +69,7 @@ import {
   constant_OUR_MIDI_HIHAT_RIDE,
   constant_OUR_MIDI_HIHAT_RIDE_BELL,
   constant_OUR_MIDI_HIHAT_STACKER,
+  constant_OUR_MIDI_HIHAT_CRASH2,
   constant_OUR_MIDI_KICK_NORMAL,
   constant_OUR_MIDI_SNARE_ACCENT,
   constant_OUR_MIDI_SNARE_BUZZ,
@@ -85,10 +87,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1795028453';
-import * as _perm from './permutations.js?v=1795028453';
-import * as _view from './viewHtml.js?v=1795028453';
-import * as _grid from './gridState.js?v=1795028453';
+} from './constants.js?v=1795036889';
+import * as _perm from './permutations.js?v=1795036889';
+import * as _view from './viewHtml.js?v=1795036889';
+import * as _grid from './gridState.js?v=1795036889';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -445,6 +447,8 @@ function GrooveWriter() {
     document.getElementById('hh_cow_bell' + id).style.color = constant_note_hidden_color_rgb;
     document.getElementById('hh_crash' + id).style.color = constant_note_hidden_color_rgb;
     document.getElementById('hh_stacker' + id).style.color = constant_note_hidden_color_rgb;
+    if (document.getElementById('hh_crash2' + id))
+      document.getElementById('hh_crash2' + id).style.color = constant_note_hidden_color_rgb;
     document.getElementById('hh_metronome_normal' + id).style.color =
       constant_note_hidden_color_rgb;
     document.getElementById('hh_metronome_accent' + id).style.color =
@@ -477,6 +481,10 @@ function GrooveWriter() {
       case 'crash':
         document.getElementById('hh_crash' + id).style.color = constant_note_on_color_hex;
         if (make_sound) play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_CRASH);
+        break;
+      case 'crash2':
+        document.getElementById('hh_crash2' + id).style.color = constant_note_on_color_hex;
+        if (make_sound) play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_CRASH2);
         break;
       case 'stacker':
         document.getElementById('hh_stacker' + id).style.color = constant_note_on_color_hex;
@@ -3343,6 +3351,9 @@ function GrooveWriter() {
         case 's':
           setFunction(displayIndex, 'stacker', false);
           break;
+        case 'C':
+          if (drumType == 'H') setFunction(displayIndex, 'crash2', false);
+          break;
         case 'x':
           if (drumType == 'S') setFunction(displayIndex, 'xstick', false);
           else if (drumType == 'K') setFunction(displayIndex, 'splash', false);
@@ -3437,6 +3448,9 @@ function GrooveWriter() {
           break;
         case constant_ABC_HH_Stacker:
           setFunction(displayIndex, 'stacker', false);
+          break;
+        case constant_ABC_HH_Crash2:
+          setFunction(displayIndex, 'crash2', false);
           break;
         case constant_ABC_HH_Metronome_Normal:
           setFunction(displayIndex, 'metronome_normal', false);
@@ -4986,12 +5000,12 @@ function GrooveWriter() {
   // cymbal rows above the hi-hat: crash and ride. Each is a view on the hi-hat lane.
   var CYM_ROWS = [
     { key: 'crash', prefix: 'benC_', label: 'Crash', states: ['c'], on: 'crash', glyph: 'hh_crash',
-      menu: [['crash', 'Crash'], ['stacker', 'Stacker / china'], ['off', 'Off']], extra: { s: 'stacker' } },
+      menu: [['crash', 'Crash'], ['crash2', 'Crash 2'], ['stacker', 'Stacker / china'], ['off', 'Off']], extra: { s: 'stacker', C: 'crash2' } },
     { key: 'ride', prefix: 'benR_', label: 'Ride', states: ['r', 'b'], on: 'ride', glyph: 'hh_ride',
       menu: [['ride', 'Ride'], ['ride_bell', 'Ride bell'], ['off', 'Off']], extra: { b: 'ride_bell' } },
   ];
   // stacker (x) is shown in the crash row as well
-  CYM_ROWS[0].states.push('s');
+  CYM_ROWS[0].states.push('s', 'C');
   function cymRowFor(st) {
     for (var i = 0; i < CYM_ROWS.length; i++) if (CYM_ROWS[i].states.indexOf(st) >= 0) return CYM_ROWS[i];
     return null;

@@ -37,6 +37,7 @@ import {
   constant_OUR_MIDI_HIHAT_ACCENT,
   constant_OUR_MIDI_HIHAT_CRASH,
   constant_OUR_MIDI_HIHAT_STACKER,
+  constant_OUR_MIDI_HIHAT_CRASH2,
   constant_OUR_MIDI_HIHAT_METRONOME_NORMAL,
   constant_OUR_MIDI_HIHAT_RIDE,
   constant_OUR_MIDI_HIHAT_RIDE_BELL,
@@ -54,27 +55,27 @@ import {
   constant_OUR_MIDI_TOM2_NORMAL,
   constant_OUR_MIDI_TOM3_NORMAL,
   constant_OUR_MIDI_TOM4_NORMAL,
-} from './constants.js?v=1795028453';
+} from './constants.js?v=1795036889';
 import {
   getBrowserInfo as _getBrowserInfo,
   is_touch_device as _is_touch_device,
-} from './browserInfo.js?v=1795028453';
-import { createGrooveData } from './grooveData.js?v=1795028453';
+} from './browserInfo.js?v=1795036889';
+import { createGrooveData } from './grooveData.js?v=1795036889';
 import {
   getQueryVariableFromString as _getQueryVariableFromString,
   getGrooveDataFromUrlString as _urlParse,
   getUrlStringFromGrooveData as _urlBuild,
-} from './urlSerialization.js?v=1795028453';
+} from './urlSerialization.js?v=1795036889';
 import {
   MIDI_build_midi_url_count_in_track as _MIDI_build_midi_url_count_in_track,
   MIDI_from_HH_Snare_Kick_Arrays as _MIDI_from_HH_Snare_Kick_Arrays,
   create_MIDIURLFromGrooveData as _create_MIDIURLFromGrooveData,
-} from './midiFile.js?v=1795028453';
+} from './midiFile.js?v=1795036889';
 import {
   get_top_ABC_BoilerPlate as _get_top_ABC_BoilerPlate,
   create_ABC_from_snare_HH_kick_arrays as _create_ABC_from_snare_HH_kick_arrays,
   createABCFromGrooveData as _createABCFromGrooveData,
-} from './abcNotation.js?v=1795028453';
+} from './abcNotation.js?v=1795036889';
 import {
   parseTimeSigString as _parseTimeSigString,
   calc_notes_per_measure as _calc_notes_per_measure,
@@ -84,7 +85,7 @@ import {
   notesPerMeasureInFullSizeArray as _notesPerMeasureInFullSizeArray,
   getNoteScaler as _getNoteScaler,
   scaleNoteArrayToFullSize as _scaleNoteArrayToFullSize,
-} from './musicMath.js?v=1795028453';
+} from './musicMath.js?v=1795036889';
 import {
   noteArraysFromURLData as _noteArraysFromURLData,
   tabLineFromAbcNoteArray as _tabLineFromAbcNoteArray,
@@ -100,7 +101,7 @@ import {
   create_note_mapping_array_for_highlighting as _create_note_mapping_array_for_highlighting,
   figure_out_sticking_count_for_index as _figure_out_sticking_count_for_index,
   convert_sticking_counts_to_actual_counts as _convert_sticking_counts_to_actual_counts,
-} from './noteArrays.js?v=1795028453';
+} from './noteArrays.js?v=1795036889';
 
 var global_num_GrooveUtilsCreated = 0;
 // This module's own URL, used by getGrooveUtilsBaseLocation() to locate sibling
@@ -397,6 +398,7 @@ function GrooveUtils() {
   //		b: ride bell
   //		m: (more) cow bell
   //    s: stacker
+  //    C: crash 2 (Drumsheet)
   //    n: metroNome normal
   //    N: metroNome accent
   //		-: off
@@ -1308,6 +1310,7 @@ function GrooveUtils() {
         data.note == constant_OUR_MIDI_HIHAT_CRASH ||
         data.note == constant_OUR_MIDI_HIHAT_RIDE ||
         data.note == constant_OUR_MIDI_HIHAT_STACKER ||
+        data.note == constant_OUR_MIDI_HIHAT_CRASH2 ||
         data.note == constant_OUR_MIDI_HIHAT_RIDE_BELL ||
         data.note == constant_OUR_MIDI_HIHAT_COW_BELL ||
         data.note == constant_OUR_MIDI_HIHAT_METRONOME_NORMAL ||

@@ -3,17 +3,17 @@
 // triplet / sticking-count helpers that remain in GrooveUtils; the internal
 // helpers below are pure. GrooveUtils delegates its ABC methods here.
 
-import { constant_NUMBER_OF_TOMS } from './constants.js?v=1795028453';
-import { meterFor, usedSlots, addInlineMeter } from './meters.js?v=1795028453';
+import { constant_NUMBER_OF_TOMS } from './constants.js?v=1795036889';
+import { meterFor, usedSlots, addInlineMeter } from './meters.js?v=1795036889';
 import {
   isTripletDivisionFromNotesPerMeasure,
   notesPerMeasureInFullSizeArray,
   scaleNoteArrayToFullSize,
-} from './musicMath.js?v=1795028453';
+} from './musicMath.js?v=1795036889';
 import {
   create_note_mapping_array_for_highlighting,
   convert_sticking_counts_to_actual_counts,
-} from './noteArrays.js?v=1795028453';
+} from './noteArrays.js?v=1795036889';
 
 function moveAccentsOrOtherModifiersOutsideOfGroup(abcNoteStrings, modifier_to_look_for) {
   var found_modifier = false;
@@ -685,6 +685,7 @@ export function get_top_ABC_BoilerPlate(
     '%%map drum ^g heads=Xhead print=g       % Hi-Hat\n' +
     "%%map drum ^c' heads=Xhead print=c'   % Crash\n" +
     "%%map drum ^d' heads=Xhead print=d'   % Stacker\n" +
+    "%%map drum ^a' heads=Xhead print=e'   % Crash 2\n" +
     "%%map drum ^e' heads=Xhead print=e'   % Metronome click\n" +
     "%%map drum ^f' heads=Xhead print=f'   % Metronome beep\n" +
     "%%map drum ^A' heads=Xhead print=A'   % Ride\n" +

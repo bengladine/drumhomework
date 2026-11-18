@@ -182,6 +182,9 @@ export function buildStaffContainerHTML(baseindex, indexStartForNotes, ctx) {
 															<div class="hh_cow_bell note_part"    id="hh_cow_bell' +
       i +
       '"><i class="fa fa-plus-square-o"></i></div>\
+															<div class="hh_crash2 note_part"   id="hh_crash2' +
+      i +
+      '"><i class="fa fa-asterisk"></i><sup>2</sup></div>\
 															<div class="hh_stacker note_part"   id="hh_stacker' +
       i +
       '"><i class="fa fa-bars"></i></div>\

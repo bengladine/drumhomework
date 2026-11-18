@@ -14,6 +14,7 @@ import {
   constant_ABC_HH_Ride,
   constant_ABC_HH_Ride_Bell,
   constant_ABC_HH_Stacker,
+  constant_ABC_HH_Crash2,
   constant_ABC_KI_Normal,
   constant_ABC_KI_SandK,
   constant_ABC_KI_Splash,
@@ -35,8 +36,8 @@ import {
   constant_ABC_T3_Normal,
   constant_ABC_T4_Normal,
   constant_NUMBER_OF_TOMS,
-} from './constants.js?v=1795028453';
-import { calc_notes_per_measure, isTripletDivision } from './musicMath.js?v=1795028453';
+} from './constants.js?v=1795036889';
+import { calc_notes_per_measure, isTripletDivision } from './musicMath.js?v=1795036889';
 
 function tablatureToABCNotationPerNote(drumType, tablatureChar) {
   switch (tablatureChar) {
@@ -118,6 +119,9 @@ function tablatureToABCNotationPerNote(drumType, tablatureChar) {
       break;
     case 's':
       if (drumType == 'H') return constant_ABC_HH_Stacker;
+      break;
+    case 'C':
+      if (drumType == 'H') return constant_ABC_HH_Crash2;
       break;
     case 'x':
       switch (drumType) {
@@ -207,6 +211,9 @@ function abcNotationToTablaturePerNote(drumType, abcChar) {
       break;
     case constant_ABC_HH_Stacker:
       tabChar = 's';
+      break;
+    case constant_ABC_HH_Crash2:
+      tabChar = 'C';
       break;
     case constant_ABC_HH_Metronome_Normal:
       tabChar = 'n';
