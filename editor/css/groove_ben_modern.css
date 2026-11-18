@@ -818,3 +818,4 @@ html:not(.ben-dark) #midiPlayer input[type='range']::-webkit-slider-thumb { back
 html:not(.ben-dark) #midiPlayer input[type='range']::-moz-range-track { background: #e2e8f0; }
 html:not(.ben-dark) #midiPlayer input[type='range']::-moz-range-thumb { background: #ffffff; border: 1px solid #cbd5e1; }
 html:not(.ben-dark) #midiPlayer .tempoOutput { color: var(--ben-ink); }
+html:not(.ben-dark) #midiPlayer [class*="tempoOutput"], html:not(.ben-dark) #midiPlayer [id*="tempoOutput"] { background: #e2e8f0 !important; color: var(--ben-ink) !important; border-radius: 4px; }
