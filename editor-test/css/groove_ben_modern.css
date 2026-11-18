@@ -1,0 +1,1267 @@
+/* Ben: modern skin for the editor. Loaded last; layout sizes (48px bars, 72px nav) stay the same.
+   Note cells are NOT restyled: the editor reads note state back from their colors. */
+:root {
+  --ben-bg: #f3f4f6;
+  --ben-surface: #ffffff;
+  --ben-ink: #111827;
+  --ben-muted: #6b7280;
+  --ben-line: #e5e7eb;
+  --ben-chrome: #0f172a;
+  --ben-chrome-2: #1e293b;
+  --ben-chrome-hover: #334155;
+  --ben-accent: #f97316;
+  --ben-accent-soft: #fff7ed;
+  --ben-green: #16a34a;
+  --ben-radius: 12px;
+  --ben-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 4px 12px rgba(15, 23, 42, 0.06);
+}
+
+body,
+#GrooveWriter {
+  background: var(--ben-bg);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color: var(--ben-ink);
+}
+
+/* ---- left nav ---- */
+#LeftHandNav {
+  background: var(--ben-chrome);
+  border-right: none;
+}
+#logoInSubdivision {
+  background: var(--ben-chrome) !important;
+}
+.left-button {
+  color: #94a3b8;
+}
+.left-button-content {
+  border-bottom: none;
+  margin: 3px 6px;
+  height: 46px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+}
+#logoInSubdivision.left-button-content {
+  margin: 0;
+  border-radius: 0;
+  height: 48px;
+}
+.left-button.buttonSelected,
+.left-button.buttonSelected:hover {
+  background: var(--ben-accent);
+  color: #fff;
+  transform: none;
+}
+.myButton:hover,
+.left-button:hover {
+  background: var(--ben-chrome-hover);
+  color: #e2e8f0;
+  transform: none;
+}
+.left-button:active,
+.myButton:active {
+  background: var(--ben-chrome-2);
+}
+.left-button.disabled,
+.left-button.disabled:hover {
+  background: transparent;
+  color: #475569;
+}
+#timeSigLabel,
+#timeSubLabel {
+  color: #4ade80;
+}
+
+/* ---- top bar + player ---- */
+#TopNav {
+  background: var(--ben-chrome);
+  border-bottom: 1px solid var(--ben-chrome-2);
+  color: #cbd5e1;
+}
+#TopNav a,
+#TopNav .rightButtons {
+  color: #cbd5e1;
+}
+#midiPlayer {
+  background: var(--ben-chrome-2);
+  border-bottom: none;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.15);
+}
+#midiPlayer .playerControl {
+  background: var(--ben-chrome-2);
+}
+
+/* ---- content ---- */
+#RightHandContent {
+  background: var(--ben-bg);
+}
+#sheetMusicDiv {
+  background: transparent;
+  padding: 14px 16px 6px 16px;
+  box-sizing: border-box;
+}
+#sheetMusicDiv .svgTarget {
+  background: var(--ben-surface);
+  border-radius: var(--ben-radius);
+  box-shadow: var(--ben-shadow);
+  padding: 8px 0;
+}
+#sheetMusicTextFields {
+  background: transparent;
+  color: var(--ben-muted);
+  font-size: 13px;
+  padding: 6px 16px;
+  box-sizing: border-box;
+}
+#sheetMusicTextFields input {
+  border: 1px solid var(--ben-line);
+  border-radius: 8px;
+  padding: 5px 8px;
+  background: var(--ben-surface);
+  font: inherit;
+  color: var(--ben-ink);
+}
+#sheetMusicTextFields input:focus {
+  outline: none;
+  border-color: var(--ben-accent);
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
+}
+#musicalInput,
+#musicalInput.expanded {
+  background: transparent;
+}
+#measureContainer {
+  gap: 12px;
+  padding: 6px 16px 16px 16px;
+}
+
+/* ---- bar cards ---- */
+.staff-container {
+  border: 1px solid var(--ben-line);
+  border-radius: var(--ben-radius);
+  box-shadow: var(--ben-shadow);
+  overflow: hidden;
+  padding-bottom: 6px;
+}
+.staff-container.ben-play-from {
+  border-color: var(--ben-green);
+  box-shadow: inset 4px 0 0 var(--ben-green), var(--ben-shadow);
+}
+.staff-container.ben-looped {
+  border-color: var(--ben-accent);
+  background: var(--ben-accent-soft);
+}
+.line-labels {
+  font-weight: 500;
+  color: #374151;
+}
+/* rows are spaced by the label line height: keep it at the original 24px */
+.line-labels .hh-label,
+.line-labels .snare-label,
+.line-labels .kick-label,
+.line-labels .stickings-label,
+#tom1-label,
+#tom2-label,
+#tom3-label,
+#tom4-label {
+  font-size: 14px;
+  line-height: 24px;
+}
+.line-labels .hh-label:hover,
+.line-labels .snare-label:hover,
+.line-labels .kick-label:hover {
+  color: var(--ben-accent);
+}
+.closeMeasureButton {
+  color: #cbd5e1 !important;
+}
+.closeMeasureButton:hover {
+  color: #ef4444 !important;
+}
+
+.ben-bar-controls {
+  gap: 6px 12px;
+  padding: 8px 10px 6px 10px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--ben-line);
+  font-size: 12px;
+  color: var(--ben-muted);
+}
+.ben-bar-controls .ben-bar-label {
+  font-weight: 700;
+  color: var(--ben-ink);
+  font-size: 13px;
+}
+.ben-bar-controls select {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid var(--ben-line);
+  border-radius: 7px;
+  background: var(--ben-surface)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%236b7280'/%3E%3C/svg%3E")
+    no-repeat right 6px center;
+  padding: 3px 18px 3px 7px;
+  font: inherit;
+  font-size: 12px;
+  color: var(--ben-ink);
+  cursor: pointer;
+}
+.ben-bar-controls select:hover {
+  border-color: #cbd5e1;
+}
+.ben-bar-controls select:focus {
+  outline: none;
+  border-color: var(--ben-accent);
+}
+.ben-bar-controls .ben-tools {
+  gap: 2px;
+}
+.ben-bar-controls .ben-tools button {
+  border: none;
+  background: transparent;
+  border-radius: 7px;
+  padding: 4px 7px;
+  color: var(--ben-muted);
+}
+.ben-bar-controls .ben-tools button:hover:not(:disabled) {
+  background: #f1f5f9;
+  color: var(--ben-ink);
+}
+.ben-bar-controls .ben-tools button.on {
+  background: var(--ben-ink);
+  color: #fff;
+}
+
+.ben-add-bar-menu {
+  border: 1px solid var(--ben-line);
+  border-radius: var(--ben-radius);
+  padding: 6px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.18);
+}
+.ben-add-bar-menu button {
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 14px;
+}
+.ben-add-bar-menu button:hover {
+  background: #f1f5f9;
+}
+
+/* ---- bottom buttons ---- */
+#bottomButtonRow {
+  background: transparent;
+  color: var(--ben-muted);
+  padding: 8px 16px 24px 16px;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.pageBottomButton {
+  margin: 0;
+  padding: 10px 16px;
+  background: var(--ben-surface);
+  border: 1px solid var(--ben-line);
+  border-radius: 10px;
+  box-shadow: var(--ben-shadow);
+  font-size: 13px;
+  font-weight: 500;
+  min-width: 84px;
+}
+.pageBottomButton:hover {
+  color: var(--ben-ink);
+  border-color: #cbd5e1;
+}
+
+/* ---- sheet cursor/loop: match accent ---- */
+.ben-sheet-loop {
+  background: rgba(249, 115, 22, 0.12);
+  border-color: rgba(249, 115, 22, 0.6);
+}
+.ben-sheet-handle::after,
+.ben-sheet-loop-off {
+  background: var(--ben-accent);
+}
+.ben-sheet-cursor,
+.ben-sheet-cursor::before {
+  background: var(--ben-green);
+}
+.ben-sheet-cursor::before {
+  background: none;
+  border-top-color: var(--ben-green);
+}
+
+/* ---- add bar ---- */
+#addMeasureButton {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin: 8px;
+  border-radius: 50%;
+  border: 2px dashed #cbd5e1;
+  color: var(--ben-muted) !important;
+  font-size: 18px !important;
+  background: transparent;
+  cursor: pointer;
+  vertical-align: middle;
+  transition: all 0.12s ease;
+}
+#addMeasureButton:hover {
+  border-color: var(--ben-accent);
+  color: var(--ben-accent) !important;
+  background: var(--ben-accent-soft);
+}
+
+/* ---- ride row (view on the hi-hat lane) ---- */
+.ben-ride-container .hi-hat { cursor: pointer; }
+.hi-hat.ben-on-ride .note_part { visibility: hidden; }
+.ben-ride-on .ben-ride-label { margin-top: 16px; }
+.ben-ride-on .hh-label:not(.ben-ride-label) { margin-top: 18px; }
+.ben-ride-container { margin-bottom: 0; }
+#showHideRideButton.ClickToHide { color: var(--ben-accent); border-color: var(--ben-accent); }
+.hi-hat.ben-on-ride .hh_cross { visibility: visible; color: rgb(204, 204, 204) !important; }
+
+/* ---- no left nav: per-bar/per-beat controls replace it ---- */
+#LeftHandNav { display: none !important; }
+#TopNav { width: 100%; margin-left: 0; display: flex; align-items: center; gap: 4px; height: 52px; box-sizing: border-box; padding: 0 12px; }
+#midiPlayer { left: 0; width: 100%; top: 52px; }
+#RightHandContent { left: 0; width: 100%; top: 100px; height: calc(100% - 100px); }
+#GrooveWriter { min-width: 0; }
+#logoTextUpperLeft { padding: 0 8px 0 0; display: flex; align-items: center; }
+#upperLeft, #upperRight { margin-top: 0; display: flex; align-items: center; }
+#benUndoRedo { margin-left: auto; display: flex; align-items: center; border-right: 1px solid #334155; padding-right: 8px; }
+.rightButtons {
+  padding: 6px 10px;
+  margin: 0 2px;
+  border-radius: 8px;
+  color: #cbd5e1;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 0.12s ease;
+}
+.rightButtons:hover, .metronomeButton:hover { background: #1e293b; transform: none; font-weight: 500; color: #fff; }
+.metronomeButton { border-radius: 8px; padding: 4px 8px; }
+#metronomeLabel { color: #94a3b8; font-weight: 600; font-size: 12px; letter-spacing: 0.06em; }
+
+/* ---- context menus ---- */
+.noteContextMenu > ul.list {
+  width: auto;
+  min-width: 170px;
+  background: #fff;
+  color: var(--ben-ink);
+  border: 1px solid var(--ben-line);
+  border-radius: 12px;
+  padding: 6px;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18);
+  font-size: 13px;
+}
+.noteContextMenu > ul.list li {
+  padding: 7px 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.noteContextMenu > ul.list li:hover { background: #f1f5f9; }
+.noteContextMenu > ul.list li.ben-convert { color: var(--ben-muted); }
+.noteContextMenu > ul.list li:not(.ben-convert) + li.ben-convert { border-top: 1px solid var(--ben-line); border-radius: 0 0 8px 8px; margin-top: 4px; padding-top: 9px; }
+.noteContextMenu > ul.list li.ben-convert b { color: var(--ben-ink); font-weight: 600; }
+.noteContextMenu > ul.list li.ben-convert:hover { background: var(--ben-accent-soft); }
+
+/* ---- grid for all bars (replaces the old left bar) ---- */
+#benGridAll { display: inline-flex; align-items: center; gap: 6px; margin-left: 14px; padding-left: 14px; border-left: 1px solid #334155; }
+#benGridAllLabel { color: #94a3b8; font-weight: 600; font-size: 12px; letter-spacing: 0.06em; }
+#benGridAll select { background: #1e293b; color: #e2e8f0; border: 1px solid #334155; border-radius: 8px; padding: 4px 8px; font: inherit; font-size: 13px; cursor: pointer; }
+#benGridAll select:hover { border-color: #64748b; }
+.ben-bar-controls .ben-all-beats { font-weight: 600; color: var(--ben-ink); padding-right: 8px; border-right: 1px solid var(--ben-line); }
+
+/* =====================================================================
+   Smooth grid effects. Pure CSS (transform/opacity only = GPU, no slowdown).
+   Note state stays in the inline styles the editor reads; we only restyle
+   what you SEE via attribute selectors, so clicking/reading is untouched.
+   ===================================================================== */
+.hi-hat, .snare, .kick, .tom, .sticking { cursor: pointer; }
+
+/* circles: off = soft ring, hover = dark outline ring, on = black dot that pops in */
+.snare_circle, .kick_circle, .tom_circle {
+  transition: border-color 0.12s ease, box-shadow 0.12s ease, transform 0.1s ease;
+}
+.snare_circle[style*="background-color: rgb(255, 255, 255)"],
+.kick_circle[style*="background-color: rgb(255, 255, 255)"],
+.tom_circle[style*="background-color: rgb(255, 255, 255)"] {
+  border-color: #cfd5de !important;
+}
+.snare:hover .snare_circle,
+.kick:hover .kick_circle,
+.tom:hover .tom_circle {
+  border-color: var(--ben-ink) !important;
+  box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.12);
+}
+.snare:active .snare_circle,
+.kick:active .kick_circle,
+.tom:active .tom_circle {
+  transform: scale(0.88);
+  transition-duration: 0.05s;
+}
+.snare_circle[style*="background-color: rgb(0, 0, 0)"],
+.kick_circle[style*="background-color: rgb(0, 0, 0)"],
+.tom_circle[style*="background-color: rgb(0, 0, 0)"] {
+  background: radial-gradient(circle at 35% 30%, #4b5563, #111827 60%) !important;
+  border-color: #111827 !important;
+  animation: ben-pop 0.22s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+/* hi-hat / cymbal glyphs and snare ornaments */
+.hi-hat .note_part, .snare .note_part, .kick .note_part { transition: color 0.12s ease, transform 0.1s ease; }
+.hi-hat .note_part[style*="color: rgb(0, 0, 0)"],
+.snare .note_part[style*="color: rgb(0, 0, 0)"],
+.kick .note_part[style*="color: rgb(0, 0, 0)"] {
+  animation: ben-pop 0.22s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+.hi-hat .note_part[style*="color: rgb(204, 204, 204)"] { color: #d6dbe3 !important; }
+.hi-hat:hover .note_part[style*="color: rgb(204, 204, 204)"] { color: #6b7280 !important; }
+.hi-hat:active .note_part { transform: scale(0.85); }
+@keyframes ben-pop {
+  0% { transform: scale(0.4); opacity: 0.4; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* playback column highlight glides instead of jumping */
+.bg-highlight { transition: background-color 0.09s linear; border-radius: 8px; }
+
+/* sheet: hover shows which bar you would pick */
+.ben-sheet-hover {
+  position: absolute;
+  background: rgba(15, 23, 42, 0.04);
+  border-radius: 8px;
+  pointer-events: none;
+  transition: left 0.12s ease, top 0.12s ease, width 0.12s ease, height 0.12s ease, opacity 0.12s ease;
+}
+.ben-sheet-loop, .ben-sheet-cursor { transition: left 0.15s ease, top 0.15s ease, width 0.15s ease; }
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-highlight, .ben-sheet-hover, .note_part, .snare_circle, .kick_circle, .tom_circle { transition: none; }
+  .snare_circle, .kick_circle, .tom_circle, .note_part { animation: none !important; }
+}
+
+/* ---- pinned sheet ---- */
+#sheetMusicDiv { position: relative; }
+#sheetMusicDiv.ben-pinned {
+  position: sticky;
+  top: var(--ben-header-h, 100px);
+  z-index: 20;
+  background: linear-gradient(var(--ben-bg) 85%, rgba(243, 244, 246, 0));
+  padding-bottom: 10px;
+}
+#sheetMusicDiv.ben-pinned .svgTarget { max-height: 34vh; overflow-y: auto; scrollbar-width: thin; }
+.staff-container { scroll-margin-top: calc(var(--ben-header-h, 100px) + var(--ben-sheet-h, 0px) + 10px); scroll-margin-bottom: 10px; }
+#benSheetPin {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  z-index: 6;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--ben-line);
+  border-radius: 8px;
+  background: var(--ben-surface);
+  color: var(--ben-muted);
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+#benSheetPin:hover { color: var(--ben-ink); border-color: #cbd5e1; }
+#benSheetPin.on { background: var(--ben-ink); color: #fff; border-color: var(--ben-ink); }
+/* sticky needs the page (not RightHandContent / the sheet's own wrapper) as its scroll box */
+#RightHandContent { overflow: visible; }
+#RightHandContent > .Printable { display: contents; }
+
+/* ---- sheet uses the full browser width ---- */
+#sheetMusicDiv.fullWidthEle { max-width: none; padding: 0 0 6px 0; }
+#sheetMusicDiv .svgTarget { border-radius: 0; box-shadow: 0 1px 0 var(--ben-line), 0 6px 14px rgba(15, 23, 42, 0.05); padding: 10px 24px; box-sizing: border-box; }
+#sheetMusicDiv.ben-pinned { padding-bottom: 8px; }
+#benSheetPin { top: 10px; right: 14px; }
+
+/* flash the grid bar you picked in the sheet */
+@keyframes ben-flash { 0% { box-shadow: 0 0 0 4px rgba(17, 24, 39, 0.35); } 100% { box-shadow: var(--ben-shadow); } }
+.staff-container.ben-flash { animation: ben-flash 0.9s ease-out; }
+#TopNav, #midiPlayer, #midiPlayer.fullWidthEle { max-width: none; }
+
+/* =====================================================================
+   Touch screens: no sticky hover look after a tap
+   ===================================================================== */
+@media (hover: none) {
+  .snare:hover .snare_circle, .kick:hover .kick_circle, .tom:hover .tom_circle {
+    border-color: inherit;
+    box-shadow: none;
+  }
+  .snare:hover .snare_circle[style*="background-color: rgb(255, 255, 255)"],
+  .kick:hover .kick_circle[style*="background-color: rgb(255, 255, 255)"],
+  .tom:hover .tom_circle[style*="background-color: rgb(255, 255, 255)"] { border-color: #cfd5de !important; }
+  .snare:hover .snare_circle[style*="background-color: rgb(0, 0, 0)"],
+  .kick:hover .kick_circle[style*="background-color: rgb(0, 0, 0)"],
+  .tom:hover .tom_circle[style*="background-color: rgb(0, 0, 0)"] { border-color: #111827 !important; }
+  .hi-hat:hover .note_part[style*="color: rgb(204, 204, 204)"] { color: #d6dbe3 !important; }
+  .ben-sheet-hover { display: none; }
+  .hi-hat, .snare, .kick, .tom, .sticking { -webkit-tap-highlight-color: transparent; }
+}
+
+/* =====================================================================
+   Phones
+   ===================================================================== */
+@media (max-width: 720px) {
+  /* top bar: one scrollable row, icons only where possible */
+  #TopNav { height: 48px; padding: 0 8px; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; white-space: nowrap; }
+  #TopNav::-webkit-scrollbar { display: none; }
+  #logoTextUpperLeft img { height: 22px; }
+  #metronomeLabel, #metronomeOptionsAnchor, #permutationAnchor, #benGridAllLabel { display: none !important; }
+  #benGridAll { margin-left: 6px; padding-left: 6px; }
+  #benUndoRedo { margin-left: 6px; border: none; padding-right: 0; }
+  .rightButtons { padding: 6px 7px; font-size: 12px; }
+  #benUndoRedo .rightButtons { font-size: 0; }
+  #benUndoRedo .rightButtons i { font-size: 16px; }
+  .metronomeButton { padding: 4px 6px; font-size: 13px; }
+  #midiPlayer { top: 48px; }
+
+  /* sheet: smaller when pinned */
+  #sheetMusicDiv .svgTarget { padding: 6px 4px; }
+  #sheetMusicDiv.ben-pinned .svgTarget { max-height: 26vh; }
+  #RightHandContent .svgTarget svg { margin-left: 0; margin-right: 0; width: 100%; }
+  #benSheetPin { top: 6px; right: 6px; width: 28px; height: 28px; }
+
+  /* title fields stack */
+  #sheetMusicTextFields { display: flex; flex-direction: column; gap: 6px; padding: 8px 10px; }
+  #sheetMusicTextFields input { width: 100%; box-sizing: border-box; }
+  #KeyButton { display: none; }
+
+  /* bars: full width cards; swipe sideways inside a bar, labels stay put */
+  #measureContainer { padding: 6px 6px 12px 6px; gap: 10px; }
+  .staff-container { width: 100%; box-sizing: border-box; overflow-x: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
+  .staff-container .line-labels { position: sticky; left: 0; z-index: 3; background: inherit; width: 58px; box-shadow: 4px 0 6px -4px rgba(15, 23, 42, 0.15); }
+  .staff-container.ben-looped .line-labels { background: var(--ben-accent-soft); }
+  .staff-container:not(.ben-looped) .line-labels { background: var(--ben-surface); }
+  .line-labels .hh-label, .line-labels .snare-label, .line-labels .kick-label, .line-labels .stickings-label,
+  #tom1-label, #tom2-label, #tom3-label, #tom4-label { font-size: 12px; margin-left: 2px; }
+  .ben-bar-controls { position: sticky; left: 0; width: calc(100vw - 14px); box-sizing: border-box; gap: 6px 8px; }
+  .ben-bar-controls .ben-tools { margin-left: 0; width: 100%; justify-content: space-between; }
+  .ben-bar-controls .ben-tools button { padding: 6px 9px; font-size: 14px; }
+  .ben-bar-controls select { font-size: 14px; padding: 4px 18px 4px 6px; }
+
+  /* bottom buttons: compact grid */
+  #bottomButtonRow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 8px 8px 20px 8px; }
+  .pageBottomButton { min-width: 0; padding: 8px 4px; font-size: 11px; }
+  .pageBottomButton .fa-2x { font-size: 1.5em; }
+
+  /* menus fit the screen */
+  .noteContextMenu > ul.list { max-width: calc(100vw - 16px); max-height: 70vh; overflow-y: auto; }
+}
+
+/* hidden toms take no room at all (they used to leave empty gaps between rows) */
+.toms-container:not([style*="visible"]),
+.tom-label:not([style*="visible"]) { display: none !important; }
+
+@media (max-width: 720px) {
+  /* title / author / comment go below the bars, out of the way */
+  #RightHandContent > .nonPrintable { display: flex; flex-direction: column; }
+  #RightHandContent > .nonPrintable > #musicalInput { order: 1; }
+  #RightHandContent > .nonPrintable > #bottomButtonRow { order: 2; }
+  #RightHandContent > .nonPrintable > #sheetMusicTextFields { order: 3; padding-bottom: 24px; }
+  #RightHandContent > .nonPrintable > * { order: 4; }
+
+  /* the whole bar fits: no sideways swiping, labels readable despite the zoom */
+  .staff-container.ben-fits { overflow-x: hidden; }
+  .staff-container.ben-fits .line-labels { position: static; box-shadow: none; width: auto; }
+  .staff-container .line-labels .hh-label, .staff-container .line-labels .snare-label,
+  .staff-container .line-labels .kick-label, .staff-container .line-labels .stickings-label,
+  .staff-container .line-labels .tom-label {
+    font-size: calc(10px / var(--ben-z, 1));
+    margin-left: 0;
+  }
+  .staff-container .closeMeasureButton { display: none; }
+  /* tighter grid on phones: no gaps between cells, small gap between beats */
+  .staff-container .hi-hat, .staff-container .snare, .staff-container .kick,
+  .staff-container .tom, .staff-container .sticking { margin-left: 0; margin-right: 0; }
+  .staff-container .space_between_note_groups { width: 8px; }
+  .staff-container .hi-hat, .staff-container .snare, .staff-container .kick,
+  .staff-container .tom, .staff-container .sticking { width: 26px; }
+  .staff-container .bg-highlight { width: 28px !important; }
+
+  .staff-container .line-labels { width: calc(38px / var(--ben-z, 1)) !important; min-width: 0; }
+  .ben-bar-controls .ben-tools button { padding: 8px 10px; }
+}
+@media (max-width: 720px) {
+  /* compact bar toolbar: meter + "all" on one row, the 4 beats on the next, tools below */
+  .ben-bar-controls { gap: 6px; padding: 8px; }
+  .ben-bar-controls .ben-beat { font-size: 11px; color: var(--ben-muted); }
+  .ben-bar-controls .ben-beat:not(.ben-all-beats) select { width: 64px; padding: 3px 14px 3px 5px; font-size: 12px; background-position: right 4px center; }
+  .ben-bar-controls .ben-all-beats { border-right: none; padding-right: 0; flex: 1; }
+  .ben-bar-controls .ben-all-beats select { width: 100%; }
+}
+@media (max-width: 720px) {
+  .ben-bar-controls .ben-all-beats { display: inline-flex; align-items: center; gap: 4px; flex: 0 0 auto; }
+  .ben-bar-controls .ben-all-beats select { width: 64px; }
+}
+
+/* ---- title/author/comment: only in the print/download dialog ---- */
+#RightHandContent #sheetMusicTextFields { display: none !important; }
+#totalPlayTime, #midiTextOutput { display: none !important; }
+#benDetailsDialog {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(15, 23, 42, 0.45);
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.ben-dlg-card { background: #fff; border-radius: 14px; padding: 18px; width: 100%; max-width: 420px; box-shadow: 0 20px 50px rgba(15, 23, 42, 0.3); font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+.ben-dlg-title { font-weight: 700; font-size: 16px; color: var(--ben-ink); }
+.ben-dlg-sub { font-size: 13px; color: var(--ben-muted); margin: 4px 0 12px; }
+#benDetailsDialog #sheetMusicTextFields { display: flex !important; flex-direction: column; gap: 10px; padding: 0; background: none; max-width: none; text-align: left; }
+#benDetailsDialog .sheetMusicTextField { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--ben-muted); }
+#benDetailsDialog .sheetMusicTextField b { font-weight: 600; }
+#benDetailsDialog input.sheetMusicInputField { width: 100%; box-sizing: border-box; border: 1px solid var(--ben-line); border-radius: 8px; padding: 8px 10px; font: inherit; font-size: 14px; color: var(--ben-ink); }
+#benDetailsDialog #KeyButton { display: none; }
+.ben-dlg-buttons { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+.ben-dlg-buttons button { border-radius: 9px; padding: 9px 16px; font: inherit; font-size: 14px; cursor: pointer; border: 1px solid var(--ben-line); background: #fff; }
+.ben-dlg-buttons .ben-dlg-go { background: var(--ben-ink); color: #fff; border-color: var(--ben-ink); }
+
+/* ---- phones & short screens: the top bar scrolls away, only the player stays ---- */
+@media (max-width: 720px), (max-height: 520px) {
+  #GrooveWriter > .nonPrintable:first-child { display: contents; }
+  #TopNav { position: static; }
+  #midiPlayer { position: sticky; top: 0; z-index: 30; }
+  #RightHandContent { top: 0; height: auto; }
+  #sheetMusicDiv.ben-pinned { top: var(--ben-header-h, 48px) !important; }
+}
+@media (max-width: 720px), (max-height: 520px) {
+  #TopNav { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
+  #TopNav::-webkit-scrollbar { display: none; }
+  #permutationAnchor { display: none !important; }
+  #measureContainer { justify-content: center; }
+}
+
+/* ---- Drumsheet branding ---- */
+.ben-logo { font-size: 20px; font-weight: 800; letter-spacing: -0.02em; color: #fff; white-space: nowrap; line-height: 1; }
+.ben-logo b { font-weight: 800; color: #4ade80; }
+#logoTextUpperLeft img { display: none; }
+#shortURLLabel { display: none !important; }
+
+#benFooter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 18px;
+  padding: 18px 16px 28px;
+  font-size: 12px;
+  color: var(--ben-muted);
+  text-align: center;
+}
+#benFooter a { color: var(--ben-ink); text-decoration: none; font-weight: 600; }
+#benFooter a:hover { text-decoration: underline; }
+#benFooter .ben-coffee {
+  background: #fff;
+  border: 1px solid var(--ben-line);
+  border-radius: 999px;
+  padding: 7px 14px;
+  box-shadow: var(--ben-shadow);
+  font-size: 13px;
+}
+#benFooter .ben-coffee:hover { text-decoration: none; border-color: #cbd5e1; }
+@media (max-width: 720px), (max-height: 520px) {
+  #RightHandContent > .nonPrintable > #benFooter { order: 3; }
+  .ben-logo { font-size: 17px; }
+}
+
+/* metronome: make the active choice obvious */
+.metronomeButton { color: #94a3b8; font-weight: 500; transition: background 0.12s ease, color 0.12s ease; }
+.metronomeButton.buttonSelected { background: #f1f5f9; color: var(--ben-chrome) !important; font-weight: 700; }
+#metronome4ths.buttonSelected, #metronome8ths.buttonSelected, #metronome16ths.buttonSelected { background: #4ade80; color: #052e16 !important; }
+
+/* =====================================================================
+   Dark mode (html.ben-dark). Only the LOOK changes: the editor reads note
+   state from inline styles, which stay untouched.
+   ===================================================================== */
+html.ben-dark {
+  --ben-bg: #0b1120;
+  --ben-surface: #151e2e;
+  --ben-ink: #e5e7eb;
+  --ben-muted: #94a3b8;
+  --ben-line: #263247;
+  --ben-accent-soft: #2a1a0c;
+  --ben-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.3);
+  color-scheme: dark;
+}
+html.ben-dark body, html.ben-dark #GrooveWriter, html.ben-dark #RightHandContent { background: var(--ben-bg); color: var(--ben-ink); }
+/* sheet music: dark paper (invert keeps hues, so colored highlights stay recognisable) */
+html.ben-dark #sheetMusicDiv .svgTarget svg { filter: invert(0.9) hue-rotate(180deg); }
+html.ben-dark #sheetMusicDiv .svgTarget { background: #151e2e; }
+html.ben-dark #sheetMusicDiv.ben-pinned { background: linear-gradient(var(--ben-bg) 85%, rgba(11, 17, 32, 0)); }
+html.ben-dark .ben-sheet-hover { background: rgba(255, 255, 255, 0.05); }
+/* bar cards */
+html.ben-dark .staff-container { background: var(--ben-surface); border-color: var(--ben-line); }
+html.ben-dark .staff-container .line-labels { background: var(--ben-surface) !important; }
+html.ben-dark .staff-container.ben-looped, html.ben-dark .staff-container.ben-looped .line-labels { background: #22180f !important; }
+html.ben-dark .line-labels, html.ben-dark .line-labels div { color: #cbd5e1; }
+html.ben-dark [class^="staff-line-"] { border-top-color: #2b3850 !important; }
+html.ben-dark .ben-bar-controls select { background-color: #0f172a; color: var(--ben-ink); border-color: var(--ben-line); }
+html.ben-dark .ben-bar-controls .ben-tools button { color: var(--ben-muted); }
+html.ben-dark .ben-bar-controls .ben-tools button:hover:not(:disabled) { background: #1e293b; color: #fff; }
+html.ben-dark .ben-bar-controls .ben-tools button.on { background: #e5e7eb; color: #0b1120; }
+/* notes: off = dim ring, on = light dot */
+html.ben-dark .snare_circle[style*="background-color: rgb(255, 255, 255)"],
+html.ben-dark .kick_circle[style*="background-color: rgb(255, 255, 255)"],
+html.ben-dark .tom_circle[style*="background-color: rgb(255, 255, 255)"] {
+  background: transparent !important;
+  border-color: #334155 !important;
+}
+html.ben-dark .snare_circle[style*="background-color: rgb(0, 0, 0)"],
+html.ben-dark .kick_circle[style*="background-color: rgb(0, 0, 0)"],
+html.ben-dark .tom_circle[style*="background-color: rgb(0, 0, 0)"] {
+  background: radial-gradient(circle at 35% 30%, #ffffff, #cbd5e1 65%) !important;
+  border-color: #e2e8f0 !important;
+}
+html.ben-dark .snare:hover .snare_circle, html.ben-dark .kick:hover .kick_circle, html.ben-dark .tom:hover .tom_circle {
+  border-color: #e5e7eb !important;
+  box-shadow: 0 0 0 3px rgba(229, 231, 235, 0.15);
+}
+html.ben-dark .hi-hat .note_part[style*="color: rgb(0, 0, 0)"],
+html.ben-dark .snare .note_part[style*="color: rgb(0, 0, 0)"],
+html.ben-dark .kick .note_part[style*="color: rgb(0, 0, 0)"],
+html.ben-dark .tom .note_part[style*="color: rgb(0, 0, 0)"] { color: #f1f5f9 !important; }
+html.ben-dark .snare .note_part[style*="color: rgb(255, 255, 255)"] { color: #0b1120 !important; }
+html.ben-dark .hi-hat .note_part[style*="color: rgb(204, 204, 204)"],
+html.ben-dark .hi-hat.ben-on-ride .hh_cross { color: #334155 !important; }
+html.ben-dark .hi-hat:hover .note_part[style*="color: rgb(204, 204, 204)"] { color: #94a3b8 !important; }
+/* bottom buttons, footer, menus, dialogs */
+html.ben-dark .pageBottomButton { background: var(--ben-surface); border-color: var(--ben-line); color: var(--ben-muted); }
+html.ben-dark .pageBottomButton:hover { color: #fff; border-color: #475569; }
+html.ben-dark #addMeasureButton { border-color: #475569; }
+html.ben-dark #benFooter .ben-coffee { background: var(--ben-surface); border-color: var(--ben-line); }
+html.ben-dark .noteContextMenu > ul.list, html.ben-dark .ben-add-bar-menu, html.ben-dark .ben-dlg-card { background: #1b2536; color: var(--ben-ink); border-color: var(--ben-line); }
+html.ben-dark .noteContextMenu > ul.list li:hover, html.ben-dark .ben-add-bar-menu button:hover { background: #263247; }
+html.ben-dark .ben-add-bar-menu button { color: var(--ben-ink); }
+html.ben-dark #benDetailsDialog input.sheetMusicInputField { background: #0f172a; color: var(--ben-ink); border-color: var(--ben-line); }
+html.ben-dark .ben-dlg-buttons button { background: #0f172a; color: var(--ben-ink); border-color: var(--ben-line); }
+html.ben-dark .ben-dlg-buttons .ben-dlg-go { background: #e5e7eb; color: #0b1120; }
+html.ben-dark #benSheetPin { background: var(--ben-surface); border-color: var(--ben-line); }
+html.ben-dark #benSheetPin.on { background: #e5e7eb; color: #0b1120; }
+/* theme toggle button */
+#benThemeToggle { font-size: 15px; }
+
+/* Permutations (old practice feature) is hidden until it is tested with the new features */
+#permutationAnchor { display: none !important; }
+
+/* dark mode: playback highlight in a soft amber instead of blue (blue vanished on the dark background) */
+html.ben-dark .bg-highlight[style*="50, 126, 173"] { background: rgba(224, 138, 60, 0.22) !important; box-shadow: inset 0 0 0 1px rgba(224, 138, 60, 0.35); }
+/* the sheet is colour-inverted in dark mode; this fill renders as the same amber after the filter */
+html.ben-dark .abcr.highlighted { fill: rgb(222, 104, 7) !important; fill-opacity: 0.35; }
+
+/* Grid lines: the original 5 fixed "staff lines" ran through random rows (toms) once rows
+   can be shown/hidden. Instead: one line through the snare row, one under the hi-hat. */
+:root { --ben-staff: #d6dbe3; }
+html.ben-dark { --ben-staff: #2b3850; }
+.staff-container [class^="staff-line-"] { display: none !important; }
+.staff-container .snare-container {
+  background: linear-gradient(to bottom, transparent calc(50% - 1px), var(--ben-staff) calc(50% - 1px),
+    var(--ben-staff) calc(50% + 1px), transparent calc(50% + 1px));
+}
+.staff-container .hi-hat-container:not(.ben-ride-container) { box-shadow: inset 0 -2px 0 var(--ben-staff); }
+#metronomeTrip.buttonSelected, #metronomeSext.buttonSelected { background: #4ade80; color: #052e16 !important; }
+
+/* playback column always as tall as the rows that are shown (toms on/off, ride) */
+.staff-container .notes-container { position: relative; }
+.staff-container .background-highlight-container { height: auto !important; top: 0; bottom: 0; }
+.staff-container .bg-highlight { height: 100% !important; }
+
+/* bars-per-line setting, next to the pin */
+#benBarsPerLine {
+  position: absolute; top: 10px; right: 52px; z-index: 6; height: 30px;
+  border: 1px solid var(--ben-line); border-radius: 8px; background: var(--ben-surface); color: var(--ben-muted);
+  font: inherit; font-size: 12px; padding: 0 8px; cursor: pointer;
+}
+#benBarsPerLine:hover { color: var(--ben-ink); }
+html.ben-dark #benBarsPerLine { background: var(--ben-surface); border-color: var(--ben-line); }
+@media (max-width: 720px) { #benBarsPerLine { top: 6px; right: 40px; height: 28px; } }
+
+/* bigger coffee button */
+#benFooter .ben-coffee { font-size: 15px; padding: 11px 22px; font-weight: 700; }
+
+/* ---- light mode top bars: clean and light (dark mode keeps the dark bars) ---- */
+html:not(.ben-dark) #TopNav { background: #ffffff; border-bottom: 1px solid var(--ben-line); color: var(--ben-ink); }
+html:not(.ben-dark) .ben-logo { color: var(--ben-ink); }
+html:not(.ben-dark) .ben-logo b { color: #16a34a; }
+html:not(.ben-dark) .metronomeButton { color: #64748b; }
+html:not(.ben-dark) .metronomeButton:hover, html:not(.ben-dark) .rightButtons:hover { background: #f1f5f9; color: var(--ben-ink); }
+html:not(.ben-dark) .metronomeButton.buttonSelected { background: var(--ben-ink); color: #fff !important; }
+html:not(.ben-dark) #metronome4ths.buttonSelected, html:not(.ben-dark) #metronome8ths.buttonSelected,
+html:not(.ben-dark) #metronome16ths.buttonSelected, html:not(.ben-dark) #metronomeTrip.buttonSelected,
+html:not(.ben-dark) #metronomeSext.buttonSelected { background: #16a34a; color: #fff !important; }
+html:not(.ben-dark) #metronomeLabel, html:not(.ben-dark) #benGridAllLabel { color: #94a3b8; }
+html:not(.ben-dark) .rightButtons, html:not(.ben-dark) #TopNav a { color: #475569; }
+html:not(.ben-dark) #benGridAll, html:not(.ben-dark) #benUndoRedo { border-color: var(--ben-line); }
+html:not(.ben-dark) #benGridAll select { background: #f8fafc; color: var(--ben-ink); border-color: var(--ben-line); }
+html:not(.ben-dark) #midiPlayer, html:not(.ben-dark) #midiPlayer .playerControl { background: #f8fafc; box-shadow: 0 1px 0 var(--ben-line); }
+html:not(.ben-dark) #midiPlayer .midiPlayTime, html:not(.ben-dark) #midiPlayer .tempoLabel,
+html:not(.ben-dark) #midiPlayer .swingLabel, html:not(.ben-dark) #midiPlayer .tempoOutput,
+html:not(.ben-dark) #midiPlayer .swingOutput, html:not(.ben-dark) #midiPlayer span { color: #475569; }
+html:not(.ben-dark) #midiPlayer .tempoOutput { background: #e2e8f0; }
+html:not(.ben-dark) #midiPlayer .midiPlayImage { background-color: var(--ben-ink); color: #fff; }
+html:not(.ben-dark) #TopNav .rightButtons, html:not(.ben-dark) #TopNav a { color: #475569; }
+html:not(.ben-dark) #TopNav .rightButtons:hover { color: var(--ben-ink); background: #f1f5f9; }
+html:not(.ben-dark) #midiPlayer input[type='range']::-webkit-slider-runnable-track { background: #e2e8f0; }
+html:not(.ben-dark) #midiPlayer input[type='range']::-webkit-slider-thumb { background: #ffffff; border: 1px solid #cbd5e1; box-shadow: 0 1px 3px rgba(15, 23, 42, 0.2); }
+html:not(.ben-dark) #midiPlayer input[type='range']::-moz-range-track { background: #e2e8f0; }
+html:not(.ben-dark) #midiPlayer input[type='range']::-moz-range-thumb { background: #ffffff; border: 1px solid #cbd5e1; }
+html:not(.ben-dark) #midiPlayer .tempoOutput { color: var(--ben-ink); }
+html:not(.ben-dark) #midiPlayer [class*="tempoOutput"], html:not(.ben-dark) #midiPlayer [id*="tempoOutput"] { background: #e2e8f0 !important; color: var(--ben-ink) !important; border-radius: 4px; }
+
+/* ---- bar cards: tidy column, "+" next to the last bar ---- */
+@media (min-width: 721px) {
+  #measureContainer {
+    display: grid;
+    grid-template-columns: max-content 64px;
+    justify-content: start;
+    align-items: center;
+    column-gap: 14px;
+    row-gap: 12px;
+  }
+  #measureContainer > .staff-container { grid-column: 1; justify-self: start; box-sizing: border-box; }
+  #measureContainer > #addMeasureButton { grid-column: 2; justify-self: start; margin: 0; }
+}
+@media (max-width: 720px) {
+  #measureContainer > #addMeasureButton { margin: 4px auto 0; display: flex !important; }
+}
+
+/* BPM number field */
+#midiPlayer .tempoTextField {
+  background: #ffffff !important; color: var(--ben-ink) !important;
+  border: 1px solid var(--ben-line) !important; border-radius: 6px; padding: 1px 4px; text-align: center; font-weight: 600;
+}
+html.ben-dark #midiPlayer .tempoTextField { background: #0f172a !important; color: #e5e7eb !important; border-color: #334155 !important; }
+
+/* "+" shares the last bar's grid cell (pushed right with margin) */
+@media (min-width: 721px) {
+  #measureContainer { grid-template-columns: max-content; }
+  #measureContainer > #addMeasureButton { grid-column: 1; align-self: center; }
+}
+
+/* ---- action bar: a floating, centred dock that stays at the bottom of the screen ---- */
+#bottomButtonRow {
+  position: sticky;
+  bottom: 14px;
+  z-index: 25;
+  display: flex !important;
+  width: fit-content;
+  max-width: calc(100% - 24px);
+  margin: 6px auto 0 !important;
+  padding: 6px !important;
+  gap: 4px !important;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.9);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--ben-line);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.14);
+}
+#bottomButtonRow .pageBottomButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-width: 74px;
+  height: 52px;
+  margin: 0;
+  padding: 6px 10px;
+  border: none;
+  box-shadow: none;
+  border-radius: 11px;
+  background: transparent;
+  font-size: 11px;
+  letter-spacing: 0.03em;
+}
+#bottomButtonRow .pageBottomButton:hover { background: #f1f5f9; color: var(--ben-ink); }
+#bottomButtonRow .pageBottomButton .bottomButtonIcon { display: flex; align-items: center; justify-content: center; height: 22px; }
+#bottomButtonRow .pageBottomButton .bottomButtonIcon .fa-2x { font-size: 18px; }
+#bottomButtonRow .pageBottomButton.ClickToHide, #showHideRideButton.ClickToHide { background: var(--ben-ink); color: #fff; }
+html.ben-dark #bottomButtonRow { background: rgba(21, 30, 46, 0.9); border-color: var(--ben-line); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45); }
+html.ben-dark #bottomButtonRow .pageBottomButton { background: transparent; color: var(--ben-muted); }
+html.ben-dark #bottomButtonRow .pageBottomButton:hover { background: #1e293b; color: #fff; }
+html.ben-dark #bottomButtonRow .pageBottomButton.ClickToHide, html.ben-dark #showHideRideButton.ClickToHide { background: #e5e7eb; color: #0b1120; }
+@media (max-width: 720px) {
+  #bottomButtonRow { display: flex !important; flex-wrap: nowrap; overflow-x: auto; bottom: 8px; }
+  #bottomButtonRow .pageBottomButton { min-width: 56px; height: 46px; font-size: 9px; padding: 4px 6px; }
+}
+#bottomButtonRow .pageBottomButton .bottomButtonIcon { height: 22px !important; width: 26px; overflow: visible; margin: 0 !important; padding: 0 !important; }
+#bottomButtonRow .pageBottomButton .bottomButtonIcon i { font-size: 18px !important; line-height: 22px !important; }
+#bottomButtonRow .pageBottomButton .bottomButtonIcon img, #bottomButtonRow .pageBottomButton .bottomButtonIcon svg { height: 20px !important; width: auto !important; }
+#bottomButtonRow .pageBottomButton .bottomButtonLabel { display: block; line-height: 14px; margin: 0 !important; padding: 0 !important; }
+#bottomButtonRow .pageBottomButton:before, #bottomButtonRow .pageBottomButton:after { display: none !important; }
+#bottomButtonRow .pageBottomButton .bottomButtonIcon i { position: static !important; margin: 0 !important; }
+#bottomButtonRow > .pageBottomButton { padding: 6px 10px !important; margin: 0 !important; top: 0 !important; position: relative !important; align-self: center; height: 52px !important; box-sizing: border-box; }
+#bottomButtonRow > .pageBottomButton { display: flex !important; flex-direction: column; align-items: center; justify-content: center; gap: 3px; }
+#bottomButtonRow > .pageBottomButton.grooveDB_hidden[style*="none"] { display: none !important; }
+
+/* ---- sheet tools: layout menu + bars/line next to the pin ---- */
+#benSheetLayout {
+  position: absolute; top: 10px; right: 160px; z-index: 6; height: 30px;
+  border: 1px solid var(--ben-line); border-radius: 8px; background: var(--ben-surface); color: var(--ben-muted);
+  font: inherit; font-size: 12px; padding: 0 8px; cursor: pointer;
+}
+#benSheetLayout:hover { color: var(--ben-ink); }
+@media (max-width: 720px) { #benSheetLayout { display: none; } }
+
+/* resizable pinned sheet */
+#sheetMusicDiv.ben-pinned .svgTarget { max-height: var(--ben-sheet-maxh, 34vh) !important; }
+#benSheetResize { display: none; }
+html:not(.ben-split) #sheetMusicDiv.ben-pinned #benSheetResize {
+  display: block; position: absolute; left: 50%; bottom: 0; transform: translateX(-50%);
+  width: 64px; height: 12px; cursor: ns-resize; z-index: 6; touch-action: none;
+}
+#benSheetResize::after { content: ''; display: block; width: 40px; height: 4px; margin: 4px auto 0; border-radius: 3px; background: #cbd5e1; }
+#benSheetResize:hover::after { background: var(--ben-ink); }
+html.ben-dark #benSheetResize::after { background: #475569; }
+
+/* side by side: sheet left (sticky, own scroll), editor right */
+@media (min-width: 1000px) {
+  html.ben-split #RightHandContent { display: grid; grid-template-columns: minmax(360px, 44%) minmax(0, 1fr); align-items: start; }
+  html.ben-split #RightHandContent > .nonPrintable:first-child { display: none; }
+  html.ben-split #sheetMusicDiv {
+    grid-column: 1; grid-row: 1 / span 4; position: sticky !important; top: var(--ben-header-h, 100px) !important;
+    height: calc(100vh - var(--ben-header-h, 100px)); display: flex; flex-direction: column; padding: 12px 6px 12px 16px !important;
+    background: var(--ben-bg) !important;
+  }
+  html.ben-split #sheetMusicDiv .svgTarget { flex: 1; max-height: none !important; overflow-y: auto; border-radius: var(--ben-radius); }
+  html.ben-split #RightHandContent > .nonPrintable:last-child { grid-column: 2; min-width: 0; }
+  html.ben-split #benSheetPin { display: none; }
+  html.ben-split #benSheetLayout { top: 22px; right: 120px; }
+  html.ben-split #benBarsPerLine { top: 22px; right: 16px; }
+}
+/* popped out: the sheet lives in its own window */
+html.ben-popped #sheetMusicDiv .svgTarget { height: 0; min-height: 0; padding: 0; overflow: hidden; box-shadow: none; }
+html.ben-popped #sheetMusicDiv { padding: 8px 16px 8px; }
+html.ben-popped #sheetMusicDiv::before {
+  content: 'The sheet music is open in its own window.'; display: block; padding: 10px 14px; color: var(--ben-muted);
+  font-size: 13px; background: var(--ben-surface); border: 1px dashed var(--ben-line); border-radius: 10px; margin-right: 300px;
+}
+html.ben-popped #benSheetPin, html.ben-popped #benSheetResize { display: none !important; }
+html.ben-split #sheetMusicDiv .svgTarget svg, html.ben-popped #sheetMusicDiv .svgTarget svg { height: auto !important; }
+html.ben-split #sheetMusicDiv .svgTarget { padding-top: 44px; }
+@media (min-width: 1000px) { html.ben-split #measureContainer { padding-left: 8px; } }
+
+/* =====================================================================
+   Smooth everything: state changes glide, menus and dialogs ease in.
+   Only cheap properties (colours, shadows, transform, opacity).
+   ===================================================================== */
+:root { --ben-ease: cubic-bezier(0.2, 0.7, 0.2, 1); }
+html { scroll-behavior: smooth; }
+body, #GrooveWriter, #RightHandContent, #TopNav, #midiPlayer, #sheetMusicDiv .svgTarget, .staff-container,
+#bottomButtonRow, #benFooter .ben-coffee {
+  transition: background-color 0.25s var(--ben-ease), color 0.25s var(--ben-ease), border-color 0.25s var(--ben-ease),
+    box-shadow 0.25s var(--ben-ease);
+}
+#bottomButtonRow .pageBottomButton, .metronomeButton, .rightButtons, .ben-bar-controls .ben-tools button,
+.ben-bar-controls select, #benGridAll select, #benBarsPerLine, #benSheetLayout, #benSheetPin, #addMeasureButton,
+.ben-dlg-buttons button, .ben-add-bar-menu button, .noteContextMenu > ul.list li, #benFooter a {
+  transition: background-color 0.18s var(--ben-ease), color 0.18s var(--ben-ease), border-color 0.18s var(--ben-ease),
+    box-shadow 0.18s var(--ben-ease), transform 0.15s var(--ben-ease) !important;
+}
+#bottomButtonRow .pageBottomButton:active, .ben-bar-controls .ben-tools button:active, .metronomeButton:active,
+.rightButtons:active, #addMeasureButton:active, .ben-dlg-buttons button:active { transform: scale(0.94); }
+#bottomButtonRow .pageBottomButton.ClickToHide { box-shadow: 0 2px 8px rgba(15, 23, 42, 0.18); }
+.staff-container.ben-play-from, .staff-container.ben-looped { transition-duration: 0.3s; }
+
+/* menus & dialogs ease in */
+@keyframes ben-menu-in { from { opacity: 0; transform: translateY(6px) scale(0.97); } to { opacity: 1; transform: none; } }
+@keyframes ben-fade-in { from { opacity: 0; } to { opacity: 1; } }
+.noteContextMenu > ul.list[style*="block"], .ben-add-bar-menu, #benRideMenu { animation: ben-menu-in 0.16s var(--ben-ease); transform-origin: top left; }
+#benDetailsDialog[style*="flex"] { animation: ben-fade-in 0.18s ease; }
+#benDetailsDialog[style*="flex"] .ben-dlg-card { animation: ben-menu-in 0.22s var(--ben-ease); }
+
+/* playback highlights glide */
+.abcr { transition: fill 0.12s linear, fill-opacity 0.12s linear; }
+.bg-highlight { transition: background-color 0.12s linear, box-shadow 0.12s linear !important; }
+.ben-sheet-cursor, .ben-sheet-loop, .ben-sheet-handle { transition: left 0.2s var(--ben-ease), top 0.2s var(--ben-ease), width 0.2s var(--ben-ease), height 0.2s var(--ben-ease), opacity 0.2s ease; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+}
+
+/* =====================================================================
+   Drumsheet palette: blue brand colour (replaces Groove Scribe's green).
+   Orange stays only for loops; amber is the dark-mode playback colour.
+   ===================================================================== */
+:root { --ben-brand: #2563eb; --ben-brand-soft: #eff6ff; --ben-brand-ink: #ffffff; --ben-green: var(--ben-brand); }
+html.ben-dark { --ben-brand: #60a5fa; --ben-brand-soft: #172554; --ben-brand-ink: #0b1120; }
+.ben-logo b, html:not(.ben-dark) .ben-logo b { color: var(--ben-brand); }
+#metronome4ths.buttonSelected, #metronome8ths.buttonSelected, #metronome16ths.buttonSelected,
+#metronomeTrip.buttonSelected, #metronomeSext.buttonSelected,
+html:not(.ben-dark) #metronome4ths.buttonSelected, html:not(.ben-dark) #metronome8ths.buttonSelected,
+html:not(.ben-dark) #metronome16ths.buttonSelected, html:not(.ben-dark) #metronomeTrip.buttonSelected,
+html:not(.ben-dark) #metronomeSext.buttonSelected { background: var(--ben-brand); color: var(--ben-brand-ink) !important; }
+.staff-container.ben-play-from { border-color: var(--ben-brand); box-shadow: inset 4px 0 0 var(--ben-brand), var(--ben-shadow); }
+.ben-sheet-cursor, .ben-sheet-cursor::before { background: var(--ben-brand); }
+.ben-sheet-cursor::before { background: none; border-top-color: var(--ben-brand); }
+#bottomButtonRow .pageBottomButton.ClickToHide, #showHideRideButton.ClickToHide,
+html.ben-dark #bottomButtonRow .pageBottomButton.ClickToHide, html.ben-dark #showHideRideButton.ClickToHide {
+  background: var(--ben-brand); color: var(--ben-brand-ink); border-color: var(--ben-brand);
+}
+.ben-bar-controls select:focus, #sheetMusicTextFields input:focus, #benDetailsDialog input.sheetMusicInputField:focus {
+  border-color: var(--ben-brand); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ben-brand) 22%, transparent); outline: none;
+}
+#addMeasureButton:hover { border-color: var(--ben-brand); color: var(--ben-brand) !important; background: var(--ben-brand-soft); }
+.noteContextMenu > ul.list li.ben-convert:hover { background: var(--ben-brand-soft); }
+.ben-dlg-buttons .ben-dlg-go, html.ben-dark .ben-dlg-buttons .ben-dlg-go { background: var(--ben-brand); border-color: var(--ben-brand); color: var(--ben-brand-ink); }
+#benSheetPin.on, html.ben-dark #benSheetPin.on { background: var(--ben-brand); border-color: var(--ben-brand); color: var(--ben-brand-ink); }
+html:not(.ben-dark) #midiPlayer .midiPlayImage { background-color: var(--ben-brand); }
+input[type='range'] { accent-color: var(--ben-brand); }
+#benFooter a { color: var(--ben-brand); }
+
+/* =====================================================================
+   Old Groove Scribe popups in the Drumsheet style
+   (Share, metronome auto speed-up, time signature, grooves list)
+   ===================================================================== */
+#fullURLPopup, #metronomeAutoSpeedupConfiguration, #timeSigPopup {
+  background: var(--ben-surface) !important; color: var(--ben-ink) !important;
+  border: 1px solid var(--ben-line) !important; border-radius: 16px !important;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.28) !important;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif !important;
+  padding: 22px 24px !important; animation: ben-menu-in 0.2s var(--ben-ease);
+}
+#fullURLPopupTitle, #metronomeAutoSpeedupOutputText, #timeSigPopupTitle {
+  font-family: inherit !important; font-size: 20px !important; font-weight: 700 !important; color: var(--ben-ink) !important;
+}
+#metronomeAutoSpeedupOutputText span { color: var(--ben-brand) !important; }
+#fullURLPopupSubTitle, #fullURLPopupSubSubTitle, #metronomeAutoSpeedupConfigurationKeepIncreasing,
+#metronomeAutoSpeedupConfigurationAmountLable, #metronomeAutoSpeedupConfigurationIntervalLable, .fullURLPopupCheckboxLabel {
+  font-family: inherit !important; color: var(--ben-muted) !important; font-size: 13px !important;
+}
+#metronomeAutoSpeedupConfiguration input[type='checkbox'], #fullURLPopup input[type='checkbox'] { accent-color: var(--ben-brand); }
+#metronomeAutoSpeedupConfiguration input[type='range']::-webkit-slider-runnable-track { background: var(--ben-line) !important; }
+#metronomeAutoSpeedupConfiguration input[type='range']::-webkit-slider-thumb { background: var(--ben-brand) !important; border: 2px solid var(--ben-surface) !important; box-shadow: 0 1px 4px rgba(0,0,0,.25); }
+#metronomeAutoSpeedupConfiguration input[type='range']::-moz-range-track { background: var(--ben-line) !important; }
+#metronomeAutoSpeedupConfiguration input[type='range']::-moz-range-thumb { background: var(--ben-brand) !important; }
+#metronomeAutoSpeedupConfigurationCloseButton, #fullURLPopupCopyButton, #timeSigPopupOK, #timeSigPopupCancel {
+  font-family: inherit !important; font-size: 14px !important; font-weight: 600 !important;
+  background: var(--ben-brand) !important; color: var(--ben-brand-ink) !important; border: none !important;
+  border-radius: 10px !important; padding: 9px 20px !important; cursor: pointer; box-shadow: none !important;
+}
+#timeSigPopupCancel { background: transparent !important; color: var(--ben-ink) !important; border: 1px solid var(--ben-line) !important; }
+#fullURLPopupTextField {
+  font-family: ui-monospace, Menlo, Consolas, monospace !important; font-size: 12px !important;
+  background: var(--ben-bg) !important; color: var(--ben-ink) !important;
+  border: 1px solid var(--ben-line) !important; border-radius: 10px !important; padding: 10px 12px !important;
+}
+#fullURLPopupCloseButton { color: var(--ben-muted) !important; }
+#fullURLPopupCloseButton:hover { color: var(--ben-ink) !important; }
+/* grooves list menu */
+#grooveListWrapper, #grooveListWrapper * { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif !important; }
+#grooveListWrapper > * { background: var(--ben-surface) !important; color: var(--ben-ink) !important; border-color: var(--ben-line) !important; }
+#grooveListWrapper a, #grooveListWrapper li { color: var(--ben-ink) !important; }
+#grooveListWrapper li:hover, #grooveListWrapper a:hover { background: var(--ben-brand-soft) !important; }
+
+/* =====================================================================
+   "Pads" grid style (html.ben-pads): rounded pads, coloured per instrument.
+   The editor still reads note state from the inline styles; only the look changes.
+   ===================================================================== */
+:root { --pad-off: #eef1f6; --pad-off-hover: #dfe5ee; --pad-hh: #0ea5e9; --pad-sn: #2563eb; --pad-kick: #7c3aed; --pad-tom: #14b8a6; }
+html.ben-dark { --pad-off: #263247; --pad-off-hover: #33415c; --pad-hh: #38bdf8; --pad-sn: #60a5fa; --pad-kick: #a78bfa; --pad-tom: #2dd4bf; }
+
+html.ben-pads .staff-container .snare-container,
+html.ben-pads .staff-container .hi-hat-container:not(.ben-ride-container) { background: none; box-shadow: none; }
+
+/* pad boxes */
+html.ben-pads .snare_circle, html.ben-pads .kick_circle, html.ben-pads .tom_circle {
+  width: 22px !important; height: 22px !important; left: 2px !important; top: 0 !important;
+  border: none !important; border-radius: 7px !important; background: var(--pad-off) !important;
+  box-shadow: none !important; transition: background-color 0.15s ease, transform 0.12s ease, opacity 0.15s ease;
+}
+html.ben-pads .hi-hat .hh_cross {
+  left: 2px !important; top: 15px !important; width: 22px; height: 22px; border-radius: 7px; background: var(--pad-off);
+  display: flex; align-items: center; justify-content: center; font-size: 13px !important; line-height: 1;
+  transition: background-color 0.15s ease;
+}
+/* other cymbal heads sit inside the same pad */
+html.ben-pads .hi-hat .hh_ride, html.ben-pads .hi-hat .hh_ride_bell, html.ben-pads .hi-hat .hh_crash,
+html.ben-pads .hi-hat .hh_cow_bell, html.ben-pads .hi-hat .hh_stacker, html.ben-pads .hi-hat .hh_metronome_normal,
+html.ben-pads .hi-hat .hh_metronome_accent, html.ben-pads .hi-hat .hh_close {
+  left: 2px !important; top: 15px !important; width: 22px; height: 22px; display: flex; align-items: center;
+  justify-content: center; font-size: 12px !important; line-height: 1; z-index: 2;
+}
+/* empty: just the pad (no grey cross) */
+html.ben-pads .hi-hat .note_part[style*="color: rgb(204, 204, 204)"] { color: transparent !important; }
+html.ben-pads .hi-hat.ben-on-ride .hh_cross { color: transparent !important; }
+
+/* filled pads per instrument */
+html.ben-pads .hi-hat:has(.note_part[style*="color: rgb(0, 0, 0)"]) .hh_cross { background: var(--pad-hh); }
+html.ben-pads .snare_circle[style*="background-color: rgb(0, 0, 0)"] { background: var(--pad-sn) !important; }
+html.ben-pads .kick_circle[style*="background-color: rgb(0, 0, 0)"] { background: var(--pad-kick) !important; }
+html.ben-pads .tom_circle[style*="background-color: rgb(0, 0, 0)"] { background: var(--pad-tom) !important; }
+/* ride row pads in the cymbal colour */
+html.ben-pads .ben-ride-container .hi-hat .hh_cross { color: transparent !important; }
+html.ben-pads .ben-ride-container .hi-hat:has(.note_part[style*="color: rgb(0, 0, 0)"]) .hh_cross { background: var(--pad-hh); }
+html.ben-pads .ben-ride-container .hi-hat .note_part[style*="rgb(204, 204, 204)"] { color: transparent !important; }
+
+/* symbols on a filled pad are white */
+html.ben-pads .hi-hat .note_part[style*="color: rgb(0, 0, 0)"],
+html.ben-pads .snare .note_part[style*="color: rgb(0, 0, 0)"],
+html.ben-pads .kick .note_part[style*="color: rgb(0, 0, 0)"],
+html.ben-pads .tom .note_part[style*="color: rgb(0, 0, 0)"] { color: #ffffff !important; }
+html.ben-pads .snare .note_part[style*="color: rgb(255, 255, 255)"] { color: #ffffff !important; }
+html.ben-pads .hi-hat .hh_accent[style*="color: rgb(0, 0, 0)"], html.ben-pads .hi-hat .hh_open[style*="color: rgb(0, 0, 0)"] { color: var(--pad-hh) !important; }
+
+/* ghost note = soft pad, no brackets */
+html.ben-pads .snare .snare_ghost { color: transparent !important; }
+html.ben-pads .snare:has(.snare_ghost[style*="color: rgb(0, 0, 0)"]) .snare_circle { opacity: 0.4; }
+
+/* hover / press */
+html.ben-pads .snare:hover .snare_circle[style*="255, 255, 255"], html.ben-pads .kick:hover .kick_circle[style*="255, 255, 255"],
+html.ben-pads .tom:hover .tom_circle[style*="255, 255, 255"], html.ben-pads .hi-hat:hover .hh_cross { background-color: var(--pad-off-hover); }
+html.ben-pads .hi-hat:hover:has(.note_part[style*="color: rgb(0, 0, 0)"]) .hh_cross { background: var(--pad-hh); filter: brightness(1.08); }
+html.ben-pads .snare:hover .snare_circle, html.ben-pads .kick:hover .kick_circle, html.ben-pads .tom:hover .tom_circle {
+  box-shadow: none !important; border: none !important;
+}
+html.ben-pads .snare:active .snare_circle, html.ben-pads .kick:active .kick_circle, html.ben-pads .tom:active .tom_circle,
+html.ben-pads .hi-hat:active .hh_cross { transform: scale(0.88); }
+html.ben-pads .snare:hover .snare_circle[style*="background-color: rgb(0, 0, 0)"],
+html.ben-pads .kick:hover .kick_circle[style*="background-color: rgb(0, 0, 0)"],
+html.ben-pads .tom:hover .tom_circle[style*="background-color: rgb(0, 0, 0)"] { filter: brightness(1.08); }
+/* row labels pick up the pad colour */
+html.ben-pads .line-labels .hh-label, html.ben-pads .ben-ride-label { color: var(--pad-hh); }
+html.ben-pads .line-labels .snare-label { color: var(--pad-sn); }
+html.ben-pads .line-labels .kick-label { color: var(--pad-kick); }
+html.ben-pads .line-labels .tom-label { color: var(--pad-tom); }
+
+/* style switch button */
+#benGridStyleToggle { font-size: 13px; }
+/* pads: stronger selectors so the off pad + ghost always show */
+html.ben-pads .notes-row-container .snare .snare_circle.note_part[style],
+html.ben-pads .notes-row-container .kick .kick_circle.note_part[style],
+html.ben-pads .notes-row-container .tom .tom_circle.note_part[style] { background: var(--pad-off) !important; border: none !important; }
+html.ben-pads .notes-row-container .snare .snare_circle.note_part[style*="background-color: rgb(0, 0, 0)"] { background: var(--pad-sn) !important; }
+html.ben-pads .notes-row-container .kick .kick_circle.note_part[style*="background-color: rgb(0, 0, 0)"] { background: var(--pad-kick) !important; }
+html.ben-pads .notes-row-container .tom .tom_circle.note_part[style*="background-color: rgb(0, 0, 0)"] { background: var(--pad-tom) !important; }
+html.ben-pads .notes-row-container .snare:has(.snare_ghost[style*="color: rgb(0, 0, 0)"]) .snare_circle.note_part[style] { background: var(--pad-sn) !important; opacity: 0.38; }
+html.ben-pads .notes-row-container .snare .snare_ghost.note_part[style] { color: transparent !important; }
+html.ben-pads .notes-row-container .snare:hover .snare_circle.note_part[style*="255, 255, 255"],
+html.ben-pads .notes-row-container .kick:hover .kick_circle.note_part[style*="255, 255, 255"],
+html.ben-pads .notes-row-container .tom:hover .tom_circle.note_part[style*="255, 255, 255"] { background: var(--pad-off-hover) !important; }
+
+/* cymbal rows (crash + ride): second label sits like the hi-hat label */
+.ben-ride-on .ben-ride-label + .ben-ride-label { margin-top: 18px; }
+
+/* sheet tools: fixed widths so the two selects never overlap */
+#benBarsPerLine { width: 100px; }
+#benSheetLayout { right: 160px; width: 140px; }
+@media (min-width: 721px) { html.ben-split #benSheetLayout { right: 124px; } }
+
+/* pads: crash colour, flams/buzz/xstick/drag fill the snare pad, hi-hat foot */
+:root { --pad-crash: #f59e0b; }
+html.ben-dark { --pad-crash: #fbbf24; }
+html.ben-pads .ben-cym-crash .hi-hat:has(.note_part[style*="color: rgb(0, 0, 0)"]) .hh_cross { background: var(--pad-crash); }
+html.ben-pads .ben-label-crash { color: var(--pad-crash); }
+html.ben-pads .notes-row-container .snare:has(.snare_flam[style*="color: rgb(0, 0, 0)"], .snare_buzz[style*="color: rgb(0, 0, 0)"], .snare_xstick[style*="color: rgb(0, 0, 0)"], .snare_drag[style*="color: rgb(0, 0, 0)"]) .snare_circle.note_part[style] { background: var(--pad-sn) !important; }
+html.ben-pads .snare .snare_flam[style*="color: rgb(0, 0, 0)"], html.ben-pads .snare .snare_buzz[style*="color: rgb(0, 0, 0)"],
+html.ben-pads .snare .snare_xstick[style*="color: rgb(0, 0, 0)"], html.ben-pads .snare .snare_drag[style*="color: rgb(0, 0, 0)"] {
+  left: 2px !important; top: 0 !important; width: 22px !important; height: 22px !important; display: flex !important;
+  align-items: center; justify-content: center; font-size: 13px !important; line-height: 1 !important; z-index: 2; color: #fff !important;
+}
+html.ben-pads .kick .kick_splash[style*="color: rgb(0, 0, 0)"] { color: var(--pad-hh) !important; }
+
+/* look menu (grid style + colour) */
+#benLookMenu { position: fixed; z-index: 1000; background: var(--ben-surface); color: var(--ben-ink); border: 1px solid var(--ben-line);
+  border-radius: 12px; padding: 10px 12px; box-shadow: 0 10px 30px rgba(15, 23, 42, 0.22); min-width: 200px; animation: ben-menu-in 0.16s var(--ben-ease); }
+#benLookMenu .ben-look-h { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ben-muted); margin: 4px 0 6px; }
+#benLookMenu .ben-look-row { display: flex; gap: 6px; margin-bottom: 8px; }
+#benLookMenu button { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font: inherit; font-size: 13px;
+  padding: 7px 10px; border-radius: 8px; border: 1px solid var(--ben-line); background: transparent; color: var(--ben-ink); cursor: pointer; transition: all 0.15s ease; }
+#benLookMenu button:hover { border-color: var(--ben-brand); }
+#benLookMenu button.on { background: var(--ben-brand); border-color: var(--ben-brand); color: var(--ben-brand-ink); }
+#benLookMenu .ben-swatch { width: 12px; height: 12px; border-radius: 4px; display: inline-block; }
+
+/* =====================================================================
+   User colour (html.ben-tint): the variables come from benSetColour() in
+   index.html, generated from one picked colour (default purple).
+   ===================================================================== */
+html.ben-tint.ben-dark #TopNav, html.ben-tint.ben-dark #sheetMusicDiv .svgTarget { background: var(--ben-tint-top); }
+html.ben-tint.ben-dark #sheetMusicDiv.ben-pinned { background: linear-gradient(var(--ben-bg) 85%, transparent); }
+html.ben-tint.ben-dark .noteContextMenu > ul.list, html.ben-tint.ben-dark .ben-add-bar-menu, html.ben-tint.ben-dark .ben-dlg-card { background: var(--ben-tint-menu); }
+html.ben-tint.ben-dark .ben-bar-controls select, html.ben-tint.ben-dark #benGridAll select { background-color: var(--ben-tint-top); }
+html.ben-tint .ben-logo b, html.ben-tint:not(.ben-dark) .ben-logo b { color: var(--ben-brand); }
+html.ben-tint:not(.ben-dark) #metronome4ths.buttonSelected, html.ben-tint:not(.ben-dark) #metronome8ths.buttonSelected,
+html.ben-tint:not(.ben-dark) #metronome16ths.buttonSelected, html.ben-tint:not(.ben-dark) #metronomeTrip.buttonSelected,
+html.ben-tint:not(.ben-dark) #metronomeSext.buttonSelected { background: var(--ben-brand); }
+#benLookMenu input[type=color] { width: 100%; height: 34px; padding: 2px; border: 1px solid var(--ben-line); border-radius: 8px; background: transparent; cursor: pointer; }
+#benLookMenu .ben-look-presets { display: flex; gap: 6px; margin-top: 6px; }
+#benLookMenu .ben-look-presets i { width: 20px; height: 20px; border-radius: 6px; cursor: pointer; display: inline-block; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.15); }
+.ben-logo { display: inline-flex; align-items: center; }
+.ben-logo-icon { width: 26px; height: 26px; border-radius: 7px; margin-right: 8px; }
+@media (max-width: 720px) { .ben-logo-icon { width: 22px; height: 22px; margin-right: 6px; } }
+/* a slot played on a cymbal row shows an empty hi-hat pad */
+html.ben-pads .hi-hat.ben-on-ride .hh_cross, html.ben-pads .hi-hat.ben-on-ride:hover .hh_cross { background: var(--pad-off) !important; color: transparent !important; }
+html.ben-pads .hi-hat.ben-on-ride .note_part:not(.hh_cross) { visibility: hidden; }
+/* hi-hat foot (splash) inside the kick pad */
+html.ben-pads .kick .kick_splash.note_part[style*="color: rgb(0, 0, 0)"] {
+  left: 2px !important; top: 0 !important; width: 22px; height: 22px; display: flex !important; align-items: center; justify-content: center;
+  font-size: 13px !important; line-height: 1 !important; z-index: 2; color: var(--pad-hh) !important;
+}
+html.ben-pads .kick:has(.kick_circle[style*="background-color: rgb(0, 0, 0)"]) .kick_splash.note_part[style*="color: rgb(0, 0, 0)"] { color: #fff !important; }
+#benBarsPerLine { width: 118px; }
+#benSheetLayout { right: 178px; }
+@media (min-width: 721px) { html.ben-split #benSheetLayout { right: 142px; } }
+html.ben-pads .snare .snare_flam[style*="color: rgb(0, 0, 0)"] svg, html.ben-pads .snare .snare_drag[style*="color: rgb(0, 0, 0)"] svg {
+  width: 20px !important; height: 20px !important; filter: brightness(0) invert(1); }
+html.ben-pads .snare .snare_flam i, html.ben-pads .snare .snare_drag i { display: flex; align-items: center; justify-content: center; }
+#logoTextUpperLeft img.ben-logo-icon { display: inline-block; height: 26px; }
+@media (max-width: 720px) { #logoTextUpperLeft img.ben-logo-icon { height: 22px; } }
+#benFooter a.ben-feedback { color: var(--ben-brand); }
+#benFooter a.ben-feedback i { margin-right: 4px; }
+/* coffee note + thank-you toast */
+#benFooter .ben-coffee-wrap { display: inline-flex; align-items: center; gap: 12px; text-align: left; }
+#benFooter .ben-coffee-note { font-size: 12px; line-height: 1.4; color: var(--ben-muted); }
+@media (max-width: 720px) { #benFooter .ben-coffee-wrap { flex-direction: column; text-align: center; } }
+#benThanks { position: fixed; right: 20px; bottom: 20px; z-index: 2000; display: flex; align-items: center; gap: 12px; max-width: calc(100vw - 40px);
+  background: var(--ben-surface); color: var(--ben-ink); border: 1px solid var(--ben-line); border-radius: 14px; padding: 12px 12px 12px 16px;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.25); font-size: 14px; animation: ben-menu-in 0.25s var(--ben-ease); transition: opacity 0.4s ease, transform 0.4s ease; }
+#benThanks.out { opacity: 0; transform: translateY(10px); }
+#benThanks a { white-space: nowrap; font-weight: 700; color: var(--ben-brand-ink); background: var(--ben-brand); padding: 7px 12px; border-radius: 9px; text-decoration: none; }
+#benThanks button { border: none; background: none; color: var(--ben-muted); font-size: 20px; cursor: pointer; padding: 0 4px; line-height: 1; }
+@media (max-width: 720px) { #benThanks { left: 12px; right: 12px; bottom: 12px; flex-wrap: wrap; } }
+
+/* dark mode: player bar, dock, inputs and menus follow the picked colour */
+html.ben-tint.ben-dark #midiPlayer .tempoTextField { background: var(--ben-tint-top) !important; border-color: var(--ben-line) !important; }
+html.ben-tint.ben-dark #midiPlayer .midiPlayImage { background-color: var(--ben-brand); color: var(--ben-brand-ink); }
+html.ben-tint.ben-dark #midiPlayer input[type='range']::-webkit-slider-runnable-track { background: var(--ben-tint-track); }
+html.ben-tint.ben-dark #midiPlayer input[type='range']::-webkit-slider-thumb { background: var(--ben-brand); border: none; }
+html.ben-tint.ben-dark #midiPlayer input[type='range']::-moz-range-track { background: var(--ben-tint-track); }
+html.ben-tint.ben-dark #midiPlayer input[type='range']::-moz-range-thumb { background: var(--ben-brand); border: none; }
+html.ben-tint.ben-dark #bottomButtonRow { background: var(--ben-tint-dock); }
+html.ben-tint.ben-dark #bottomButtonRow .pageBottomButton:hover, html.ben-tint.ben-dark .rightButtons:hover,
+html.ben-tint.ben-dark .metronomeButton:hover, html.ben-tint.ben-dark .ben-bar-controls .ben-tools button:hover:not(:disabled) { background: var(--ben-chrome-hover); }
+html.ben-tint.ben-dark #benUndoRedo, html.ben-tint.ben-dark #benGridAll { border-color: var(--ben-line); }
+html.ben-tint.ben-dark #benGridAll select { background: var(--ben-tint-top); border-color: var(--ben-line); }
+html.ben-tint.ben-dark .noteContextMenu > ul.list li:hover, html.ben-tint.ben-dark .ben-add-bar-menu button:hover { background: var(--ben-chrome-hover); }
+html.ben-tint.ben-dark #benDetailsDialog input.sheetMusicInputField, html.ben-tint.ben-dark .ben-dlg-buttons button { background: var(--ben-tint-top); }
+html.ben-tint.ben-dark .hi-hat.ben-on-ride .hh_cross, html.ben-tint.ben-dark #addMeasureButton, html.ben-tint.ben-dark #benSheetResize::after { border-color: var(--ben-line); }
+html.ben-tint.ben-dark #benSheetResize::after { background: var(--ben-line); }
+/* no grey scrollbar under the dock on phones */
+#bottomButtonRow { scrollbar-width: none; }
+#bottomButtonRow::-webkit-scrollbar { display: none; }
+@media (max-width: 720px) {
+  #bottomButtonRow { left: 8px; right: 8px; justify-content: space-between; }
+  #bottomButtonRow .pageBottomButton { min-width: 0 !important; flex: 1 1 0; padding: 4px 1px !important; }
+  #bottomButtonRow .pageBottomButton .bottomButtonLabel { white-space: nowrap; font-size: 8px; letter-spacing: 0; }
+}
+@media (max-width: 720px) { #bottomButtonRow { width: calc(100% - 16px) !important; max-width: 520px; box-sizing: border-box; margin-left: auto; margin-right: auto; } }
+/* crash 2: crash icon with a small 2 */
+.hh_crash2 { position: absolute; top: 21px; left: 2px; font-size: 22px; color: transparent; cursor: pointer; white-space: nowrap; }
+.hh_crash2 sup { font-size: 10px; font-weight: 700; margin-left: -1px; vertical-align: top; position: relative; top: -2px; }
+html.ben-pads .hi-hat .hh_crash2 { left: 2px !important; top: 15px !important; width: 22px; height: 22px; display: flex; align-items: center;
+  justify-content: center; font-size: 12px !important; line-height: 1; z-index: 2; }
+html.ben-pads .hi-hat .hh_crash2 sup { font-size: 8px; top: -3px; }
