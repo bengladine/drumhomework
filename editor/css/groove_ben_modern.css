@@ -954,3 +954,42 @@ html.ben-popped #benSheetPin, html.ben-popped #benSheetResize { display: none !i
 html.ben-split #sheetMusicDiv .svgTarget svg, html.ben-popped #sheetMusicDiv .svgTarget svg { height: auto !important; }
 html.ben-split #sheetMusicDiv .svgTarget { padding-top: 44px; }
 @media (min-width: 1000px) { html.ben-split #measureContainer { padding-left: 8px; } }
+
+/* =====================================================================
+   Smooth everything: state changes glide, menus and dialogs ease in.
+   Only cheap properties (colours, shadows, transform, opacity).
+   ===================================================================== */
+:root { --ben-ease: cubic-bezier(0.2, 0.7, 0.2, 1); }
+html { scroll-behavior: smooth; }
+body, #GrooveWriter, #RightHandContent, #TopNav, #midiPlayer, #sheetMusicDiv .svgTarget, .staff-container,
+#bottomButtonRow, #benFooter .ben-coffee {
+  transition: background-color 0.25s var(--ben-ease), color 0.25s var(--ben-ease), border-color 0.25s var(--ben-ease),
+    box-shadow 0.25s var(--ben-ease);
+}
+#bottomButtonRow .pageBottomButton, .metronomeButton, .rightButtons, .ben-bar-controls .ben-tools button,
+.ben-bar-controls select, #benGridAll select, #benBarsPerLine, #benSheetLayout, #benSheetPin, #addMeasureButton,
+.ben-dlg-buttons button, .ben-add-bar-menu button, .noteContextMenu > ul.list li, #benFooter a {
+  transition: background-color 0.18s var(--ben-ease), color 0.18s var(--ben-ease), border-color 0.18s var(--ben-ease),
+    box-shadow 0.18s var(--ben-ease), transform 0.15s var(--ben-ease) !important;
+}
+#bottomButtonRow .pageBottomButton:active, .ben-bar-controls .ben-tools button:active, .metronomeButton:active,
+.rightButtons:active, #addMeasureButton:active, .ben-dlg-buttons button:active { transform: scale(0.94); }
+#bottomButtonRow .pageBottomButton.ClickToHide { box-shadow: 0 2px 8px rgba(15, 23, 42, 0.18); }
+.staff-container.ben-play-from, .staff-container.ben-looped { transition-duration: 0.3s; }
+
+/* menus & dialogs ease in */
+@keyframes ben-menu-in { from { opacity: 0; transform: translateY(6px) scale(0.97); } to { opacity: 1; transform: none; } }
+@keyframes ben-fade-in { from { opacity: 0; } to { opacity: 1; } }
+.noteContextMenu > ul.list[style*="block"], .ben-add-bar-menu, #benRideMenu { animation: ben-menu-in 0.16s var(--ben-ease); transform-origin: top left; }
+#benDetailsDialog[style*="flex"] { animation: ben-fade-in 0.18s ease; }
+#benDetailsDialog[style*="flex"] .ben-dlg-card { animation: ben-menu-in 0.22s var(--ben-ease); }
+
+/* playback highlights glide */
+.abcr { transition: fill 0.12s linear, fill-opacity 0.12s linear; }
+.bg-highlight { transition: background-color 0.12s linear, box-shadow 0.12s linear !important; }
+.ben-sheet-cursor, .ben-sheet-loop, .ben-sheet-handle { transition: left 0.2s var(--ben-ease), top 0.2s var(--ben-ease), width 0.2s var(--ben-ease), height 0.2s var(--ben-ease), opacity 0.2s ease; }
+.ben-sheet-layer > div { animation: ben-fade-in 0.2s ease; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+}

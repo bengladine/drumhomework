@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795002177';
-import { GrooveUtils } from './groove_utils.js?v=1795002177';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795002572';
+import { GrooveUtils } from './groove_utils.js?v=1795002572';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -85,10 +85,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1795002177';
-import * as _perm from './permutations.js?v=1795002177';
-import * as _view from './viewHtml.js?v=1795002177';
-import * as _grid from './gridState.js?v=1795002177';
+} from './constants.js?v=1795002572';
+import * as _perm from './permutations.js?v=1795002572';
+import * as _view from './viewHtml.js?v=1795002572';
+import * as _grid from './gridState.js?v=1795002572';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -5074,6 +5074,9 @@ function GrooveWriter() {
     var show = isRideVisible();
     var btn = document.getElementById('showHideRideButton');
     if (btn) btn.classList.toggle('ClickToHide', show);
+    // keep the TOMS button state in sync with what is really shown
+    var tbtn = document.getElementById('showHideTomsButton');
+    if (tbtn) tbtn.classList.toggle('ClickToHide', isTomsVisible());
     var npm = class_notes_per_measure;
     for (var m = 0; m < class_number_of_measures; m++) {
       var container = document.getElementById('staff-container' + (m + 1));
