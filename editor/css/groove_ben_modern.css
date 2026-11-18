@@ -1065,3 +1065,78 @@ input[type='range'] { accent-color: var(--ben-brand); }
 #grooveListWrapper > * { background: var(--ben-surface) !important; color: var(--ben-ink) !important; border-color: var(--ben-line) !important; }
 #grooveListWrapper a, #grooveListWrapper li { color: var(--ben-ink) !important; }
 #grooveListWrapper li:hover, #grooveListWrapper a:hover { background: var(--ben-brand-soft) !important; }
+
+/* =====================================================================
+   "Pads" grid style (html.ben-pads): rounded pads, coloured per instrument.
+   The editor still reads note state from the inline styles; only the look changes.
+   ===================================================================== */
+:root { --pad-off: #eef1f6; --pad-off-hover: #dfe5ee; --pad-hh: #0ea5e9; --pad-sn: #2563eb; --pad-kick: #7c3aed; --pad-tom: #14b8a6; }
+html.ben-dark { --pad-off: #1b2536; --pad-off-hover: #26334a; --pad-hh: #38bdf8; --pad-sn: #60a5fa; --pad-kick: #a78bfa; --pad-tom: #2dd4bf; }
+
+html.ben-pads .staff-container .snare-container,
+html.ben-pads .staff-container .hi-hat-container:not(.ben-ride-container) { background: none; box-shadow: none; }
+
+/* pad boxes */
+html.ben-pads .snare_circle, html.ben-pads .kick_circle, html.ben-pads .tom_circle {
+  width: 22px !important; height: 22px !important; left: 2px !important; top: 0 !important;
+  border: none !important; border-radius: 7px !important; background: var(--pad-off) !important;
+  box-shadow: none !important; transition: background-color 0.15s ease, transform 0.12s ease, opacity 0.15s ease;
+}
+html.ben-pads .hi-hat .hh_cross {
+  left: 2px !important; top: 15px !important; width: 22px; height: 22px; border-radius: 7px; background: var(--pad-off);
+  display: flex; align-items: center; justify-content: center; font-size: 13px !important; line-height: 1;
+  transition: background-color 0.15s ease;
+}
+/* other cymbal heads sit inside the same pad */
+html.ben-pads .hi-hat .hh_ride, html.ben-pads .hi-hat .hh_ride_bell, html.ben-pads .hi-hat .hh_crash,
+html.ben-pads .hi-hat .hh_cow_bell, html.ben-pads .hi-hat .hh_stacker, html.ben-pads .hi-hat .hh_metronome_normal,
+html.ben-pads .hi-hat .hh_metronome_accent, html.ben-pads .hi-hat .hh_close {
+  left: 2px !important; top: 15px !important; width: 22px; height: 22px; display: flex; align-items: center;
+  justify-content: center; font-size: 12px !important; line-height: 1; z-index: 2;
+}
+/* empty: just the pad (no grey cross) */
+html.ben-pads .hi-hat .note_part[style*="color: rgb(204, 204, 204)"] { color: transparent !important; }
+html.ben-pads .hi-hat.ben-on-ride .hh_cross { color: transparent !important; }
+
+/* filled pads per instrument */
+html.ben-pads .hi-hat:has(.note_part[style*="color: rgb(0, 0, 0)"]) .hh_cross { background: var(--pad-hh); }
+html.ben-pads .snare_circle[style*="background-color: rgb(0, 0, 0)"] { background: var(--pad-sn) !important; }
+html.ben-pads .kick_circle[style*="background-color: rgb(0, 0, 0)"] { background: var(--pad-kick) !important; }
+html.ben-pads .tom_circle[style*="background-color: rgb(0, 0, 0)"] { background: var(--pad-tom) !important; }
+/* ride row pads in the cymbal colour */
+html.ben-pads .ben-ride-container .hi-hat .hh_cross { color: transparent !important; }
+html.ben-pads .ben-ride-container .hi-hat:has(.note_part[style*="color: rgb(0, 0, 0)"]) .hh_cross { background: var(--pad-hh); }
+html.ben-pads .ben-ride-container .hi-hat .note_part[style*="rgb(204, 204, 204)"] { color: transparent !important; }
+
+/* symbols on a filled pad are white */
+html.ben-pads .hi-hat .note_part[style*="color: rgb(0, 0, 0)"],
+html.ben-pads .snare .note_part[style*="color: rgb(0, 0, 0)"],
+html.ben-pads .kick .note_part[style*="color: rgb(0, 0, 0)"],
+html.ben-pads .tom .note_part[style*="color: rgb(0, 0, 0)"] { color: #ffffff !important; }
+html.ben-pads .snare .note_part[style*="color: rgb(255, 255, 255)"] { color: #ffffff !important; }
+html.ben-pads .hi-hat .hh_accent[style*="color: rgb(0, 0, 0)"], html.ben-pads .hi-hat .hh_open[style*="color: rgb(0, 0, 0)"] { color: var(--pad-hh) !important; }
+
+/* ghost note = soft pad, no brackets */
+html.ben-pads .snare .snare_ghost { color: transparent !important; }
+html.ben-pads .snare:has(.snare_ghost[style*="color: rgb(0, 0, 0)"]) .snare_circle { opacity: 0.4; }
+
+/* hover / press */
+html.ben-pads .snare:hover .snare_circle[style*="255, 255, 255"], html.ben-pads .kick:hover .kick_circle[style*="255, 255, 255"],
+html.ben-pads .tom:hover .tom_circle[style*="255, 255, 255"], html.ben-pads .hi-hat:hover .hh_cross { background-color: var(--pad-off-hover); }
+html.ben-pads .hi-hat:hover:has(.note_part[style*="color: rgb(0, 0, 0)"]) .hh_cross { background: var(--pad-hh); filter: brightness(1.08); }
+html.ben-pads .snare:hover .snare_circle, html.ben-pads .kick:hover .kick_circle, html.ben-pads .tom:hover .tom_circle {
+  box-shadow: none !important; border: none !important;
+}
+html.ben-pads .snare:active .snare_circle, html.ben-pads .kick:active .kick_circle, html.ben-pads .tom:active .tom_circle,
+html.ben-pads .hi-hat:active .hh_cross { transform: scale(0.88); }
+html.ben-pads .snare:hover .snare_circle[style*="background-color: rgb(0, 0, 0)"],
+html.ben-pads .kick:hover .kick_circle[style*="background-color: rgb(0, 0, 0)"],
+html.ben-pads .tom:hover .tom_circle[style*="background-color: rgb(0, 0, 0)"] { filter: brightness(1.08); }
+/* row labels pick up the pad colour */
+html.ben-pads .line-labels .hh-label, html.ben-pads .ben-ride-label { color: var(--pad-hh); }
+html.ben-pads .line-labels .snare-label { color: var(--pad-sn); }
+html.ben-pads .line-labels .kick-label { color: var(--pad-kick); }
+html.ben-pads .line-labels .tom-label { color: var(--pad-tom); }
+
+/* style switch button */
+#benGridStyleToggle { font-size: 13px; }
