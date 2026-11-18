@@ -40,11 +40,15 @@
 						'html.ben-tint.ben-dark{--ben-brand:' + c(H, S, 76) + ';--ben-brand-soft:' + c(H, S * 0.7, 20) + ';--ben-brand-ink:' + c(H, 40, 8) + ';' +
 						'--ben-bg:' + c(H, 38, 6) + ';--ben-surface:' + c(H, 32, 12) + ';--ben-line:' + c(H, 26, 22) + ';--ben-chrome:' + c(H, 38, 6) + ';--ben-staff:' + c(H, 26, 22) + ';' +
 						'--ben-tint-top:' + c(H, 38, 9) + ';--ben-tint-menu:' + c(H, 32, 15) + ';' +
+						'--ben-chrome-2:' + c(H, 34, 13) + ';--ben-chrome-hover:' + c(H, 28, 22) + ';--ben-tint-dock:hsla(' + H + ',32%,12%,0.94);--ben-tint-track:' + c(H, 24, 24) + ';' +
 						'--pad-hh:' + c(H, S, 82) + ';--pad-sn:' + c(H, S, 72) + ';--pad-kick:' + c(H, S, 62) + ';--pad-tom:' + c(T, S, 84) + ';' +
 						'--pad-off:' + c(H, 24, 24) + ';--pad-off-hover:' + c(H, 24, 31) + '}';
 					var st = document.getElementById('benColourStyle');
 					if (!st) { st = document.createElement('style'); st.id = 'benColourStyle'; document.head.appendChild(st); }
 					st.textContent = css;
+					var tc = document.querySelector('meta[name="theme-color"]');
+					if (!tc) { tc = document.createElement('meta'); tc.name = 'theme-color'; document.head.appendChild(tc); }
+					tc.content = document.documentElement.classList.contains('ben-dark') ? 'hsl(' + H + ',38%,9%)' : '#ffffff';
 					document.documentElement.classList.add('ben-tint');
 					benDrawIcon(H, S);
 				};
@@ -103,9 +107,9 @@
 
 
 		<link rel="stylesheet" type="text/css" href="font-awesome/4.7.0/css/font-awesome.min.css">
-	    <link rel="stylesheet" type="text/css" href="css/groove_writer_orange.css?v=1795007786">
-		<link rel="stylesheet" type="text/css" href="css/groove_display_orange.css?v=1795007786">
-		<link rel="stylesheet" type="text/css" href="css/groove_ben_modern.css?v=1795007786">
+	    <link rel="stylesheet" type="text/css" href="css/groove_writer_orange.css?v=1795011729">
+		<link rel="stylesheet" type="text/css" href="css/groove_display_orange.css?v=1795011729">
+		<link rel="stylesheet" type="text/css" href="css/groove_ben_modern.css?v=1795011729">
 
 		<!--   Other peoples JS libraries    -->
 		<!-- <script src="./MIDI.js/js/MIDI/MIDI.JS.min.js" type="text/javascript"></script> -->
@@ -583,7 +587,7 @@
 
 
 		<!-- App entry point: ES module that boots the app and runs page-load init. -->
-		<script type="module" src="js/main.js?v=1795007786"></script>
+		<script type="module" src="js/main.js?v=1795011729"></script>
 
 
 	</div>
