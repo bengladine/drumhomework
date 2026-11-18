@@ -988,7 +988,6 @@ body, #GrooveWriter, #RightHandContent, #TopNav, #midiPlayer, #sheetMusicDiv .sv
 .abcr { transition: fill 0.12s linear, fill-opacity 0.12s linear; }
 .bg-highlight { transition: background-color 0.12s linear, box-shadow 0.12s linear !important; }
 .ben-sheet-cursor, .ben-sheet-loop, .ben-sheet-handle { transition: left 0.2s var(--ben-ease), top 0.2s var(--ben-ease), width 0.2s var(--ben-ease), height 0.2s var(--ben-ease), opacity 0.2s ease; }
-.ben-sheet-layer > div { animation: ben-fade-in 0.2s ease; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
