@@ -951,3 +951,6 @@ html.ben-popped #sheetMusicDiv::before {
   font-size: 13px; background: var(--ben-surface); border: 1px dashed var(--ben-line); border-radius: 10px; margin-right: 300px;
 }
 html.ben-popped #benSheetPin, html.ben-popped #benSheetResize { display: none !important; }
+html.ben-split #sheetMusicDiv .svgTarget svg, html.ben-popped #sheetMusicDiv .svgTarget svg { height: auto !important; }
+html.ben-split #sheetMusicDiv .svgTarget { padding-top: 44px; }
+@media (min-width: 1000px) { html.ben-split #measureContainer { padding-left: 8px; } }

@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795002045';
-import { GrooveUtils } from './groove_utils.js?v=1795002045';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795002108';
+import { GrooveUtils } from './groove_utils.js?v=1795002108';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -85,10 +85,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1795002045';
-import * as _perm from './permutations.js?v=1795002045';
-import * as _view from './viewHtml.js?v=1795002045';
-import * as _grid from './gridState.js?v=1795002045';
+} from './constants.js?v=1795002108';
+import * as _perm from './permutations.js?v=1795002108';
+import * as _view from './viewHtml.js?v=1795002108';
+import * as _grid from './gridState.js?v=1795002108';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -4401,9 +4401,14 @@ function GrooveWriter() {
       card.style.setProperty('--ben-z', 1);
       if (!phone) {
         card.style.removeProperty('--ben-z');
-        // card as wide as its note grid (min. room for the toolbar), so all bars look tidy
+        // card as wide as its note grid (min. room for the toolbar), so all bars look tidy;
+        // in a narrow column (side-by-side layout) the grid shrinks to fit
         card.style.width = '';
-        card.style.width = Math.max(grid.scrollWidth + 28, 560) + 'px';
+        var room = (mc ? mc.clientWidth : window.innerWidth) - 110;
+        var want = grid.scrollWidth + 28;
+        var zz = want > room ? Math.max(0.6, room / want) : 1;
+        if (zz < 1) grid.style.zoom = zz;
+        card.style.width = Math.min(Math.max(want * zz, 520), Math.max(room, 520)) + 'px';
         continue;
       }
       card.style.width = '';
