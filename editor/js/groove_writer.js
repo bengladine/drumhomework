@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795000039';
-import { GrooveUtils } from './groove_utils.js?v=1795000039';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795000163';
+import { GrooveUtils } from './groove_utils.js?v=1795000163';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -85,10 +85,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1795000039';
-import * as _perm from './permutations.js?v=1795000039';
-import * as _view from './viewHtml.js?v=1795000039';
-import * as _grid from './gridState.js?v=1795000039';
+} from './constants.js?v=1795000163';
+import * as _perm from './permutations.js?v=1795000163';
+import * as _view from './viewHtml.js?v=1795000163';
+import * as _grid from './gridState.js?v=1795000163';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -598,6 +598,17 @@ function GrooveWriter() {
   function hilight_all_notes_on_same_beat(instrument, id) {
     id = Math.floor(id);
     if (id < 0 || id >= class_notes_per_measure * class_number_of_measures) return;
+
+    // Ben: with a per-beat grid many cells are hidden; light up the nearest visible cell
+    // at or before this position (within the same bar) instead of an invisible one.
+    var barStart = id - (id % class_notes_per_measure);
+    var snap = id;
+    while (snap > barStart) {
+      var cell = document.getElementById('bg-highlight' + snap);
+      if (!cell || cell.style.display != 'none') break;
+      snap--;
+    }
+    id = snap;
 
     if (class_cur_all_notes_highlight_id === id) return; // already highligted
 
