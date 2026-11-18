@@ -644,7 +644,7 @@ body,
   #measureContainer { justify-content: center; }
 }
 
-/* ---- Beatsheet branding ---- */
+/* ---- Drumsheet branding ---- */
 .ben-logo { font-size: 20px; font-weight: 800; letter-spacing: -0.02em; color: #fff; white-space: nowrap; line-height: 1; }
 .ben-logo b { font-weight: 800; color: #4ade80; }
 #logoTextUpperLeft img { display: none; }
@@ -994,7 +994,7 @@ body, #GrooveWriter, #RightHandContent, #TopNav, #midiPlayer, #sheetMusicDiv .sv
 }
 
 /* =====================================================================
-   Beatsheet palette: blue brand colour (replaces Groove Scribe's green).
+   Drumsheet palette: blue brand colour (replaces Groove Scribe's green).
    Orange stays only for loops; amber is the dark-mode playback colour.
    ===================================================================== */
 :root { --ben-brand: #2563eb; --ben-brand-soft: #eff6ff; --ben-brand-ink: #ffffff; --ben-green: var(--ben-brand); }
@@ -1024,7 +1024,7 @@ input[type='range'] { accent-color: var(--ben-brand); }
 #benFooter a { color: var(--ben-brand); }
 
 /* =====================================================================
-   Old Groove Scribe popups in the Beatsheet style
+   Old Groove Scribe popups in the Drumsheet style
    (Share, metronome auto speed-up, time signature, grooves list)
    ===================================================================== */
 #fullURLPopup, #metronomeAutoSpeedupConfiguration, #timeSigPopup {

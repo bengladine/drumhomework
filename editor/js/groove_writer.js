@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795005204';
-import { GrooveUtils } from './groove_utils.js?v=1795005204';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795005837';
+import { GrooveUtils } from './groove_utils.js?v=1795005837';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -85,10 +85,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1795005204';
-import * as _perm from './permutations.js?v=1795005204';
-import * as _view from './viewHtml.js?v=1795005204';
-import * as _grid from './gridState.js?v=1795005204';
+} from './constants.js?v=1795005837';
+import * as _perm from './permutations.js?v=1795005837';
+import * as _view from './viewHtml.js?v=1795005837';
+import * as _grid from './gridState.js?v=1795005837';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -136,7 +136,7 @@ function GrooveWriter() {
   );
 
   // private vars in the scope of the class
-  var class_app_title = 'Beatsheet: free online drum notation editor';
+  var class_app_title = 'Drumsheet: free online drum notation editor';
   var class_permutation_type = 'none';
   var class_advancedEditIsOn = false;
   var class_measure_for_note_label_click = 0;
@@ -5157,14 +5157,14 @@ function GrooveWriter() {
   }
   function setSheetLayout(mode) {
     if (mode == 'window') {
-      benPop = window.open('', 'beatsheet_sheet', 'width=1000,height=640');
+      benPop = window.open('', 'drumsheet_sheet', 'width=1000,height=640');
       if (!benPop) {
         alert('Your browser blocked the extra window. Allow pop-ups for this site and try again.');
         mode = 'top';
       } else {
         benPop.document.open();
         benPop.document.write(
-          '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Beatsheet: sheet music</title>' +
+          '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Drumsheet: sheet music</title>' +
             '<style>body{margin:0;padding:16px 20px;background:#fff;font-family:system-ui,sans-serif}' +
             'svg{display:block;width:100%;height:auto;margin:0 0 6px}' +
             '.abcr{fill:transparent}.abcr.highlighted{fill:rgba(50,126,173,.25)}</style></head>' +
@@ -5482,7 +5482,7 @@ function GrooveWriter() {
       .join('\n');
     root._benPrintLayout = false;
     root.refresh_ABC();
-    var title = (document.getElementById('tuneTitle') || {}).value || 'Beatsheet';
+    var title = (document.getElementById('tuneTitle') || {}).value || 'Drumsheet';
     var html =
       '<!DOCTYPE html><html><head><meta charset="utf-8"><title>' +
       title.replace(/</g, '&lt;') +
@@ -5575,9 +5575,9 @@ function GrooveWriter() {
       });
       canvas.toBlob(function (blob) {
         var a = document.createElement('a');
-        var title = ((document.getElementById('tuneTitle') || {}).value || 'beatsheet').trim().replace(/[^\w\- ]+/g, '');
+        var title = ((document.getElementById('tuneTitle') || {}).value || 'drumsheet').trim().replace(/[^\w\- ]+/g, '');
         a.href = URL.createObjectURL(blob);
-        a.download = (title || 'beatsheet') + '.png';
+        a.download = (title || 'drumsheet') + '.png';
         document.body.appendChild(a);
         a.click();
         setTimeout(function () {
@@ -5651,9 +5651,9 @@ function GrooveWriter() {
       .then(function (audio) {
         var blob = audioBufferToWav(audio);
         var a = document.createElement('a');
-        var title = ((document.getElementById('tuneTitle') || {}).value || 'beatsheet').trim().replace(/[^\w\- ]+/g, '');
+        var title = ((document.getElementById('tuneTitle') || {}).value || 'drumsheet').trim().replace(/[^\w\- ]+/g, '');
         a.href = URL.createObjectURL(blob);
-        a.download = (title || 'beatsheet') + '.wav';
+        a.download = (title || 'drumsheet') + '.wav';
         document.body.appendChild(a);
         a.click();
         setTimeout(function () {
