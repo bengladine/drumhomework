@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795002108';
-import { GrooveUtils } from './groove_utils.js?v=1795002108';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795002177';
+import { GrooveUtils } from './groove_utils.js?v=1795002177';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -85,10 +85,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1795002108';
-import * as _perm from './permutations.js?v=1795002108';
-import * as _view from './viewHtml.js?v=1795002108';
-import * as _grid from './gridState.js?v=1795002108';
+} from './constants.js?v=1795002177';
+import * as _perm from './permutations.js?v=1795002177';
+import * as _view from './viewHtml.js?v=1795002177';
+import * as _grid from './gridState.js?v=1795002177';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -2483,8 +2483,10 @@ function GrooveWriter() {
 
         var numberOfMeasuresPerLine = sheetBarsPerLine();
         var addon_abc;
-        // Ben: a short last line keeps natural proportions instead of being stretched flat
-        fullABC = fullABC.replace('%%stretchlast 1', '%%stretchlast 0');
+        // Ben: full lines fill the width; only a short last line (fewer bars than the others)
+        // keeps its natural proportions instead of being stretched flat
+        if (class_number_of_measures % numberOfMeasuresPerLine !== 0)
+          fullABC = fullABC.replace('%%stretchlast 1', '%%stretchlast 0');
 
         for (i = 0; i < class_number_of_measures; i++) {
           // we already go the array states above, don't get it again.
