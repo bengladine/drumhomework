@@ -58,9 +58,9 @@ import {
   constant_OUR_MIDI_VELOCITY_ACCENT,
   constant_OUR_MIDI_VELOCITY_GHOST,
   constant_OUR_MIDI_VELOCITY_NORMAL,
-} from './constants.js?v=1795000163';
-import { meterFor, usedSlots } from './meters.js?v=1795000163';
-import { isTripletDivisionFromNotesPerMeasure, scaleNoteArrayToFullSize } from './musicMath.js?v=1795000163';
+} from './constants.js?v=1795000323';
+import { meterFor, usedSlots } from './meters.js?v=1795000323';
+import { isTripletDivisionFromNotesPerMeasure, scaleNoteArrayToFullSize } from './musicMath.js?v=1795000323';
 
 export function MIDI_build_midi_url_count_in_track(gu, timeSigTop, timeSigBottom) {
   var midiFile = new Midi.File();
@@ -170,7 +170,10 @@ export function MIDI_from_HH_Snare_Kick_Arrays(
     if (metronome_frequency > 0) {
       var quarterNoteFrequency = isTriplets ? 12 : 8;
       var eighthNoteFrequency = isTriplets ? 6 : 4;
-      var sixteenthNoteFrequency = isTriplets ? 2 : 2;
+      // Ben: in a triplet-based grid a 16th is 3 cells (it used to be 2, which clicked sextuplets)
+      var sixteenthNoteFrequency = isTriplets ? 3 : 2;
+      var tripletCellsPerClick = 4; // 3 clicks per beat (triplet grid only)
+      var sextupletCellsPerClick = 2; // 6 clicks per beat (triplet grid only)
 
       var metronome_specific_index = i;
       switch (offsetClickStartBeat) {
@@ -194,13 +197,13 @@ export function MIDI_from_HH_Snare_Kick_Arrays(
           break;
         case 'TI':
           if (!isTriplets) console.log('OffsetClickStart error in MIDI_from_HH_Snare_Kick_Arrays');
-          // shift by one sixteenth note
-          metronome_specific_index -= sixteenthNoteFrequency * 2;
+          // shift by one triplet 8th
+          metronome_specific_index -= tripletCellsPerClick;
           break;
         case 'TA':
           if (!isTriplets) console.log('OffsetClickStart error in MIDI_from_HH_Snare_Kick_Arrays');
-          // shift by two sixteenth notes
-          metronome_specific_index -= 2 * (sixteenthNoteFrequency * 2);
+          // shift by two triplet 8ths
+          metronome_specific_index -= 2 * tripletCellsPerClick;
           break;
         default:
           console.log('bad case in MIDI_from_HH_Snare_Kick_Arrays');
@@ -224,6 +227,17 @@ export function MIDI_from_HH_Snare_Kick_Arrays(
           if (metronome_specific_index % eighthNoteFrequency === 0) {
             // click every 8th note
             metronome_note = constant_OUR_MIDI_METRONOME_NORMAL; // standard metronome click
+          }
+        } else if (!metronome_note && metronome_frequency == 12 && isTriplets) {
+          // triplets requested (3 per beat)
+          if (metronome_specific_index % tripletCellsPerClick === 0) {
+            metronome_note = constant_OUR_MIDI_METRONOME_NORMAL;
+          }
+        } else if (!metronome_note && metronome_frequency == 24 && isTriplets) {
+          // sextuplets requested (6 per beat)
+          if (metronome_specific_index % sextupletCellsPerClick === 0) {
+            metronome_note = constant_OUR_MIDI_METRONOME_NORMAL;
+            metronome_velocity = 25;
           }
         } else if (!metronome_note && metronome_frequency == 16) {
           // 16th notes requested

@@ -771,3 +771,4 @@ html.ben-dark { --ben-staff: #2b3850; }
     var(--ben-staff) calc(50% + 1px), transparent calc(50% + 1px));
 }
 .staff-container .hi-hat-container:not(.ben-ride-container) { box-shadow: inset 0 -2px 0 var(--ben-staff); }
+#metronomeTrip.buttonSelected, #metronomeSext.buttonSelected { background: #4ade80; color: #052e16 !important; }

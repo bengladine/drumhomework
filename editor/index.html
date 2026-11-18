@@ -29,9 +29,9 @@
 
 		<link rel="stylesheet" type="text/css" href="font-awesome/4.7.0/css/font-awesome.min.css">
 		<link rel="stylesheet" type="text/css" href="css/share-button.min.css">
-	    <link rel="stylesheet" type="text/css" href="css/groove_writer_orange.css?v=1795000163">
-		<link rel="stylesheet" type="text/css" href="css/groove_display_orange.css?v=1795000163">
-		<link rel="stylesheet" type="text/css" href="css/groove_ben_modern.css?v=1795000163">
+	    <link rel="stylesheet" type="text/css" href="css/groove_writer_orange.css?v=1795000323">
+		<link rel="stylesheet" type="text/css" href="css/groove_display_orange.css?v=1795000323">
+		<link rel="stylesheet" type="text/css" href="css/groove_ben_modern.css?v=1795000323">
 
 		<!--   Other peoples JS libraries    -->
 		<!-- <script src="./MIDI.js/js/MIDI/MIDI.JS.min.js" type="text/javascript"></script> -->
@@ -99,6 +99,8 @@
 						<span class="metronomeButton" id="metronome4ths" onclick="myGrooveWriter.setMetronomeFrequency(4);">4th</span>
 						<span class="metronomeButton" id="metronome8ths" onclick="myGrooveWriter.setMetronomeFrequency(8);">8th</span>
 						<span class="metronomeButton" id="metronome16ths" onclick="myGrooveWriter.setMetronomeFrequency(16);">16th</span>
+						<span class="metronomeButton" id="metronomeTrip" title="Triplets (3 per beat)" onclick="myGrooveWriter.setMetronomeFrequency(12);">3</span>
+						<span class="metronomeButton" id="metronomeSext" title="Sextuplets (6 per beat)" onclick="myGrooveWriter.setMetronomeFrequency(24);">6</span>
 						<span class="metronomeButton Options grooveDB_hidden" id="metronomeOptionsAnchor" onclick="myGrooveWriter.metronomeOptionsAnchorClick(event);">Options</span>
 					</span>
 					<span id="benGridAll" title="Set the grid of every beat in every bar">
@@ -508,7 +510,7 @@
 
 
 		<!-- App entry point: ES module that boots the app and runs page-load init. -->
-		<script type="module" src="js/main.js?v=1795000163"></script>
+		<script type="module" src="js/main.js?v=1795000323"></script>
 
 
 	</div>
