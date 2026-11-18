@@ -3,17 +3,17 @@
 // triplet / sticking-count helpers that remain in GrooveUtils; the internal
 // helpers below are pure. GrooveUtils delegates its ABC methods here.
 
-import { constant_NUMBER_OF_TOMS } from './constants.js?v=1795036889';
-import { meterFor, usedSlots, addInlineMeter } from './meters.js?v=1795036889';
+import { constant_NUMBER_OF_TOMS } from './constants.js?v=1795038518';
+import { meterFor, usedSlots, addInlineMeter } from './meters.js?v=1795038518';
 import {
   isTripletDivisionFromNotesPerMeasure,
   notesPerMeasureInFullSizeArray,
   scaleNoteArrayToFullSize,
-} from './musicMath.js?v=1795036889';
+} from './musicMath.js?v=1795038518';
 import {
   create_note_mapping_array_for_highlighting,
   convert_sticking_counts_to_actual_counts,
-} from './noteArrays.js?v=1795036889';
+} from './noteArrays.js?v=1795038518';
 
 function moveAccentsOrOtherModifiersOutsideOfGroup(abcNoteStrings, modifier_to_look_for) {
   var found_modifier = false;
@@ -680,17 +680,19 @@ export function get_top_ABC_BoilerPlate(
     ' <defs>\n' +
     ' <path id="Xhead" d="m-3,-3 l6,6 m0,-6 l-6,6" class="stroke" style="stroke-width:1.2"/>\n' +
     ' <path id="Trihead" d="m-3,2 l 6,0 l-3,-6 l-3,6 l6,0" class="stroke" style="stroke-width:1.2"/>\n' +
+    ' <path id="Trifill" d="m-3.5,2.5 l7,0 l-3.5,-7 z" class="fill" style="stroke:currentColor;stroke-width:0.6"/>\n' +
+    ' <path id="Diamhead" d="m-4,0 l4,-4 l4,4 l-4,4 z" class="stroke" style="stroke-width:1.4"/>\n' +
     ' </defs>\n' +
     '%%endsvg\n' +
     '%%map drum ^g heads=Xhead print=g       % Hi-Hat\n' +
-    "%%map drum ^c' heads=Xhead print=c'   % Crash\n" +
-    "%%map drum ^d' heads=Xhead print=d'   % Stacker\n" +
-    "%%map drum ^a' heads=Xhead print=e'   % Crash 2\n" +
+    "%%map drum ^c' heads=Xhead print=a    % Crash (first ledger line, PAS/Weinberg)\n" +
+    "%%map drum ^d' heads=Xhead print=c'   % Stacker / china (second ledger line)\n" +
+    "%%map drum ^a' heads=Xhead print=b    % Crash 2 (space above the crash)\n" +
     "%%map drum ^e' heads=Xhead print=e'   % Metronome click\n" +
     "%%map drum ^f' heads=Xhead print=f'   % Metronome beep\n" +
-    "%%map drum ^A' heads=Xhead print=A'   % Ride\n" +
-    "%%map drum ^B' heads=Trihead print=A' % Ride Bell\n" +
-    "%%map drum ^D' heads=Trihead print=g   % Cow Bell\n" +
+    "%%map drum ^A' heads=Xhead print=f    % Ride (top line)\n" +
+    "%%map drum ^B' heads=Diamhead print=f % Ride Bell (diamond on the ride line, PAS/Weinberg)\n" +
+    "%%map drum ^D' heads=Trifill print=g   % Cow Bell (filled triangle)\n" +
     '%%map drum ^c heads=Xhead print=c  % Cross Stick\n' +
     '%%map drum ^d, heads=Xhead print=d,  % Foot Splash\n';
 
