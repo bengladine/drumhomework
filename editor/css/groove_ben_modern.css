@@ -1216,3 +1216,6 @@ html.ben-pads .kick:has(.kick_circle[style*="background-color: rgb(0, 0, 0)"]) .
 #benBarsPerLine { width: 118px; }
 #benSheetLayout { right: 178px; }
 @media (min-width: 721px) { html.ben-split #benSheetLayout { right: 142px; } }
+html.ben-pads .snare .snare_flam[style*="color: rgb(0, 0, 0)"] svg, html.ben-pads .snare .snare_drag[style*="color: rgb(0, 0, 0)"] svg {
+  width: 20px !important; height: 20px !important; filter: brightness(0) invert(1); }
+html.ben-pads .snare .snare_flam i, html.ben-pads .snare .snare_drag i { display: flex; align-items: center; justify-content: center; }
