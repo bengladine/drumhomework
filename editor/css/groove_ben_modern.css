@@ -1204,3 +1204,15 @@ html.ben-purple:not(.ben-dark) #metronomeSext.buttonSelected { background: var(-
 .ben-logo { display: inline-flex; align-items: center; }
 .ben-logo-icon { width: 26px; height: 26px; border-radius: 7px; margin-right: 8px; }
 @media (max-width: 720px) { .ben-logo-icon { width: 22px; height: 22px; margin-right: 6px; } }
+/* a slot played on a cymbal row shows an empty hi-hat pad */
+html.ben-pads .hi-hat.ben-on-ride .hh_cross, html.ben-pads .hi-hat.ben-on-ride:hover .hh_cross { background: var(--pad-off) !important; color: transparent !important; }
+html.ben-pads .hi-hat.ben-on-ride .note_part:not(.hh_cross) { visibility: hidden; }
+/* hi-hat foot (splash) inside the kick pad */
+html.ben-pads .kick .kick_splash.note_part[style*="color: rgb(0, 0, 0)"] {
+  left: 2px !important; top: 0 !important; width: 22px; height: 22px; display: flex !important; align-items: center; justify-content: center;
+  font-size: 13px !important; line-height: 1 !important; z-index: 2; color: var(--pad-hh) !important;
+}
+html.ben-pads .kick:has(.kick_circle[style*="background-color: rgb(0, 0, 0)"]) .kick_splash.note_part[style*="color: rgb(0, 0, 0)"] { color: #fff !important; }
+#benBarsPerLine { width: 118px; }
+#benSheetLayout { right: 178px; }
+@media (min-width: 721px) { html.ben-split #benSheetLayout { right: 142px; } }
