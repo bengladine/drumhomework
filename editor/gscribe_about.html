@@ -31,6 +31,21 @@
   kbd { font-family: inherit; font-size: 13px; background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px; }
   .back { display: inline-block; margin-bottom: 18px; font-size: 14px; text-decoration: none; }
 </style>
+<script>
+	// privacy-friendly visitor count (GoatCounter: no cookies, no personal data), only on drumsheet.app
+	if (location.hostname === 'drumsheet.app') {
+		window.goatcounter = { path: function () { return location.pathname; } }; // grooves in the link are not sent
+		var gc = document.createElement('script');
+		gc.async = true;
+		gc.src = 'https://gc.zgo.at/count.js';
+		gc.dataset.goatcounter = 'https://drumsheet.goatcounter.com/count';
+		document.head.appendChild(gc);
+	}
+	window.benCount = function (name) {
+		try { if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: name, title: name, event: true }); } catch (e) {}
+	};
+</script>
+
 
 
 <title>About Drumsheet</title>
@@ -39,6 +54,7 @@
 <h1><img src="images/beatsheet-icon-96.png" alt=""><span>About Drum<b>sheet</b></span></h1>
 
 <p>Drumsheet is a free online drum notation editor, made by <a href="https://drumhof.com">Drumhof</a> (drum lessons in Gent, Belgium).</p>
+<p class="sub">Privacy: Drumsheet counts visits with <a href="https://www.goatcounter.com" target="_blank" rel="noopener">GoatCounter</a>, without cookies and without personal data. Your grooves stay in your own links and are never sent anywhere.</p>
 <p>It is built on <a href="https://github.com/montulli/GrooveScribe">GrooveScribe</a> by Lou Montulli and Mike Johnston, released under the GNU General Public License v2.
 Drumsheet adds, among other things: 4 toms with their own sounds, a time signature per bar, a grid per beat (1/4 to 1/32, triplets, sextuplets),
 a ride row, bar tools (copy, move, clear), play-from and looping on the sheet, a pinned sheet, and a phone layout.

@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795028434';
-import { GrooveUtils } from './groove_utils.js?v=1795028434';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795028453';
+import { GrooveUtils } from './groove_utils.js?v=1795028453';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -85,10 +85,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1795028434';
-import * as _perm from './permutations.js?v=1795028434';
-import * as _view from './viewHtml.js?v=1795028434';
-import * as _grid from './gridState.js?v=1795028434';
+} from './constants.js?v=1795028453';
+import * as _perm from './permutations.js?v=1795028453';
+import * as _view from './viewHtml.js?v=1795028453';
+import * as _grid from './gridState.js?v=1795028453';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -5542,6 +5542,7 @@ function GrooveWriter() {
       setTimeout(function () {
         frame.contentWindow.focus();
         frame.contentWindow.print();
+        window.benCount && window.benCount('print-pdf');
         benThanks();
         setTimeout(function () {
           frame.remove();
@@ -5626,6 +5627,7 @@ function GrooveWriter() {
         a.download = (title || 'drumsheet') + '.png';
         document.body.appendChild(a);
         a.click();
+        window.benCount && window.benCount('download-png');
         benThanks();
         setTimeout(function () {
           URL.revokeObjectURL(a.href);
@@ -5703,6 +5705,7 @@ function GrooveWriter() {
         a.download = (title || 'drumsheet') + '.wav';
         document.body.appendChild(a);
         a.click();
+        window.benCount && window.benCount('download-wav');
         benThanks();
         setTimeout(function () {
           URL.revokeObjectURL(a.href);
