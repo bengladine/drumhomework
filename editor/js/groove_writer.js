@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795007380';
-import { GrooveUtils } from './groove_utils.js?v=1795007380';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795007786';
+import { GrooveUtils } from './groove_utils.js?v=1795007786';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -85,10 +85,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1795007380';
-import * as _perm from './permutations.js?v=1795007380';
-import * as _view from './viewHtml.js?v=1795007380';
-import * as _grid from './gridState.js?v=1795007380';
+} from './constants.js?v=1795007786';
+import * as _perm from './permutations.js?v=1795007786';
+import * as _view from './viewHtml.js?v=1795007786';
+import * as _grid from './gridState.js?v=1795007786';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -5472,6 +5472,32 @@ function GrooveWriter() {
   }
   // Ben: print on A4 portrait, 2 bars per line, only the sheet music
   root._benPrintLayout = false;
+  // a small, friendly thank-you after a print or download (at most once per visit)
+  function benThanks() {
+    try {
+      if (sessionStorage.getItem('benThanked')) return;
+      sessionStorage.setItem('benThanked', '1');
+    } catch (e) {
+      /* ignore */
+    }
+    var t = document.createElement('div');
+    t.id = 'benThanks';
+    t.innerHTML =
+      '<span>Sheet ready! Drumsheet is free, so a coffee is always welcome.</span>' +
+      '<a href="https://ko-fi.com/gladinathor" target="_blank" rel="noopener">&#9749; Buy me a coffee</a>' +
+      '<button aria-label="Close">&times;</button>';
+    t.querySelector('button').onclick = function () {
+      t.remove();
+    };
+    document.body.appendChild(t);
+    setTimeout(function () {
+      t.classList.add('out');
+      setTimeout(function () {
+        t.remove();
+      }, 400);
+    }, 9000);
+  }
+
   function printSheetPortrait() {
     root._benPrintLayout = true;
     root.refresh_ABC();
@@ -5497,6 +5523,7 @@ function GrooveWriter() {
       setTimeout(function () {
         frame.contentWindow.focus();
         frame.contentWindow.print();
+        benThanks();
         setTimeout(function () {
           frame.remove();
         }, 2000);
@@ -5580,6 +5607,7 @@ function GrooveWriter() {
         a.download = (title || 'drumsheet') + '.png';
         document.body.appendChild(a);
         a.click();
+        benThanks();
         setTimeout(function () {
           URL.revokeObjectURL(a.href);
           a.remove();
@@ -5656,6 +5684,7 @@ function GrooveWriter() {
         a.download = (title || 'drumsheet') + '.wav';
         document.body.appendChild(a);
         a.click();
+        benThanks();
         setTimeout(function () {
           URL.revokeObjectURL(a.href);
           a.remove();
