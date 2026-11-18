@@ -907,3 +907,47 @@ html.ben-dark #bottomButtonRow .pageBottomButton.ClickToHide, html.ben-dark #sho
 #bottomButtonRow > .pageBottomButton { padding: 6px 10px !important; margin: 0 !important; top: 0 !important; position: relative !important; align-self: center; height: 52px !important; box-sizing: border-box; }
 #bottomButtonRow > .pageBottomButton { display: flex !important; flex-direction: column; align-items: center; justify-content: center; gap: 3px; }
 #bottomButtonRow > .pageBottomButton.grooveDB_hidden[style*="none"] { display: none !important; }
+
+/* ---- sheet tools: layout menu + bars/line next to the pin ---- */
+#benSheetLayout {
+  position: absolute; top: 10px; right: 160px; z-index: 6; height: 30px;
+  border: 1px solid var(--ben-line); border-radius: 8px; background: var(--ben-surface); color: var(--ben-muted);
+  font: inherit; font-size: 12px; padding: 0 8px; cursor: pointer;
+}
+#benSheetLayout:hover { color: var(--ben-ink); }
+@media (max-width: 720px) { #benSheetLayout { display: none; } }
+
+/* resizable pinned sheet */
+#sheetMusicDiv.ben-pinned .svgTarget { max-height: var(--ben-sheet-maxh, 34vh) !important; }
+#benSheetResize { display: none; }
+html:not(.ben-split) #sheetMusicDiv.ben-pinned #benSheetResize {
+  display: block; position: absolute; left: 50%; bottom: 0; transform: translateX(-50%);
+  width: 64px; height: 12px; cursor: ns-resize; z-index: 6; touch-action: none;
+}
+#benSheetResize::after { content: ''; display: block; width: 40px; height: 4px; margin: 4px auto 0; border-radius: 3px; background: #cbd5e1; }
+#benSheetResize:hover::after { background: var(--ben-ink); }
+html.ben-dark #benSheetResize::after { background: #475569; }
+
+/* side by side: sheet left (sticky, own scroll), editor right */
+@media (min-width: 1000px) {
+  html.ben-split #RightHandContent { display: grid; grid-template-columns: minmax(360px, 44%) minmax(0, 1fr); align-items: start; }
+  html.ben-split #RightHandContent > .nonPrintable:first-child { display: none; }
+  html.ben-split #sheetMusicDiv {
+    grid-column: 1; grid-row: 1 / span 4; position: sticky !important; top: var(--ben-header-h, 100px) !important;
+    height: calc(100vh - var(--ben-header-h, 100px)); display: flex; flex-direction: column; padding: 12px 6px 12px 16px !important;
+    background: var(--ben-bg) !important;
+  }
+  html.ben-split #sheetMusicDiv .svgTarget { flex: 1; max-height: none !important; overflow-y: auto; border-radius: var(--ben-radius); }
+  html.ben-split #RightHandContent > .nonPrintable:last-child { grid-column: 2; min-width: 0; }
+  html.ben-split #benSheetPin { display: none; }
+  html.ben-split #benSheetLayout { top: 22px; right: 120px; }
+  html.ben-split #benBarsPerLine { top: 22px; right: 16px; }
+}
+/* popped out: the sheet lives in its own window */
+html.ben-popped #sheetMusicDiv .svgTarget { height: 0; min-height: 0; padding: 0; overflow: hidden; box-shadow: none; }
+html.ben-popped #sheetMusicDiv { padding: 8px 16px 8px; }
+html.ben-popped #sheetMusicDiv::before {
+  content: 'The sheet music is open in its own window.'; display: block; padding: 10px 14px; color: var(--ben-muted);
+  font-size: 13px; background: var(--ben-surface); border: 1px dashed var(--ben-line); border-radius: 10px; margin-right: 300px;
+}
+html.ben-popped #benSheetPin, html.ben-popped #benSheetResize { display: none !important; }

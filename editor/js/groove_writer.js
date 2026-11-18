@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795001787';
-import { GrooveUtils } from './groove_utils.js?v=1795001787';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795002045';
+import { GrooveUtils } from './groove_utils.js?v=1795002045';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -85,10 +85,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1795001787';
-import * as _perm from './permutations.js?v=1795001787';
-import * as _view from './viewHtml.js?v=1795001787';
-import * as _grid from './gridState.js?v=1795001787';
+} from './constants.js?v=1795002045';
+import * as _perm from './permutations.js?v=1795002045';
+import * as _view from './viewHtml.js?v=1795002045';
+import * as _grid from './gridState.js?v=1795002045';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -878,8 +878,25 @@ function GrooveWriter() {
   };
 
   // the user has clicked on the stickings menu (at bottom)
+  var class_stickings_menu_was_open = false;
+  document.addEventListener(
+    'pointerdown',
+    function (e) {
+      if (e.target.closest && e.target.closest('#stickingsButton')) {
+        var mnu = document.getElementById('stickingsContextMenu');
+        class_stickings_menu_was_open = !!mnu && mnu.style.display == 'block';
+      }
+    },
+    true
+  );
   root.stickingsAnchorClick = function (event) {
     var contextMenu = document.getElementById('stickingsContextMenu');
+    if (contextMenu && class_stickings_menu_was_open) {
+      // second click on STICKINGS closes the menu again
+      class_stickings_menu_was_open = false;
+      root.myGrooveUtils.hideContextMenu(contextMenu);
+      return;
+    }
     if (contextMenu) {
       var anchorPoint = document.getElementById('stickingsButton');
 
@@ -2552,6 +2569,7 @@ function GrooveWriter() {
     if (setting) return setting;
     if (root._benPrintLayout) return 2;
     var sheetW = (document.getElementById('svgTarget') || {}).offsetWidth || 1000;
+    if (benPopupOpen()) sheetW = benPop.innerWidth - 40;
     return Math.max(1, Math.round(sheetW / (class_notes_per_measure >= 32 ? 1100 : 760)));
   }
 
@@ -2594,6 +2612,7 @@ function GrooveWriter() {
     svgTarget.innerHTML = svg_return.svg;
     renderSheetOverlay();
     renderRideRows();
+    mirrorSheetToPopup();
   };
 
   // Render an SVG that is good for download.
@@ -5152,6 +5171,87 @@ function GrooveWriter() {
     /* storage may be unavailable */
   }
 
+  // ---- sheet layout: on top (default), side by side, or in its own window ----
+  var class_sheet_layout = 'top';
+  try {
+    class_sheet_layout = localStorage.getItem('benLayout') || 'top';
+    if (class_sheet_layout == 'window') class_sheet_layout = 'top'; // pop-ups can't reopen by themselves
+    var savedH = localStorage.getItem('benSheetMaxH');
+    if (savedH) document.documentElement.style.setProperty('--ben-sheet-maxh', savedH);
+  } catch (e) {
+    /* ignore */
+  }
+  document.documentElement.classList.toggle('ben-split', class_sheet_layout == 'split');
+  var benPop = null;
+  function benPopupOpen() {
+    return benPop && !benPop.closed;
+  }
+  function setSheetLayout(mode) {
+    if (mode == 'window') {
+      benPop = window.open('', 'beatsheet_sheet', 'width=1000,height=640');
+      if (!benPop) {
+        alert('Your browser blocked the extra window. Allow pop-ups for this site and try again.');
+        mode = 'top';
+      } else {
+        benPop.document.open();
+        benPop.document.write(
+          '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Beatsheet: sheet music</title>' +
+            '<style>body{margin:0;padding:16px 20px;background:#fff;font-family:system-ui,sans-serif}' +
+            'svg{display:block;width:100%;height:auto;margin:0 0 6px}' +
+            '.abcr{fill:transparent}.abcr.highlighted{fill:rgba(50,126,173,.25)}</style></head>' +
+            '<body><div id="s"></div></body></html>'
+        );
+        benPop.document.close();
+        benPop.addEventListener('resize', function () {
+          clearTimeout(benPop._t);
+          benPop._t = setTimeout(root.refresh_ABC, 200);
+        });
+        benPop.addEventListener('beforeunload', function () {
+          setTimeout(function () {
+            if (!benPopupOpen()) setSheetLayout('top');
+          }, 300);
+        });
+      }
+    } else if (benPopupOpen()) {
+      benPop.close();
+      benPop = null;
+    }
+    class_sheet_layout = mode;
+    document.documentElement.classList.toggle('ben-split', mode == 'split');
+    document.documentElement.classList.toggle('ben-popped', mode == 'window');
+    try {
+      localStorage.setItem('benLayout', mode);
+    } catch (e) {
+      /* ignore */
+    }
+    root.refresh_ABC();
+    setTimeout(applyGridVisibility, 50);
+  }
+  root.setSheetLayout = setSheetLayout;
+  // copy the sheet into the pop-out window after every redraw (and the playback highlight)
+  function mirrorSheetToPopup() {
+    if (!benPopupOpen()) return;
+    var box = benPop.document.getElementById('s');
+    if (!box) return;
+    box.innerHTML = Array.prototype.map
+      .call(document.querySelectorAll('#svgTarget svg'), function (el) {
+        return el.outerHTML;
+      })
+      .join('');
+  }
+  setInterval(function () {
+    if (benPopupOpen() && root.myGrooveUtils.isPlaying && root.myGrooveUtils.isPlaying()) {
+      var on = document.querySelector('#svgTarget .abcr.highlighted');
+      var box = benPop.document.getElementById('s');
+      if (!box) return;
+      box.querySelectorAll('.abcr.highlighted').forEach((el) => el.classList.remove('highlighted'));
+      if (on) {
+        var twin = box.querySelector('#' + CSS.escape(on.id));
+        if (twin) twin.classList.add('highlighted');
+      }
+    }
+  }, 60);
+
   function getBarsPerLineSetting() {
     var v = 0;
     try {
@@ -5182,6 +5282,50 @@ function GrooveWriter() {
       div.appendChild(btn);
     }
     btn.className = class_sheet_pinned ? 'on' : '';
+    var lay = document.getElementById('benSheetLayout');
+    if (!lay) {
+      lay = document.createElement('select');
+      lay.id = 'benSheetLayout';
+      lay.title = 'Where the sheet music goes';
+      lay.innerHTML =
+        '<option value="top">Sheet on top</option><option value="split">Sheet left, editor right</option>' +
+        '<option value="window">Sheet in its own window</option>';
+      lay.onchange = function () {
+        setSheetLayout(lay.value);
+      };
+      div.appendChild(lay);
+    }
+    lay.value = class_sheet_layout;
+    var handle = document.getElementById('benSheetResize');
+    if (!handle) {
+      handle = document.createElement('div');
+      handle.id = 'benSheetResize';
+      handle.title = 'Drag to make the sheet taller or shorter';
+      div.appendChild(handle);
+      handle.addEventListener('pointerdown', function (e) {
+        e.preventDefault();
+        var svgT = document.getElementById('svgTarget');
+        var startY = e.clientY;
+        var startH = svgT.getBoundingClientRect().height;
+        handle.setPointerCapture(e.pointerId);
+        var move = function (ev) {
+          var h = Math.max(80, Math.min(window.innerHeight * 0.85, startH + ev.clientY - startY));
+          document.documentElement.style.setProperty('--ben-sheet-maxh', Math.round(h) + 'px');
+        };
+        var up = function () {
+          handle.removeEventListener('pointermove', move);
+          handle.removeEventListener('pointerup', up);
+          try {
+            localStorage.setItem('benSheetMaxH', getComputedStyle(document.documentElement).getPropertyValue('--ben-sheet-maxh').trim());
+          } catch (err) {
+            /* ignore */
+          }
+          updateSheetPin();
+        };
+        handle.addEventListener('pointermove', move);
+        handle.addEventListener('pointerup', up);
+      });
+    }
     var bpl = document.getElementById('benBarsPerLine');
     if (!bpl) {
       bpl = document.createElement('select');
