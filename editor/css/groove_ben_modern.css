@@ -905,3 +905,5 @@ html.ben-dark #bottomButtonRow .pageBottomButton.ClickToHide, html.ben-dark #sho
 #bottomButtonRow .pageBottomButton:before, #bottomButtonRow .pageBottomButton:after { display: none !important; }
 #bottomButtonRow .pageBottomButton .bottomButtonIcon i { position: static !important; margin: 0 !important; }
 #bottomButtonRow > .pageBottomButton { padding: 6px 10px !important; margin: 0 !important; top: 0 !important; position: relative !important; align-self: center; height: 52px !important; box-sizing: border-box; }
+#bottomButtonRow > .pageBottomButton { display: flex !important; flex-direction: column; align-items: center; justify-content: center; gap: 3px; }
+#bottomButtonRow > .pageBottomButton.grooveDB_hidden[style*="none"] { display: none !important; }
