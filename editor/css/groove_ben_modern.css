@@ -1253,3 +1253,8 @@ html.ben-tint.ben-dark #benSheetResize::after { background: var(--ben-line); }
 /* no grey scrollbar under the dock on phones */
 #bottomButtonRow { scrollbar-width: none; }
 #bottomButtonRow::-webkit-scrollbar { display: none; }
+@media (max-width: 720px) {
+  #bottomButtonRow { left: 8px; right: 8px; justify-content: space-between; }
+  #bottomButtonRow .pageBottomButton { min-width: 0 !important; flex: 1 1 0; padding: 4px 1px !important; }
+  #bottomButtonRow .pageBottomButton .bottomButtonLabel { white-space: nowrap; font-size: 8px; letter-spacing: 0; }
+}
