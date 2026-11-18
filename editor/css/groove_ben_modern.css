@@ -777,3 +777,13 @@ html.ben-dark { --ben-staff: #2b3850; }
 .staff-container .notes-container { position: relative; }
 .staff-container .background-highlight-container { height: auto !important; top: 0; bottom: 0; }
 .staff-container .bg-highlight { height: 100% !important; }
+
+/* bars-per-line setting, next to the pin */
+#benBarsPerLine {
+  position: absolute; top: 10px; right: 52px; z-index: 6; height: 30px;
+  border: 1px solid var(--ben-line); border-radius: 8px; background: var(--ben-surface); color: var(--ben-muted);
+  font: inherit; font-size: 12px; padding: 0 8px; cursor: pointer;
+}
+#benBarsPerLine:hover { color: var(--ben-ink); }
+html.ben-dark #benBarsPerLine { background: var(--ben-surface); border-color: var(--ben-line); }
+@media (max-width: 720px) { #benBarsPerLine { top: 6px; right: 40px; height: 28px; } }
