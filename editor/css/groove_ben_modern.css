@@ -811,3 +811,10 @@ html:not(.ben-dark) #midiPlayer .swingLabel, html:not(.ben-dark) #midiPlayer .te
 html:not(.ben-dark) #midiPlayer .swingOutput, html:not(.ben-dark) #midiPlayer span { color: #475569; }
 html:not(.ben-dark) #midiPlayer .tempoOutput { background: #e2e8f0; }
 html:not(.ben-dark) #midiPlayer .midiPlayImage { background-color: var(--ben-ink); color: #fff; }
+html:not(.ben-dark) #TopNav .rightButtons, html:not(.ben-dark) #TopNav a { color: #475569; }
+html:not(.ben-dark) #TopNav .rightButtons:hover { color: var(--ben-ink); background: #f1f5f9; }
+html:not(.ben-dark) #midiPlayer input[type='range']::-webkit-slider-runnable-track { background: #e2e8f0; }
+html:not(.ben-dark) #midiPlayer input[type='range']::-webkit-slider-thumb { background: #ffffff; border: 1px solid #cbd5e1; box-shadow: 0 1px 3px rgba(15, 23, 42, 0.2); }
+html:not(.ben-dark) #midiPlayer input[type='range']::-moz-range-track { background: #e2e8f0; }
+html:not(.ben-dark) #midiPlayer input[type='range']::-moz-range-thumb { background: #ffffff; border: 1px solid #cbd5e1; }
+html:not(.ben-dark) #midiPlayer .tempoOutput { color: var(--ben-ink); }
