@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795038518';
-import { GrooveUtils } from './groove_utils.js?v=1795038518';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795095760';
+import { GrooveUtils } from './groove_utils.js?v=1795095760';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -87,10 +87,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1795038518';
-import * as _perm from './permutations.js?v=1795038518';
-import * as _view from './viewHtml.js?v=1795038518';
-import * as _grid from './gridState.js?v=1795038518';
+} from './constants.js?v=1795095760';
+import * as _perm from './permutations.js?v=1795095760';
+import * as _view from './viewHtml.js?v=1795095760';
+import * as _grid from './gridState.js?v=1795095760';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -447,8 +447,8 @@ function GrooveWriter() {
     document.getElementById('hh_cow_bell' + id).style.color = constant_note_hidden_color_rgb;
     document.getElementById('hh_crash' + id).style.color = constant_note_hidden_color_rgb;
     document.getElementById('hh_stacker' + id).style.color = constant_note_hidden_color_rgb;
-    if (document.getElementById('hh_crash2' + id))
-      document.getElementById('hh_crash2' + id).style.color = constant_note_hidden_color_rgb;
+    if (document.getElementById('hh_crashtwo' + id))
+      document.getElementById('hh_crashtwo' + id).style.color = constant_note_hidden_color_rgb;
     document.getElementById('hh_metronome_normal' + id).style.color =
       constant_note_hidden_color_rgb;
     document.getElementById('hh_metronome_accent' + id).style.color =
@@ -483,7 +483,7 @@ function GrooveWriter() {
         if (make_sound) play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_CRASH);
         break;
       case 'crash2':
-        document.getElementById('hh_crash2' + id).style.color = constant_note_on_color_hex;
+        document.getElementById('hh_crashtwo' + id).style.color = constant_note_on_color_hex;
         if (make_sound) play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_CRASH2);
         break;
       case 'stacker':
@@ -5000,7 +5000,8 @@ function GrooveWriter() {
   // cymbal rows above the hi-hat: crash and ride. Each is a view on the hi-hat lane.
   var CYM_ROWS = [
     { key: 'crash', prefix: 'benC_', label: 'Crash', states: ['c'], on: 'crash', glyph: 'hh_crash',
-      menu: [['crash', 'Crash'], ['crash2', 'Crash 2'], ['stacker', 'Stacker / china'], ['off', 'Off']], extra: { s: 'stacker', C: 'crash2' } },
+      menu: [['crash', 'Crash'], ['crash2', 'Crash 2'], ['stacker', 'Stacker / china'], ['off', 'Off']], extra: { s: 'stacker', C: 'crashtwo' } },
+      // (crash 2's element ids use 'crashtwo': 'hh_crash2' + 4 would clash with crash 1's 'hh_crash' + 24)
     { key: 'ride', prefix: 'benR_', label: 'Ride', states: ['r', 'b'], on: 'ride', glyph: 'hh_ride',
       menu: [['ride', 'Ride'], ['ride_bell', 'Ride bell'], ['off', 'Off']], extra: { b: 'ride_bell' } },
   ];
