@@ -6,7 +6,7 @@
 // *consumed* by the notation and audio generators (abcNotation / midiFile), so
 // this module is the single place its shape is defined and constructed.
 
-import { constant_DEFAULT_TEMPO } from './constants.js?v=1795095760';
+import { constant_DEFAULT_TEMPO } from './constants.js?v=1795164574';
 
 // A fresh 32-slot note lane, every slot a rest. Each note array in a GrooveData
 // is a copy of this (never a shared reference), so mutating one lane or measure
@@ -93,6 +93,7 @@ export function createGrooveData(config = {}) {
     notesPerMeasure: 16,
     timeDivision: 16,
     numberOfMeasures: 1,
+    beatGrid: null, // Drumsheet: per-beat grid levels, e.g. '8.4.16.16,16.16.16.16' (URL &Grid=)
     measureMeters: null, // Ben: per-measure meters, e.g. [[4,4],[7,8]]; null = all use the base meter
     numBeats: 4, // TimeSigTop: Top part of Time Signture 3/4, 4/4, 5/4, 6/8, etc...
     noteValue: 4, // TimeSigBottom: Bottom part of Time Sig   4 = quarter notes, 8 = 8th notes, 16ths, etc..

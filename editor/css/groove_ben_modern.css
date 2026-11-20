@@ -1265,3 +1265,14 @@ html.ben-tint.ben-dark #benSheetResize::after { background: var(--ben-line); }
 html.ben-pads .hi-hat .hh_crash2 { left: 2px !important; top: 15px !important; width: 22px; height: 22px; display: flex; align-items: center;
   justify-content: center; font-size: 12px !important; line-height: 1; z-index: 2; }
 html.ben-pads .hi-hat .hh_crash2 sup { font-size: 8px; top: -3px; }
+/* tap tempo */
+#benTapTempo { margin: 0 8px 0 6px; padding: 3px 9px; font: inherit; font-size: 11px; font-weight: 800; letter-spacing: 0.06em; border-radius: 7px;
+  border: 1px solid var(--ben-line); background: transparent; color: inherit; cursor: pointer; touch-action: manipulation; transition: background 0.12s ease, color 0.12s ease; }
+#benTapTempo:hover { border-color: var(--ben-brand); }
+#benTapTempo.ben-tap-flash { animation: ben-tap 0.18s ease; }
+@keyframes ben-tap { 0% { background: var(--ben-brand); color: var(--ben-brand-ink); } 100% { background: transparent; } }
+@media (max-width: 480px) {
+  #midiPlayer [id^="MIDIPlayTime"] { display: none !important; }
+  #benTapTempo { margin: 0 6px 0 4px; padding: 3px 7px; }
+}
+@media (max-width: 480px) { #midiPlayer .tempoAndProgress { width: auto !important; flex: 1 1 auto; min-width: 0; } }
