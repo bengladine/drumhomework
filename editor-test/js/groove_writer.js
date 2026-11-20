@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795095535';
-import { GrooveUtils } from './groove_utils.js?v=1795095535';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795163850';
+import { GrooveUtils } from './groove_utils.js?v=1795163850';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -87,10 +87,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1795095535';
-import * as _perm from './permutations.js?v=1795095535';
-import * as _view from './viewHtml.js?v=1795095535';
-import * as _grid from './gridState.js?v=1795095535';
+} from './constants.js?v=1795163850';
+import * as _perm from './permutations.js?v=1795163850';
+import * as _view from './viewHtml.js?v=1795163850';
+import * as _grid from './gridState.js?v=1795163850';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -2012,6 +2012,7 @@ function GrooveWriter() {
     myGrooveData.timeDivision = class_time_division;
     myGrooveData.numberOfMeasures = class_number_of_measures;
     myGrooveData.measureMeters = metersArrayOrNull();
+    myGrooveData.beatGrid = beatGridString();
     myGrooveData.numBeats = class_num_beats_per_measure;
     myGrooveData.noteValue = class_note_value_per_measure;
     myGrooveData.showStickings = isStickingsVisible();
@@ -3792,7 +3793,14 @@ function GrooveWriter() {
 
     root.setMetronomeFrequency(myGrooveData.metronomeFrequency);
 
-    class_beat_res = {}; // recompute from the loaded notes
+    class_beat_res = {}; // from the link's &Grid=, otherwise recomputed from the notes
+    if (myGrooveData.beatGrid) {
+      myGrooveData.beatGrid.split(',').forEach(function (barStr, m) {
+        barStr.split('.').forEach(function (lv, b) {
+          if (LEVEL_CELLS[lv]) class_beat_res[m + '-' + b] = lv;
+        });
+      });
+    }
     applyGridVisibility();
 
     updateSheetMusic();
@@ -4153,8 +4161,8 @@ function GrooveWriter() {
   function beatLevel(m, b) {
     var key = m + '-' + b;
     var stored = class_beat_res[key];
-    if (stored && levelFits(stored)) return stored;
     var offs = beatNoteOffsets(m, b);
+    if (stored && levelFits(stored) && levelShowsOffsets(stored, offs)) return stored;
     var candidates = [defaultLevel()].concat(LEVEL_ORDER);
     var level = String(parseInt(class_time_division, 10));
     for (var c = 0; c < candidates.length; c++) {
@@ -4165,6 +4173,24 @@ function GrooveWriter() {
     }
     class_beat_res[key] = level;
     return level;
+  }
+
+  // Drumsheet: the per-beat grid as a string for the link (&Grid=), or null when it is all default
+  function beatGridString() {
+    var allDefault = true;
+    var def = defaultLevel();
+    var out = [];
+    for (var m = 0; m < class_number_of_measures; m++) {
+      var lv = [];
+      var n = beatsInBar(m);
+      for (var b = 0; b < n; b++) {
+        var l = beatLevel(m, b);
+        if (l !== def) allDefault = false;
+        lv.push(l);
+      }
+      out.push(lv.join('.'));
+    }
+    return allDefault ? null : out.join(',');
   }
 
   function beatsInBar(m) {
@@ -4505,7 +4531,8 @@ function GrooveWriter() {
       while (arr.length < newCells) arr.push('-');
       bars[m].notes[inst] = arr;
     });
-    bars[m].levels = [];
+    // keep the grid of the beats that still exist
+    bars[m].levels = (bars[m].levels || []).slice();
     var div = parseInt(class_time_division, 10);
     if (!Number.isInteger(newCells) && newCells !== oldCells) {
       // e.g. 7/8 on a 1/4-note grid: go to a finer grid
@@ -5389,6 +5416,52 @@ function GrooveWriter() {
   });
 
   // ---------------------------------------------------------------------
+  // Drumsheet: tap tempo. Tap the TAP button (or press T) in time; the BPM follows the average of the last taps.
+  // ---------------------------------------------------------------------
+  (function () {
+    var taps = [];
+    function tap() {
+      var now = performance.now();
+      if (taps.length && now - taps[taps.length - 1] > 2000) taps = []; // a pause starts a new count
+      taps.push(now);
+      if (taps.length > 8) taps.shift();
+      var btn = document.getElementById('benTapTempo');
+      if (btn) {
+        btn.classList.remove('ben-tap-flash');
+        void btn.offsetWidth;
+        btn.classList.add('ben-tap-flash');
+      }
+      if (taps.length < 2) return;
+      var avg = (taps[taps.length - 1] - taps[0]) / (taps.length - 1);
+      var bpm = Math.round(60000 / avg);
+      bpm = Math.max(30, Math.min(300, bpm));
+      root.myGrooveUtils.setTempo(bpm);
+    }
+    function addButton() {
+      var field = document.querySelector('#midiPlayer .tempoTextField');
+      if (!field) return setTimeout(addButton, 300);
+      if (document.getElementById('benTapTempo')) return;
+      var btn = document.createElement('button');
+      btn.id = 'benTapTempo';
+      btn.type = 'button';
+      btn.textContent = 'TAP';
+      btn.title = 'Tap tempo: tap in time (or press T)';
+      btn.addEventListener('pointerdown', function (e) {
+        e.preventDefault();
+        tap();
+      });
+      field.parentNode.insertBefore(btn, field.nextSibling);
+    }
+    addButton();
+    document.addEventListener('keydown', function (e) {
+      if ((e.key === 't' || e.key === 'T') && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        var el = document.activeElement;
+        if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT' || el.isContentEditable)) return;
+        tap();
+      }
+    });
+  })();
+
   // Ben: touch long-press = right-click (iPhone has no right-click / contextmenu)
   // ---------------------------------------------------------------------
   (function () {
