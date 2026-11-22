@@ -1247,7 +1247,7 @@ html.ben-tint.ben-dark .metronomeButton:hover, html.ben-tint.ben-dark .ben-bar-c
 html.ben-tint.ben-dark #benUndoRedo, html.ben-tint.ben-dark #benGridAll { border-color: var(--ben-line); }
 html.ben-tint.ben-dark #benGridAll select { background: var(--ben-tint-top); border-color: var(--ben-line); }
 html.ben-tint.ben-dark .noteContextMenu > ul.list li:hover, html.ben-tint.ben-dark .ben-add-bar-menu button:hover { background: var(--ben-chrome-hover); }
-html.ben-tint.ben-dark #benDetailsDialog input.sheetMusicInputField, html.ben-tint.ben-dark .ben-dlg-buttons button { background: var(--ben-tint-top); }
+html.ben-tint.ben-dark #benDetailsDialog input.sheetMusicInputField, html.ben-tint.ben-dark .ben-dlg-buttons button:not(.ben-dlg-go) { background: var(--ben-tint-top); color: var(--ben-ink); }
 html.ben-tint.ben-dark .hi-hat.ben-on-ride .hh_cross, html.ben-tint.ben-dark #addMeasureButton, html.ben-tint.ben-dark #benSheetResize::after { border-color: var(--ben-line); }
 html.ben-tint.ben-dark #benSheetResize::after { background: var(--ben-line); }
 /* no grey scrollbar under the dock on phones */
