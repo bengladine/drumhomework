@@ -4,10 +4,10 @@
 // getGrooveDataFromUrlString / getUrlStringFromGrooveData methods here, passing
 // its instance flags through the parse function's `config` argument.
 
-import { createGrooveData } from './grooveData.js?v=1795169429';
-import { parseMeters, metersToString } from './meters.js?v=1795169429';
-import { constant_DEFAULT_TEMPO, constant_MAX_MEASURES } from './constants.js?v=1795169429';
-import { parseTimeSigString, calc_notes_per_measure } from './musicMath.js?v=1795169429';
+import { createGrooveData } from './grooveData.js?v=1795379370';
+import { parseMeters, metersToString } from './meters.js?v=1795379370';
+import { constant_DEFAULT_TEMPO, constant_MAX_MEASURES } from './constants.js?v=1795379370';
+import { parseTimeSigString, calc_notes_per_measure } from './musicMath.js?v=1795379370';
 import {
   noteArraysFromURLData,
   tabLineFromAbcNoteArray,
@@ -16,7 +16,7 @@ import {
   GetDefaultSnareGroove,
   GetDefaultKickGroove,
   GetDefaultTomGroove,
-} from './noteArrays.js?v=1795169429';
+} from './noteArrays.js?v=1795379370';
 
 export function getQueryVariableFromString(variable, def_value, my_string) {
   // Tolerate query strings with or without a leading '?'. window.location.search
