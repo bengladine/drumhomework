@@ -1276,3 +1276,25 @@ html.ben-pads .hi-hat .hh_crash2 sup { font-size: 8px; top: -3px; }
   #benTapTempo { margin: 0 6px 0 4px; padding: 3px 7px; }
 }
 @media (max-width: 480px) { #midiPlayer .tempoAndProgress { width: auto !important; flex: 1 1 auto; min-width: 0; } }
+/* My grooves */
+#benMyGroovesDialog { display: none; position: fixed; inset: 0; z-index: 2000; background: rgba(15, 23, 42, 0.45); align-items: center; justify-content: center; padding: 16px; }
+#benMyGroovesDialog[style*="flex"] .ben-dlg-card { animation: ben-menu-in 0.22s var(--ben-ease); }
+.ben-my-card { max-width: 480px !important; max-height: calc(100vh - 32px); display: flex; flex-direction: column; color: var(--ben-ink); }
+.ben-my-save { display: flex; gap: 8px; }
+.ben-my-name { flex: 1; min-width: 0; font: inherit; font-size: 14px; padding: 9px 11px; border-radius: 9px; border: 1px solid var(--ben-line); background: transparent; color: var(--ben-ink); }
+.ben-my-name:focus { outline: none; border-color: var(--ben-brand); }
+.ben-my-savebtn { font: inherit; font-size: 14px; font-weight: 600; padding: 9px 18px; border-radius: 9px; border: none; cursor: pointer; background: var(--ben-brand); color: var(--ben-brand-ink); }
+.ben-my-list { margin-top: 12px; overflow-y: auto; min-height: 60px; max-height: 50vh; display: flex; flex-direction: column; gap: 6px; }
+.ben-my-empty { font-size: 13px; color: var(--ben-muted); padding: 14px 4px; text-align: center; }
+.ben-my-msg { font-size: 13px; color: var(--ben-brand); padding: 2px 4px 6px; }
+.ben-my-item { display: flex; align-items: stretch; border: 1px solid var(--ben-line); border-radius: 10px; overflow: hidden; transition: border-color 0.15s ease; }
+.ben-my-item:hover, .ben-my-item.ben-my-open { border-color: var(--ben-brand); }
+.ben-my-item button { font: inherit; border: none; background: transparent; color: var(--ben-ink); cursor: pointer; }
+.ben-my-load { flex: 1; min-width: 0; text-align: left; padding: 9px 12px; font-size: 14px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ben-my-load small { display: block; font-weight: 400; font-size: 12px; color: var(--ben-muted); margin-top: 1px; }
+.ben-my-ren, .ben-my-del { width: 40px; color: var(--ben-muted) !important; }
+.ben-my-ren:hover { color: var(--ben-brand) !important; }
+.ben-my-del:hover { color: #dc2626 !important; }
+.ben-my-foot { margin-top: 14px; }
+html.ben-dark .ben-my-card { background: var(--ben-tint-menu, #1b2536); }
+@media (max-width: 720px) { #benMyGroovesBtn { font-size: 0; } #benMyGroovesBtn i { font-size: 16px; } }

@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795379142';
-import { GrooveUtils } from './groove_utils.js?v=1795379142';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795384294';
+import { GrooveUtils } from './groove_utils.js?v=1795384294';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -87,10 +87,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1795379142';
-import * as _perm from './permutations.js?v=1795379142';
-import * as _view from './viewHtml.js?v=1795379142';
-import * as _grid from './gridState.js?v=1795379142';
+} from './constants.js?v=1795384294';
+import * as _perm from './permutations.js?v=1795384294';
+import * as _view from './viewHtml.js?v=1795384294';
+import * as _grid from './gridState.js?v=1795384294';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -5416,6 +5416,194 @@ function GrooveWriter() {
   });
 
   // ---------------------------------------------------------------------
+  // Drumsheet: "My grooves", saved in this browser (localStorage). No account, nothing leaves the device.
+  // Each groove is stored as its link (query string), so it opens exactly like a shared link.
+  // ---------------------------------------------------------------------
+  var MY_KEY = 'benMyGrooves';
+  function myGroovesLoad() {
+    try {
+      var a = JSON.parse(localStorage.getItem(MY_KEY) || '[]');
+      return Array.isArray(a) ? a : [];
+    } catch (e) {
+      return [];
+    }
+  }
+  function myGroovesStore(list) {
+    try {
+      localStorage.setItem(MY_KEY, JSON.stringify(list));
+      return true;
+    } catch (e) {
+      alert('Could not save in this browser (private mode or storage full?). Use Share to keep the link instead.');
+      return false;
+    }
+  }
+  function currentGrooveQuery() {
+    var url = get_FullURLForPage();
+    var i = url.indexOf('?');
+    return i >= 0 ? url.slice(i) : '';
+  }
+  function escapeHtml(t) {
+    return String(t).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  var myOpenId = null; // the saved groove that is open now (so Save can update it)
+
+  root.showMyGrooves = function () {
+    var dlg = document.getElementById('benMyGroovesDialog');
+    if (!dlg) {
+      dlg = document.createElement('div');
+      dlg.id = 'benMyGroovesDialog';
+      dlg.className = 'ben-modal';
+      dlg.innerHTML =
+        '<div class="ben-dlg-card ben-my-card"><div class="ben-dlg-title">My grooves</div>' +
+        '<div class="ben-dlg-sub">Saved in this browser on this device. To keep them safe or move them to another device, use Export.</div>' +
+        '<div class="ben-my-save"><input type="text" class="ben-my-name" placeholder="Name of this groove" maxlength="80">' +
+        '<button class="ben-my-savebtn">Save</button></div>' +
+        '<div class="ben-my-list"></div>' +
+        '<div class="ben-dlg-buttons ben-my-foot"><button class="ben-my-export">Export</button><button class="ben-my-import">Import</button>' +
+        '<input type="file" accept=".json,application/json" class="ben-my-file" hidden><span style="flex:1"></span><button class="ben-dlg-cancel">Close</button></div></div>';
+      document.body.appendChild(dlg);
+      dlg.addEventListener('click', function (e) {
+        if (e.target === dlg) dlg.style.display = 'none';
+      });
+      dlg.querySelector('.ben-dlg-cancel').onclick = function () {
+        dlg.style.display = 'none';
+      };
+      var nameInput = dlg.querySelector('.ben-my-name');
+      var saveNew = function () {
+        var name = nameInput.value.trim() || 'Groove ' + new Date().toLocaleDateString();
+        var list = myGroovesLoad();
+        var existing = list.find((g) => g.name.toLowerCase() === name.toLowerCase());
+        if (existing && !confirm('"' + existing.name + '" already exists. Replace it with the current groove?')) return;
+        var item = existing || { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), name: name };
+        item.q = currentGrooveQuery();
+        item.saved = Date.now();
+        if (!existing) list.unshift(item);
+        if (myGroovesStore(list)) {
+          myOpenId = item.id;
+          window.benCount && window.benCount('save-groove');
+          renderList('Saved "' + name + '"');
+        }
+      };
+      dlg.querySelector('.ben-my-savebtn').onclick = saveNew;
+      nameInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') saveNew();
+      });
+      dlg.querySelector('.ben-my-export').onclick = function () {
+        var list = myGroovesLoad();
+        if (!list.length) return alert('No saved grooves yet.');
+        var blob = new Blob([JSON.stringify({ app: 'drumsheet', version: 1, grooves: list }, null, 1)], { type: 'application/json' });
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'drumsheet-grooves-' + new Date().toISOString().slice(0, 10) + '.json';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function () {
+          URL.revokeObjectURL(a.href);
+          a.remove();
+        }, 500);
+      };
+      var file = dlg.querySelector('.ben-my-file');
+      dlg.querySelector('.ben-my-import').onclick = function () {
+        file.value = '';
+        file.click();
+      };
+      file.onchange = function () {
+        var f = file.files[0];
+        if (!f) return;
+        f.text().then(function (txt) {
+          var data;
+          try {
+            data = JSON.parse(txt);
+          } catch (e) {
+            return alert('This is not a Drumsheet grooves file.');
+          }
+          var incoming = (data && data.grooves) || [];
+          var list = myGroovesLoad();
+          var added = 0;
+          incoming.forEach(function (g) {
+            if (!g || typeof g.q !== 'string' || typeof g.name !== 'string') return;
+            if (list.some((x) => x.q === g.q && x.name === g.name)) return;
+            list.push({ id: g.id || Date.now().toString(36) + Math.random().toString(36).slice(2, 6), name: g.name.slice(0, 80), q: g.q, saved: g.saved || Date.now() });
+            added++;
+          });
+          if (myGroovesStore(list)) renderList(added + ' groove(s) imported');
+        });
+      };
+    }
+    function renderList(msg) {
+      var list = myGroovesLoad();
+      var box = dlg.querySelector('.ben-my-list');
+      if (!list.length) {
+        box.innerHTML = '<div class="ben-my-empty">No saved grooves yet. Give this one a name and press Save.</div>';
+      } else {
+        box.innerHTML = list
+          .map(function (g) {
+            var bars = (g.q.match(/Measures=(\d+)/) || [])[1];
+            var d = new Date(g.saved);
+            return (
+              '<div class="ben-my-item' + (g.id === myOpenId ? ' ben-my-open' : '') + '" data-id="' + g.id + '">' +
+              '<button class="ben-my-load" title="Open">' + escapeHtml(g.name) +
+              '<small>' + (bars ? bars + (bars == 1 ? ' bar' : ' bars') + ' · ' : '') + d.toLocaleDateString() + '</small></button>' +
+              '<button class="ben-my-ren" title="Rename"><i class="fa fa-pencil"></i></button>' +
+              '<button class="ben-my-del" title="Delete"><i class="fa fa-trash"></i></button></div>'
+            );
+          })
+          .join('');
+      }
+      if (msg) {
+        var t = document.createElement('div');
+        t.className = 'ben-my-msg';
+        t.textContent = msg;
+        box.prepend(t);
+        setTimeout(() => t.remove(), 2500);
+      }
+      box.querySelectorAll('.ben-my-item').forEach(function (row) {
+        var id = row.dataset.id;
+        row.querySelector('.ben-my-load').onclick = function () {
+          var g = myGroovesLoad().find((x) => x.id === id);
+          if (!g) return;
+          root.loadNewGroove(g.q);
+          myOpenId = id;
+          nameInputSet(g.name);
+          dlg.style.display = 'none';
+        };
+        row.querySelector('.ben-my-ren').onclick = function () {
+          var list = myGroovesLoad();
+          var g = list.find((x) => x.id === id);
+          var n = g && prompt('New name', g.name);
+          if (!n || !n.trim()) return;
+          g.name = n.trim().slice(0, 80);
+          if (myGroovesStore(list)) renderList();
+        };
+        row.querySelector('.ben-my-del').onclick = function () {
+          var list = myGroovesLoad();
+          var g = list.find((x) => x.id === id);
+          if (!g || !confirm('Delete "' + g.name + '"?')) return;
+          if (myGroovesStore(list.filter((x) => x.id !== id))) renderList();
+        };
+      });
+    }
+    function nameInputSet(v) {
+      dlg.querySelector('.ben-my-name').value = v || '';
+    }
+    // suggest the open groove's name, or the title, so Save updates it
+    var open = myGroovesLoad().find((x) => x.id === myOpenId);
+    var title = (document.getElementById('tuneTitle') || {}).value || '';
+    nameInputSet(open ? open.name : title.trim());
+    renderList();
+    dlg.style.display = 'flex';
+    if (window.innerWidth > 720) dlg.querySelector('.ben-my-name').focus();
+  };
+  // Ctrl/Cmd+S opens My grooves (instead of the browser's "save page")
+  document.addEventListener('keydown', function (e) {
+    if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S')) {
+      e.preventDefault();
+      root.showMyGrooves();
+    }
+  });
+
   // Drumsheet: tap tempo. Tap the TAP button (or press T) in time; the BPM follows the average of the last taps.
   // ---------------------------------------------------------------------
   (function () {
