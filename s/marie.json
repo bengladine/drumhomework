@@ -1,0 +1,36 @@
+{
+  "name": "Marie",
+  "assignments": [
+    {
+      "id": "2026-11-23",
+      "date": "23 nov",
+      "title": "Huiswerk 23 nov",
+      "exercises": [
+        {
+          "type": "Groove + fill",
+          "title": "Hi-hat, ride en een fill over de toms",
+          "goal": "De 7 maten na elkaar spelen zonder te stoppen, strak op 80 bpm",
+          "tempos": [
+            40,
+            60,
+            80
+          ],
+          "groove": [
+            {
+              "label": "7 maten: hi-hat, ride, fill",
+              "url": "https://drumsheet.app/?TimeSig=4/4&Div=16&Tempo=80&Measures=7&H=|x-x-x-x-x-x-x-x-|r-r-r-r-r-r-r-r-|----------------|c-r-r-r-r-r-r-r-|--x---x---x---x-|--x---x---x---x-|--x---x-------x-|&S=|----O-------O---|----O-------O---|O-O-------------|----O-------O---|----O-------O---|----O-------O---|----O-------O---|&K=|o-----o---o-----|o---------o-----|----------------|o---------o-----|o-------o-------|o---o---o---o---|o---o---o---o---|&T1=|----------------|----------------|----o-o---------|----------------|----------------|----------------|----------o-----|&T2=|----------------|----------------|--------o-o-----|----------------|----------------|----------------|----------------|&T4=|----------------|----------------|------------o-o-|----------------|----------------|----------------|--------------o-|&Stickings=|----------------|----------------|R-L-R-L-R-L-R-L-|----------------|----------------|----------------|----------R-L-R-|"
+            }
+          ],
+          "focus": [
+            "De x op de notenbalk is de ride, de x boven de notenbalk is de hi-hat.",
+            "Hi-hat: speel met de kant van de stok op de rand van de cimbaal, zo klinkt hij het luidst.",
+            "Ride: speel zachtjes met de tip van de stok op het midden."
+          ]
+        }
+      ],
+      "notes": [
+        "Je arm beweegt altijd een beetje mee. De pols volgt en geeft pas een tik bij het naar beneden gaan van de arm, net voor je de trommel raakt."
+      ]
+    }
+  ]
+}
