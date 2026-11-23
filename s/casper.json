@@ -2,6 +2,34 @@
   "name": "Casper",
   "assignments": [
     {
+      "id": "2026-11-23",
+      "date": "23 nov",
+      "title": "Huiswerk 23 nov",
+      "exercises": [
+        {
+          "type": "Groove + fill",
+          "title": "Beat met drie fills",
+          "goal": "De beat spelen met de drie fills, strak op 85 bpm",
+          "tempos": [
+            55,
+            65,
+            75,
+            85
+          ],
+          "groove": [
+            {
+              "label": "Beat + 3 fills",
+              "url": "https://drumsheet.app/?TimeSig=4/4&Div=16&Tempo=70&Measures=4&H=|b-r-b-r-b-r-b-r-|----------------|----------------|----------------|&S=|------------O---|OOO-OO-OOOO-OO--|Ooo-oo-ooOooOooO|OooOooOooOooOooo|&K=|o--o-o-----o----|----------------|----------------|o---o---o---o---|&T1=|----------------|---o-------o---o|---o------------|----------------|&T4=|----o-----------|------o-------o-|------o---------|----------------|&Stickings=|----------------|LRLRLRLRLRLRLRLR|LRLRLRLRLRLRLRLR|LRLRLRLRLRLRLRLR|"
+            }
+          ],
+          "focus": [
+            "De laatste fill is de moeilijkste.",
+            "Kan je alles vlot? Speel dan een crash op de eerste tel na de fill."
+          ]
+        }
+      ]
+    },
+    {
       "id": "2026-11-16",
       "date": "16 nov",
       "title": "Huiswerk 16 nov",
