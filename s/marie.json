@@ -11,9 +11,10 @@
           "title": "Hi-hat, ride en een fill over de toms",
           "goal": "De 7 maten na elkaar spelen zonder te stoppen, strak op 80 bpm",
           "tempos": [
-            40,
             60,
-            80
+            70,
+            80,
+            90
           ],
           "groove": [
             {
