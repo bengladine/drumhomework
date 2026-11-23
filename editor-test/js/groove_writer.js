@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795447203';
-import { GrooveUtils } from './groove_utils.js?v=1795447203';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795447387';
+import { GrooveUtils } from './groove_utils.js?v=1795447387';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -87,10 +87,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1795447203';
-import * as _perm from './permutations.js?v=1795447203';
-import * as _view from './viewHtml.js?v=1795447203';
-import * as _grid from './gridState.js?v=1795447203';
+} from './constants.js?v=1795447387';
+import * as _perm from './permutations.js?v=1795447387';
+import * as _view from './viewHtml.js?v=1795447387';
+import * as _grid from './gridState.js?v=1795447387';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -5423,7 +5423,7 @@ function GrooveWriter() {
   var MY_KEY = 'benMyGrooves';
   var acct = null; // the account module, loaded only when needed
   function loadAccount() {
-    if (!acct) acct = import('./account.js?v=1795447203');
+    if (!acct) acct = import('./account.js?v=1795447387');
     return acct;
   }
   function localLoad() {
@@ -5476,6 +5476,8 @@ function GrooveWriter() {
   }
   var myOpenId = null; // the saved groove that is open now (so Save suggests its name)
   var myCache = []; // last list shown
+  var myEmailFormOpen = false;
+  var myLastEmail = '';
 
   // move grooves saved in this browser into the account (asked once per sign-in)
   async function offerMoveLocal() {
@@ -5596,14 +5598,31 @@ function GrooveWriter() {
         renderList(added + ' groove(s) imported');
       };
     }
+    async function afterSignIn(how) {
+      store.online = true;
+      updateStarButton();
+      window.benCount && window.benCount('sign-in-' + how);
+      await offerMoveLocal();
+    }
+    async function ensureModule() {
+      store.mod = await loadAccount();
+      if (!store.mod.isConfigured()) throw new Error('Accounts are not available yet.');
+      return store.mod;
+    }
     function renderAccount() {
       var box = dlg.querySelector('.ben-my-account');
       var where = dlg.querySelector('.ben-my-where');
       var u = store.online && store.mod && store.mod.user();
       if (u) {
+        var isPw = store.mod.method() === 'password';
         box.innerHTML =
-          '<span class="ben-my-who"><i class="fa fa-user-circle"></i> ' + escapeHtml(u.email || u.displayName || 'Signed in') + '</span>' +
-          '<button class="ben-my-signout">Sign out</button><button class="ben-my-delacct">Delete account</button>';
+          '<div class="ben-my-row"><span class="ben-my-who"><i class="fa fa-user-circle"></i> ' + escapeHtml(u.email || u.displayName || 'Signed in') + '</span>' +
+          (isPw ? '<button class="ben-my-chpw">Change password</button>' : '') +
+          '<button class="ben-my-signout">Sign out</button><button class="ben-my-delacct">Delete account</button></div>' +
+          (isPw && !u.emailVerified
+            ? '<div class="ben-my-verify"><i class="fa fa-envelope-o"></i> Please confirm your email: we sent you a link. ' +
+              '<button class="ben-my-resend">Send again</button> <button class="ben-my-recheck">I confirmed it</button></div>'
+            : '');
         where.innerHTML = '<i class="fa fa-cloud"></i> Saved in your account: on all your devices.';
         box.querySelector('.ben-my-delacct').onclick = async function () {
           await root.deleteMyAccount();
@@ -5615,33 +5634,128 @@ function GrooveWriter() {
           updateStarButton();
           renderList('Signed out');
         };
-      } else {
-        box.innerHTML =
-          '<button class="ben-my-signin"><span class="ben-g">G</span> Sign in with Google</button>' +
-          '<span class="ben-my-why">Optional: keeps your grooves safe and on all your devices.</span>';
-        where.innerHTML =
-          '<i class="fa fa-exclamation-circle"></i> Not signed in: saved in this browser only. Clearing your browser data deletes them. ' +
-          'Sign in, or use Export to keep a backup.';
-        box.querySelector('.ben-my-signin').onclick = async function () {
-          var btn = this;
-          btn.disabled = true;
-          try {
-            store.mod = await loadAccount();
-            if (!store.mod.isConfigured()) throw new Error('Accounts are not available yet.');
-            var u2 = await store.mod.signIn();
-            if (!u2) return;
-            store.online = true;
-            updateStarButton();
-            window.benCount && window.benCount('sign-in');
-            await offerMoveLocal();
-            renderList('Signed in');
-          } catch (e) {
-            renderList('Sign-in failed: ' + (e.message || e), true);
-          } finally {
-            btn.disabled = false;
-          }
-        };
+        var ch = box.querySelector('.ben-my-chpw');
+        if (ch)
+          ch.onclick = async function () {
+            var cur = await askPassword('Current password');
+            if (!cur) return;
+            var n1 = await askPassword('New password (at least 8 characters)');
+            if (!n1) return;
+            if (n1.length < 8) return renderList('The new password needs at least 8 characters.', true);
+            var n2 = await askPassword('New password again');
+            if (n1 !== n2) return renderList('The two new passwords are not the same.', true);
+            try {
+              await store.mod.changePassword(cur, n1);
+              renderList('Password changed');
+            } catch (e) {
+              renderList(store.mod.message(e), true);
+            }
+          };
+        var rs = box.querySelector('.ben-my-resend');
+        if (rs)
+          rs.onclick = async function () {
+            try {
+              await store.mod.resendVerification();
+              renderList('Email sent to ' + u.email);
+            } catch (e) {
+              renderList(store.mod.message(e), true);
+            }
+          };
+        var rc = box.querySelector('.ben-my-recheck');
+        if (rc)
+          rc.onclick = async function () {
+            await store.mod.reloadUser();
+            renderList();
+          };
+        return;
       }
+      box.innerHTML =
+        '<div class="ben-my-row"><button class="ben-my-signin"><span class="ben-g">G</span> Sign in with Google</button>' +
+        '<button class="ben-my-emailtoggle"><i class="fa fa-envelope-o"></i> Use email</button></div>' +
+        '<form class="ben-my-emailform" hidden autocomplete="on">' +
+        '<input type="email" name="email" autocomplete="username" placeholder="Email" required>' +
+        '<input type="password" name="password" autocomplete="current-password" placeholder="Password (at least 8 characters)" required minlength="8">' +
+        '<div class="ben-my-row"><button type="submit" class="ben-my-pwsignin">Sign in</button>' +
+        '<button type="button" class="ben-my-pwsignup">Create account</button>' +
+        '<button type="button" class="ben-my-forgot">Forgot password?</button></div></form>' +
+        '<span class="ben-my-why">Optional: keeps your grooves safe and on all your devices. <a href="privacy.html" target="_blank">Privacy</a></span>';
+      where.innerHTML =
+        '<i class="fa fa-exclamation-circle"></i> Not signed in: saved in this browser only. Clearing your browser data deletes them. ' +
+        'Sign in, or use Export to keep a backup.';
+      var form = box.querySelector('.ben-my-emailform');
+      // keep the email form open (and the email typed) when the dialog redraws after an error
+      form.hidden = !myEmailFormOpen;
+      form.email.value = myLastEmail;
+      form.email.oninput = function () {
+        myLastEmail = form.email.value;
+      };
+      box.querySelector('.ben-my-emailtoggle').onclick = function () {
+        form.hidden = !form.hidden;
+        myEmailFormOpen = !form.hidden;
+        if (!form.hidden) form.email.focus();
+      };
+      var busy = function (on) {
+        box.querySelectorAll('button').forEach((x) => (x.disabled = on));
+      };
+      box.querySelector('.ben-my-signin').onclick = async function () {
+        busy(true);
+        try {
+          await ensureModule();
+          var u2 = await store.mod.signIn();
+          if (!u2) return;
+          await afterSignIn('google');
+          renderList('Signed in');
+        } catch (e) {
+          renderList('Sign-in failed: ' + (store.mod ? store.mod.message(e) : e.message || e), true);
+        } finally {
+          busy(false);
+        }
+      };
+      form.onsubmit = async function (e) {
+        e.preventDefault();
+        busy(true);
+        try {
+          await ensureModule();
+          await store.mod.signInEmail(form.email.value.trim(), form.password.value);
+          await afterSignIn('email');
+          renderList('Signed in');
+        } catch (err) {
+          renderList(store.mod ? store.mod.message(err) : err.message || err, true);
+        } finally {
+          busy(false);
+        }
+      };
+      box.querySelector('.ben-my-pwsignup').onclick = async function () {
+        if (!form.reportValidity()) return;
+        busy(true);
+        try {
+          await ensureModule();
+          await store.mod.signUpEmail(form.email.value.trim(), form.password.value);
+          await afterSignIn('email-new');
+          renderList('Account created. Check your inbox to confirm your email.');
+        } catch (err) {
+          renderList(store.mod ? store.mod.message(err) : err.message || err, true);
+        } finally {
+          busy(false);
+        }
+      };
+      box.querySelector('.ben-my-forgot').onclick = async function () {
+        var em = form.email.value.trim();
+        if (!em) {
+          form.email.focus();
+          return renderList('Type your email first, then press "Forgot password?" again.', true);
+        }
+        busy(true);
+        try {
+          await ensureModule();
+          await store.mod.resetPassword(em);
+          renderList('If there is an account for ' + em + ', we sent a link to choose a new password.');
+        } catch (err) {
+          renderList(store.mod ? store.mod.message(err) : err.message || err, true);
+        } finally {
+          busy(false);
+        }
+      };
     }
     async function renderList(msg, isError) {
       renderAccount();
@@ -5720,16 +5834,43 @@ function GrooveWriter() {
   if (location.hash === '#my-grooves') setTimeout(function () { root.showMyGrooves(); }, 800);
 
   // account deletion (button in My grooves)
+  // small modal that asks for a password (never shown in plain text, never stored)
+  function askPassword(label) {
+    return new Promise(function (resolve) {
+      var ov = document.createElement('div');
+      ov.className = 'ben-pw-ask';
+      ov.innerHTML =
+        '<form class="ben-dlg-card"><div class="ben-dlg-title"></div>' +
+        '<input type="password" autocomplete="current-password" class="ben-my-name" style="width:100%;margin-top:10px">' +
+        '<div class="ben-dlg-buttons"><button type="button" class="ben-dlg-cancel">Cancel</button><button type="submit" class="ben-dlg-go">OK</button></div></form>';
+      ov.querySelector('.ben-dlg-title').textContent = label;
+      document.body.appendChild(ov);
+      var input = ov.querySelector('input');
+      input.focus();
+      var done = function (v) {
+        ov.remove();
+        resolve(v);
+      };
+      ov.querySelector('form').onsubmit = function (e) {
+        e.preventDefault();
+        done(input.value);
+      };
+      ov.querySelector('.ben-dlg-cancel').onclick = function () {
+        done(null);
+      };
+    });
+  }
+
   root.deleteMyAccount = async function () {
     if (!store.online || !store.mod) return alert('You are not signed in.');
     if (!confirm('Delete your Drumsheet account and ALL grooves saved in it? This cannot be undone.')) return;
     try {
-      await store.mod.deleteAccount();
+      await store.mod.deleteAccount(askPassword);
       store.online = false;
       updateStarButton();
       alert('Your account and all its grooves are deleted.');
     } catch (e) {
-      alert('Could not delete the account: ' + (e.message || e));
+      alert('Could not delete the account: ' + (store.mod.message ? store.mod.message(e) : e.message || e));
     }
   };
 

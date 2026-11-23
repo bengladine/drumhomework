@@ -84,6 +84,79 @@ export async function signIn() {
   return currentUser;
 }
 
+// --- email + password accounts (Firebase stores only a secure hash; nobody can read passwords) ---
+export async function signUpEmail(email, password) {
+  await init();
+  const cred = await A.createUserWithEmailAndPassword(auth, email, password);
+  try {
+    await A.sendEmailVerification(cred.user);
+  } catch (e) {
+    /* not fatal */
+  }
+  return cred.user;
+}
+
+export async function signInEmail(email, password) {
+  await init();
+  const cred = await A.signInWithEmailAndPassword(auth, email, password);
+  return cred.user;
+}
+
+export async function resetPassword(email) {
+  await init();
+  await A.sendPasswordResetEmail(auth, email);
+}
+
+export async function resendVerification() {
+  if (currentUser) await A.sendEmailVerification(currentUser);
+}
+
+export async function reloadUser() {
+  if (currentUser) await currentUser.reload();
+  return auth && auth.currentUser;
+}
+
+// which way this user signs in: 'password' or 'google.com'
+export function method() {
+  if (!currentUser) return null;
+  const p = currentUser.providerData.map((x) => x.providerId);
+  return p.includes('password') ? 'password' : p[0] || null;
+}
+
+async function reauth(askPassword) {
+  if (method() === 'password') {
+    const pw = await askPassword('Enter your current password to confirm');
+    if (!pw) throw new Error('Cancelled');
+    await A.reauthenticateWithCredential(currentUser, A.EmailAuthProvider.credential(currentUser.email, pw));
+  } else {
+    await A.reauthenticateWithPopup(currentUser, new A.GoogleAuthProvider());
+  }
+}
+
+export async function changePassword(currentPw, newPw) {
+  await A.reauthenticateWithCredential(currentUser, A.EmailAuthProvider.credential(currentUser.email, currentPw));
+  await A.updatePassword(currentUser, newPw);
+}
+
+// readable messages for the most common errors
+export function message(e) {
+  const c = (e && e.code) || '';
+  const m = {
+    'auth/invalid-credential': 'Wrong email or password.',
+    'auth/wrong-password': 'Wrong password.',
+    'auth/user-not-found': 'No account with this email.',
+    'auth/email-already-in-use': 'There is already an account with this email. Sign in instead, or use "Forgot password".',
+    'auth/invalid-email': 'That email address does not look right.',
+    'auth/weak-password': 'Choose a longer password (at least 8 characters).',
+    'auth/password-does-not-meet-requirements': 'Choose a stronger password (at least 8 characters).',
+    'auth/too-many-requests': 'Too many attempts. Wait a few minutes and try again.',
+    'auth/network-request-failed': 'No connection. Check your internet and try again.',
+    'auth/requires-recent-login': 'Please sign in again and retry.',
+    'auth/missing-password': 'Enter a password.',
+  };
+  return m[c] || (e && e.message) || String(e);
+}
+
 export async function signOut() {
   if (!auth) return;
   await A.signOut(auth);
@@ -114,16 +187,11 @@ export async function remove(id) {
 }
 
 // delete all grooves, then the account itself (Google asks to confirm if the sign-in is old)
-export async function deleteAccount() {
+export async function deleteAccount(askPassword) {
   if (!currentUser) return;
+  // confirm who it is first, so grooves are never deleted while the account stays
+  await reauth(askPassword);
   const items = await list();
   for (const g of items) await remove(g.id);
-  try {
-    await A.deleteUser(currentUser);
-  } catch (e) {
-    if (e && e.code === 'auth/requires-recent-login') {
-      await A.reauthenticateWithPopup(currentUser, new A.GoogleAuthProvider());
-      await A.deleteUser(auth.currentUser);
-    } else throw e;
-  }
+  await A.deleteUser(auth.currentUser);
 }

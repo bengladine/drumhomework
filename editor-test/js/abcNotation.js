@@ -3,17 +3,17 @@
 // triplet / sticking-count helpers that remain in GrooveUtils; the internal
 // helpers below are pure. GrooveUtils delegates its ABC methods here.
 
-import { constant_NUMBER_OF_TOMS } from './constants.js?v=1795447203';
-import { meterFor, usedSlots, addInlineMeter } from './meters.js?v=1795447203';
+import { constant_NUMBER_OF_TOMS } from './constants.js?v=1795447387';
+import { meterFor, usedSlots, addInlineMeter } from './meters.js?v=1795447387';
 import {
   isTripletDivisionFromNotesPerMeasure,
   notesPerMeasureInFullSizeArray,
   scaleNoteArrayToFullSize,
-} from './musicMath.js?v=1795447203';
+} from './musicMath.js?v=1795447387';
 import {
   create_note_mapping_array_for_highlighting,
   convert_sticking_counts_to_actual_counts,
-} from './noteArrays.js?v=1795447203';
+} from './noteArrays.js?v=1795447387';
 
 function moveAccentsOrOtherModifiersOutsideOfGroup(abcNoteStrings, modifier_to_look_for) {
   var found_modifier = false;
@@ -800,7 +800,7 @@ export function create_ABC_from_snare_HH_kick_arrays(
  * Build the complete ABC-notation source for a groove.
  *
  * @param {Object} gu  The owning GrooveUtils instance (for note/tab helpers).
- * @param {import('./grooveData.js?v=1795447203').GrooveData} myGrooveData  The groove to render.
+ * @param {import('./grooveData.js?v=1795447387').GrooveData} myGrooveData  The groove to render.
  * @param {number} renderWidth  Target render width in pixels.
  * @returns {string}
  */

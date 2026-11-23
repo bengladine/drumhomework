@@ -1310,3 +1310,17 @@ html.ben-dark .ben-my-card { background: var(--ben-tint-menu, #1b2536); }
 .ben-my-where i { margin-right: 4px; }
 .ben-my-err { color: #dc2626 !important; }
 #benMyGroovesBtn.ben-signed-in i { color: var(--ben-brand); }
+.ben-my-account { flex-direction: column; align-items: stretch; }
+.ben-my-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.ben-my-emailform { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+.ben-my-emailform[hidden] { display: none; }
+.ben-my-emailform input { font: inherit; font-size: 14px; padding: 9px 11px; border-radius: 9px; border: 1px solid var(--ben-line); background: transparent; color: var(--ben-ink); }
+.ben-my-emailform input:focus { outline: none; border-color: var(--ben-brand); }
+.ben-my-pwsignin { background: var(--ben-brand) !important; color: var(--ben-brand-ink) !important; border-color: var(--ben-brand) !important; font-weight: 600; }
+.ben-my-forgot { border-color: transparent !important; color: var(--ben-muted) !important; text-decoration: underline; }
+.ben-my-verify { font-size: 12px; color: var(--ben-ink); background: var(--ben-brand-soft); border-radius: 8px; padding: 8px 10px; margin-top: 4px; }
+.ben-my-verify button { padding: 3px 8px !important; font-size: 12px !important; }
+.ben-my-why a { color: var(--ben-brand); }
+.ben-pw-ask { position: fixed; inset: 0; z-index: 2100; background: rgba(15, 23, 42, 0.45); display: flex; align-items: center; justify-content: center; padding: 16px; }
+.ben-pw-ask .ben-dlg-card { max-width: 360px; color: var(--ben-ink); }
+html.ben-dark .ben-pw-ask .ben-dlg-card { background: var(--ben-tint-menu, #1b2536); }
