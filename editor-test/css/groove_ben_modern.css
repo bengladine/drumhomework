@@ -1298,3 +1298,15 @@ html.ben-pads .hi-hat .hh_crash2 sup { font-size: 8px; top: -3px; }
 .ben-my-foot { margin-top: 14px; }
 html.ben-dark .ben-my-card { background: var(--ben-tint-menu, #1b2536); }
 @media (max-width: 720px) { #benMyGroovesBtn { font-size: 0; } #benMyGroovesBtn i { font-size: 16px; } }
+/* My grooves: account bar */
+.ben-my-account { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 8px 0 12px; font-size: 13px; color: var(--ben-muted); }
+.ben-my-account button { font: inherit; font-size: 13px; border-radius: 8px; padding: 6px 10px; cursor: pointer; border: 1px solid var(--ben-line); background: transparent; color: var(--ben-ink); }
+.ben-my-account button:disabled { opacity: 0.6; cursor: wait; }
+.ben-my-signin { display: inline-flex; align-items: center; gap: 8px; font-weight: 600 !important; }
+.ben-my-signin .ben-g { width: 18px; height: 18px; border-radius: 50%; background: #fff; color: #4285f4; font-weight: 800; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 0 0 1px #dadce0; }
+.ben-my-who { flex: 1; min-width: 0; color: var(--ben-ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ben-my-delacct { color: #dc2626 !important; border-color: transparent !important; }
+.ben-my-where { font-size: 12px; color: var(--ben-muted); margin-top: 8px; line-height: 1.4; }
+.ben-my-where i { margin-right: 4px; }
+.ben-my-err { color: #dc2626 !important; }
+#benMyGroovesBtn.ben-signed-in i { color: var(--ben-brand); }
