@@ -155,10 +155,9 @@
     let query = /(^|&)Tempo=\d+/.test(q)
       ? q.replace(/((?:^|&)Tempo=)\d+/, "$1" + bpm)
       : q + "&Tempo=" + bpm;
-    // links made in Ben's own editor play in Ben's own player (4 toms, mixed meters, ride row...)
-    // (old editor/ links, Beatsheet links and drumsheet.app links all play in the copy in editor/)
-    if (/\/drumhomework\/editor\/|\/beatsheet\/|drumsheet\.app/.test(url)) return "editor/GrooveEmbed.html?" + query;
-    return "https://www.mikeslessons.com/groove/GrooveEmbed.html?" + query;
+    // every groove plays in Ben's own player (Drumsheet, copy in editor/). Old Groove Scribe links
+    // (mikeslessons.com) use the same link format, so they play there too.
+    return "editor/GrooveEmbed.html?" + query;
   }
 
   // Estimate how many staff lines Groove Scribe draws: in 4/4 it puts one bar per line,
@@ -379,7 +378,7 @@
             src: grooveEmbed(g.url, bpm)
           }));
           card.append(el("button", { class: "zoom-btn", onclick: () => openLarge(g, bpm) }, T("zoom")));
-          card.append(el("a", { class: "ext", href: g.url, target: "_blank", rel: "noopener" }, "Open in Groove Scribe ↗"));
+          card.append(el("a", { class: "ext", href: "https://drumsheet.app/?" + (g.url.split("?")[1] || ""), target: "_blank", rel: "noopener" }, "Open in Drumsheet ↗"));
         });
       }
       tempos.forEach(t => {
