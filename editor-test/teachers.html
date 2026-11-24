@@ -78,6 +78,8 @@
   .msg { margin-top: 12px; font-weight: 600; }
   .msg.err { color: #dc2626; }
   .done { font-size: 17px; }
+  label.check { display: flex; align-items: center; gap: 10px; font-weight: 600; margin-top: 16px; cursor: pointer; }
+  label.check input { width: 18px; height: 18px; margin: 0; flex: none; accent-color: var(--brand); }
   .plans { display: grid; grid-template-columns: repeat(2, minmax(0, 260px)); gap: 14px; }
   .plan { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; }
   .plan.main { border: 2px solid var(--brand); }
@@ -119,8 +121,8 @@
 
 <h2 id="price">Price (planned)</h2>
 <div class="plans">
-  <div class="plan"><div class="pname">Free</div><div class="pprice">€0</div><p>Up to 3 students. Everything included.</p></div>
-  <div class="plan main"><div class="pname">Teacher</div><div class="pprice">€6 <span>/ month</span></div><p>Unlimited students. Or €60 a year.</p></div>
+  <div class="plan"><div class="pname">Free</div><div class="pprice">€0</div><p>Up to 3 students. All homework features.</p></div>
+  <div class="plan main"><div class="pname">Teacher</div><div class="pprice">€6 <span>/ month</span></div><p>Unlimited students. Or €60 a year.</p><p><b>Optional:</b> keep track of lessons and payments: who paid, who's ahead, who owes you.</p></div>
 </div>
 <p class="small">The Drumsheet editor stays free for everyone. People on the waitlist get their first 3 months of Teacher free.</p>
 
@@ -143,6 +145,7 @@
       <option value="cheaper">Only if it were cheaper</option>
       <option value="free">No, I'd only use the free version</option>
     </select>
+    <label class="check"><input type="checkbox" id="wlLedger"> I'd also use the lesson &amp; payment tracking</label>
     <label for="wlNote">What would you need from it? <span>(optional)</span></label>
     <textarea id="wlNote" maxlength="1000" placeholder="e.g. see whether students practised, other instruments, your language…"></textarea>
     <button class="join" type="submit">Join the waitlist</button>
@@ -163,7 +166,7 @@
   import { firebaseConfig } from './js/firebase-config.js';
   const BASE = 'https://www.gstatic.com/firebasejs/11.0.2/';
   const form = document.getElementById('wlForm'), msg = document.getElementById('wlMsg');
-  const email = document.getElementById('wlEmail'), students = document.getElementById('wlStudents'), price = document.getElementById('wlPrice'), note = document.getElementById('wlNote');
+  const email = document.getElementById('wlEmail'), students = document.getElementById('wlStudents'), price = document.getElementById('wlPrice'), ledger = document.getElementById('wlLedger'), note = document.getElementById('wlNote');
   form.addEventListener('submit', async function (e) {
     e.preventDefault();
     msg.className = 'msg'; msg.textContent = '';
@@ -176,7 +179,7 @@
       const { initializeApp } = await import(BASE + 'firebase-app.js');
       const L = await import(BASE + 'firebase-firestore-lite.js');
       const db = L.getFirestore(initializeApp(firebaseConfig));
-      await L.addDoc(L.collection(db, 'waitlist'), { email: v.slice(0, 200), students: students.value, price: price.value, note: note.value.trim().slice(0, 1000), created: L.serverTimestamp() });
+      await L.addDoc(L.collection(db, 'waitlist'), { email: v.slice(0, 200), students: students.value, price: price.value, ledger: ledger.checked, note: note.value.trim().slice(0, 1000), created: L.serverTimestamp() });
       if (window.benCount) window.benCount('teachers-waitlist-joined');
       form.innerHTML = '<p class="done">✓ You\'re on the list. Thanks! I\'ll mail you when it\'s ready.</p>';
     } catch (err) {
