@@ -1,0 +1,83 @@
+<meta charset="utf-8">
+<link rel="canonical" href="https://drumsheet.app/privacy.html">
+<meta name="description" content="Privacy at Drumsheet: what is stored when you use the editor or sign in, where it is stored, and how to delete it.">
+<link rel="icon" type="image/png" href="images/favicon-32.png">
+<script>
+  (function () {
+    var d = document.documentElement, t = null, c = null;
+    try { t = localStorage.getItem('benTheme'); c = localStorage.getItem('benColour'); } catch (e) {}
+    if (t === 'dark' || (!t && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches)) d.classList.add('dark');
+    if (c === 'blue') c = '#2563eb';
+    if (!/^#[0-9a-f]{6}$/i.test(c || '')) c = '#7c3aed';
+    var r = parseInt(c.substr(1, 2), 16) / 255, g = parseInt(c.substr(3, 2), 16) / 255, b = parseInt(c.substr(5, 2), 16) / 255;
+    var mx = Math.max(r, g, b), mn = Math.min(r, g, b), h = 0, s = 0, l = (mx + mn) / 2;
+    if (mx !== mn) { var k = mx - mn; s = l > 0.5 ? k / (2 - mx - mn) : k / (mx + mn); h = (mx === r ? (g - b) / k + (g < b ? 6 : 0) : mx === g ? (b - r) / k + 2 : (r - g) / k + 4) * 60; }
+    d.style.setProperty('--h', Math.round(h));
+    d.style.setProperty('--s', Math.max(25, Math.min(85, Math.round(s * 100))) + '%');
+  })();
+</script>
+<style>
+  :root { --brand: hsl(var(--h, 262) var(--s, 83%) 46%); --bg: #f8fafc; --ink: #111827; --muted: #6b7280; --line: #d1d5db; --card: #fff; }
+  html.dark { color-scheme: dark; --brand: hsl(var(--h, 262) var(--s, 83%) 76%); --bg: hsl(var(--h, 262) 38% 6%); --ink: #e5e7eb; --muted: #9ca3af; --line: hsl(var(--h, 262) 26% 22%); --card: hsl(var(--h, 262) 32% 12%); }
+  body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; max-width: 760px; margin: 0 auto; padding: 28px 20px 60px; line-height: 1.55; color: var(--ink); background: var(--bg); }
+  a { color: var(--brand); }
+  h1 { font-size: 28px; margin: 0 0 4px; display: flex; align-items: center; gap: 10px; }
+  h1 b { color: var(--brand); }
+  h1 img { width: 36px; height: 36px; border-radius: 9px; }
+  .sub { color: var(--muted); margin: 0 0 24px; }
+  h2 { font-size: 18px; margin: 28px 0 8px; }
+  ul { padding-left: 20px; }
+  li { margin: 4px 0; }
+  kbd { font-family: inherit; font-size: 13px; background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px; }
+  .back { display: inline-block; margin-bottom: 18px; font-size: 14px; text-decoration: none; }
+</style>
+<script>
+	// privacy-friendly visitor count (GoatCounter: no cookies, no personal data), only on drumsheet.app
+	if (location.hostname === 'drumsheet.app') {
+		window.goatcounter = { path: function () { return location.pathname; } }; // grooves in the link are not sent
+		var gc = document.createElement('script');
+		gc.async = true;
+		gc.src = 'https://gc.zgo.at/count.js';
+		gc.dataset.goatcounter = 'https://drumsheet.goatcounter.com/count';
+		document.head.appendChild(gc);
+	}
+	window.benCount = function (name) {
+		try { if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: name, title: name, event: true }); } catch (e) {}
+	};
+</script>
+
+
+
+<title>About Drumsheet</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<a class="back" href="./">← Back to the editor</a>
+<h1><img src="images/beatsheet-icon-96.png" alt=""><span>Privacy</span></h1>
+<p class="sub">Short version: Drumsheet works without an account. If you sign in, only what is needed to keep your grooves is stored, in the EU, and you can delete it yourself at any time.</p>
+
+<h2>Without an account</h2>
+<ul>
+  <li><b>Your grooves</b> live in the link (the web address). They are not sent to us. Grooves you save under ★ My grooves without signing in stay in your own browser.</li>
+  <li><b>Visit counts:</b> we count visits with <a href="https://www.goatcounter.com" target="_blank" rel="noopener">GoatCounter</a>: the page, where you came from (e.g. reddit.com), browser, screen size and country. No cookies, no IP addresses stored, no personal profile. The groove in your link is not sent.</li>
+  <li>Your settings (dark mode, colour, grid style) are stored in your own browser only.</li>
+</ul>
+
+<h2>With an account (optional)</h2>
+<ul>
+  <li>You sign in with <b>Google</b> or with your <b>email and a password</b>. With Google we receive your <b>email address, name and a user id</b> and never see your Google password. With email we store your <b>email address</b> and your password only as a secure hash (Firebase Authentication): nobody, including us, can read it.</li>
+  <li>When you create an account with email, or forget your password, Firebase sends you an email to confirm your address or choose a new password.</li>
+  <li>We store <b>the grooves you save</b>: name, the groove itself (the same text as in its link) and the date.</li>
+  <li><b>Why:</b> only to keep your grooves and show them on your devices. No ads, no newsletters, nothing sold or shared.</li>
+  <li><b>Where:</b> with Google Firebase. Grooves are stored in Google's data centre in <b>Belgium (europe-west1)</b>. Sign-in is handled by Google's Firebase Authentication, which may process data outside the EU under Google's standard contractual clauses.</li>
+  <li><b>How long:</b> until you delete them or your account.</li>
+</ul>
+
+<h2 id="delete-account">Deleting your data</h2>
+<ul>
+  <li>A single groove: ★ My grooves → the bin icon.</li>
+  <li>Everything: ★ My grooves → <b>Delete account</b>. This removes your account and all its grooves right away. <a href="./#my-grooves">Open My grooves</a></li>
+  <li>Grooves saved in your browser only: delete them in My grooves, or clear your browser data for this site.</li>
+</ul>
+
+<h2>Your rights and contact</h2>
+<p>You can ask what we store about you, have it corrected or deleted, or object, under the GDPR. Mail <a href="mailto:drumhof.gent@gmail.com">drumhof.gent@gmail.com</a>. If you're not happy with the answer, you can contact the Belgian Data Protection Authority (<a href="https://www.dataprotectionauthority.be" target="_blank" rel="noopener">dataprotectionauthority.be</a>).</p>
+<p class="sub">Drumsheet is made by Drumhof (Ghent, Belgium). Last updated: November 2026.</p>
