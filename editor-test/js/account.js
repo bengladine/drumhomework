@@ -3,7 +3,7 @@
 // without an account make no requests to Google at all.
 import { firebaseConfig } from './firebase-config.js';
 
-const V = '13.2.0';
+const V = '11.0.2';
 const BASE = 'https://www.gstatic.com/firebasejs/' + V + '/';
 
 let app, auth, db, A, F;
