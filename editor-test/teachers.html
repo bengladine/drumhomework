@@ -1,0 +1,165 @@
+<meta charset="utf-8">
+<link rel="canonical" href="https://drumsheet.app/teachers.html">
+<meta name="description" content="Drumsheet for drum teachers: write a groove, send it as homework. Your student opens one link and practises with playback, tempo steps and one clear goal.">
+<link rel="icon" type="image/png" href="images/favicon-32.png">
+<script>
+  (function () {
+    var d = document.documentElement, t = null, c = null;
+    try { t = localStorage.getItem('benTheme'); c = localStorage.getItem('benColour'); } catch (e) {}
+    if (t === 'dark' || (!t && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches)) d.classList.add('dark');
+    if (c === 'blue') c = '#2563eb';
+    if (!/^#[0-9a-f]{6}$/i.test(c || '')) c = '#7c3aed';
+    var r = parseInt(c.substr(1, 2), 16) / 255, g = parseInt(c.substr(3, 2), 16) / 255, b = parseInt(c.substr(5, 2), 16) / 255;
+    var mx = Math.max(r, g, b), mn = Math.min(r, g, b), h = 0, s = 0, l = (mx + mn) / 2;
+    if (mx !== mn) { var k = mx - mn; s = l > 0.5 ? k / (2 - mx - mn) : k / (mx + mn); h = (mx === r ? (g - b) / k + (g < b ? 6 : 0) : mx === g ? (b - r) / k + 2 : (r - g) / k + 4) * 60; }
+    d.style.setProperty('--h', Math.round(h));
+    d.style.setProperty('--s', Math.max(25, Math.min(85, Math.round(s * 100))) + '%');
+  })();
+</script>
+<style>
+  :root { --brand: hsl(var(--h, 262) var(--s, 83%) 46%); --bg: #f8fafc; --ink: #111827; --muted: #6b7280; --line: #d1d5db; --card: #fff; }
+  html.dark { color-scheme: dark; --brand: hsl(var(--h, 262) var(--s, 83%) 76%); --bg: hsl(var(--h, 262) 38% 6%); --ink: #e5e7eb; --muted: #9ca3af; --line: hsl(var(--h, 262) 26% 22%); --card: hsl(var(--h, 262) 32% 12%); }
+  body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; max-width: 980px; margin: 0 auto; padding: 28px 20px 60px; line-height: 1.55; color: var(--ink); background: var(--bg); }
+  a { color: var(--brand); }
+  h1 { font-size: 28px; margin: 0 0 4px; display: flex; align-items: center; gap: 10px; }
+  h1 b { color: var(--brand); }
+  h1 img { width: 36px; height: 36px; border-radius: 9px; }
+  .sub { color: var(--muted); margin: 0 0 24px; }
+  h2 { font-size: 18px; margin: 28px 0 8px; }
+  ul { padding-left: 20px; }
+  li { margin: 4px 0; }
+  kbd { font-family: inherit; font-size: 13px; background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px; }
+  .back { display: inline-block; margin-bottom: 18px; font-size: 14px; text-decoration: none; }
+</style>
+<script>
+	// privacy-friendly visitor count (GoatCounter: no cookies, no personal data), only on drumsheet.app
+	if (location.hostname === 'drumsheet.app') {
+		window.goatcounter = { path: function () { return location.pathname; } }; // grooves in the link are not sent
+		var gc = document.createElement('script');
+		gc.async = true;
+		gc.src = 'https://gc.zgo.at/count.js';
+		gc.dataset.goatcounter = 'https://drumsheet.goatcounter.com/count';
+		document.head.appendChild(gc);
+	}
+	window.benCount = function (name) {
+		try { if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: name, title: name, event: true }); } catch (e) {}
+	};
+</script>
+
+
+
+<style>
+  .hero { max-width: 680px; }
+  .hero p { font-size: 17px; }
+  .shots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin: 28px 0 8px; align-items: start; }
+  .shot figure { margin: 0; }
+  .shot .frame { border: 1px solid var(--line); border-radius: 22px; overflow: hidden; background: var(--card); box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12); max-height: 560px; }
+  .shot img { display: block; width: 100%; height: auto; cursor: zoom-in; }
+  .shot figcaption { font-size: 14px; color: var(--muted); margin-top: 10px; }
+  .shot figcaption b { color: var(--ink); display: block; font-size: 15px; margin-bottom: 2px; }
+  @media (max-width: 760px) {
+    .shots { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 14px; margin-left: -20px; margin-right: -20px; padding: 0 20px 10px; }
+    .shot { flex: 0 0 78%; scroll-snap-align: center; }
+  }
+  .steps { counter-reset: s; list-style: none; padding: 0; }
+  .steps li { counter-increment: s; position: relative; padding-left: 40px; margin: 12px 0; }
+  .steps li::before { content: counter(s); position: absolute; left: 0; top: 0; width: 28px; height: 28px; border-radius: 50%; background: var(--brand); color: #fff; font-weight: 700; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  html.dark .steps li::before { color: #111; }
+  .box { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 22px; margin-top: 28px; max-width: 620px; }
+  .box h2 { margin-top: 0; }
+  label { display: block; font-weight: 600; font-size: 14px; margin: 14px 0 6px; }
+  label span { font-weight: 400; color: var(--muted); }
+  input, select, textarea { width: 100%; box-sizing: border-box; font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+  textarea { min-height: 80px; resize: vertical; }
+  button.join { margin-top: 16px; font: inherit; font-weight: 700; color: #fff; background: var(--brand); border: none; border-radius: 10px; padding: 12px 20px; cursor: pointer; }
+  html.dark button.join { color: #111; }
+  button.join:disabled { opacity: .6; cursor: default; }
+  .small { font-size: 13px; color: var(--muted); }
+  .msg { margin-top: 12px; font-weight: 600; }
+  .msg.err { color: #dc2626; }
+  .done { font-size: 17px; }
+  #zoom { position: fixed; inset: 0; background: rgba(0,0,0,.8); display: none; align-items: flex-start; justify-content: center; overflow: auto; z-index: 10; padding: 24px; cursor: zoom-out; }
+  #zoom img { max-width: min(460px, 100%); border-radius: 18px; }
+</style>
+<title>Drumsheet for teachers — send grooves as homework</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta property="og:title" content="Drumsheet for teachers — send grooves as homework">
+<meta property="og:description" content="Write a groove, send it as homework. Your student opens one link and practises with playback, tempo steps and one clear goal.">
+<meta property="og:image" content="https://drumsheet.app/images/teachers/student-week.webp">
+<a class="back" href="./">← Back to the editor</a>
+<div class="hero">
+<h1><img src="images/beatsheet-icon-96.png" alt=""><span>Drumsheet <b>for teachers</b></span></h1>
+<p>Write a groove, send it as homework. Your student opens <b>one link</b> (no app, no login) and practises with the groove to play along with, <b>tempo steps</b> to tick off and <b>one clear goal</b> per exercise.</p>
+</div>
+
+<div class="shots">
+  <div class="shot"><figure><div class="frame"><img src="images/teachers/student-week.webp" width="780" height="1560" alt="Student page: streak, 'I practised today' button, this week's exercises"></div>
+    <figcaption><b>What your student sees</b>This week's exercises, a practice streak and an "I practised today" button.</figcaption></figure></div>
+  <div class="shot"><figure><div class="frame"><img src="images/teachers/student-exercise.webp" width="780" height="1658" alt="One exercise: goal, focus points, groove player and tempo steps"></div>
+    <figcaption><b>One exercise</b>One goal, what to focus on, the groove to play along with, and tempo steps they tick off.</figcaption></figure></div>
+  <div class="shot"><figure><div class="frame"><img src="images/teachers/teacher-add.webp" width="820" height="2300" alt="Teacher page: add homework with a Drumsheet link"></div>
+    <figcaption><b>What you do after the lesson</b>Paste the Drumsheet link, add a few notes. The tempo steps come from the link. (Teacher page is in Dutch for now; English is coming.)</figcaption></figure></div>
+</div>
+<p class="small">Real screenshots with demo students.</p>
+
+<h2>How it works</h2>
+<ol class="steps">
+  <li>Write the groove, fill or rudiment in Drumsheet, like you already do.</li>
+  <li>On your teacher page, press <b>+ Homework</b>, paste the link and add a goal or a few notes. About two minutes per student.</li>
+  <li>Your student opens their own page on their phone. It's live straight away and can be added to the home screen like an app.</li>
+</ol>
+
+<div class="box" id="waitlist">
+  <h2>Join the waitlist</h2>
+  <p>I'm a drum teacher in Ghent and use this with my own students every week. Now I'm deciding whether to open it up to other teachers. Leave your email and I'll write to you when it's ready. No newsletter, no spam.</p>
+  <form id="wlForm" novalidate>
+    <label for="wlEmail">Email</label>
+    <input id="wlEmail" type="email" autocomplete="email" required maxlength="200" placeholder="you@example.com">
+    <label for="wlStudents">How many students do you teach?</label>
+    <select id="wlStudents">
+      <option value="">Choose…</option>
+      <option>1–5</option><option>6–15</option><option>16–30</option><option>30+</option><option>A music school</option>
+    </select>
+    <label for="wlNote">What would you need from it? <span>(optional)</span></label>
+    <textarea id="wlNote" maxlength="1000" placeholder="e.g. see whether students practised, other instruments, your language…"></textarea>
+    <button class="join" type="submit">Join the waitlist</button>
+    <div class="msg" id="wlMsg" role="status"></div>
+    <p class="small">Your email is only used to tell you when Drumsheet for teachers is ready, and is deleted after that if you don't sign up. See <a href="privacy.html#waitlist">privacy</a>.</p>
+  </form>
+</div>
+
+<p class="sub" style="margin-top:32px">Questions? Mail <a href="mailto:drumhof.gent@gmail.com">drumhof.gent@gmail.com</a>. Drumsheet is made by <a href="https://drumhof.com">Drumhof</a> (Ghent, Belgium).</p>
+
+<div id="zoom" onclick="this.style.display='none'"><img alt=""></div>
+<script>
+  document.querySelectorAll('.shot img').forEach(function (img) {
+    img.addEventListener('click', function () { var z = document.getElementById('zoom'); z.querySelector('img').src = img.src; z.style.display = 'flex'; z.scrollTop = 0; });
+  });
+</script>
+<script type="module">
+  import { firebaseConfig } from './js/firebase-config.js';
+  const BASE = 'https://www.gstatic.com/firebasejs/11.0.2/';
+  const form = document.getElementById('wlForm'), msg = document.getElementById('wlMsg');
+  const email = document.getElementById('wlEmail'), students = document.getElementById('wlStudents'), note = document.getElementById('wlNote');
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    msg.className = 'msg'; msg.textContent = '';
+    const v = email.value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) { msg.className = 'msg err'; msg.textContent = 'Please fill in a valid email address.'; email.focus(); return; }
+    const btn = form.querySelector('button'); btn.disabled = true; btn.textContent = 'Sending…';
+    try {
+      // Firebase only loads when someone actually joins, so visitors make no requests to Google.
+      const { initializeApp } = await import(BASE + 'firebase-app.js');
+      const L = await import(BASE + 'firebase-firestore-lite.js');
+      const db = L.getFirestore(initializeApp(firebaseConfig));
+      await L.addDoc(L.collection(db, 'waitlist'), { email: v.slice(0, 200), students: students.value, note: note.value.trim().slice(0, 1000), created: L.serverTimestamp() });
+      if (window.benCount) window.benCount('teachers-waitlist-joined');
+      form.innerHTML = '<p class="done">✓ You\'re on the list. Thanks! I\'ll mail you when it\'s ready.</p>';
+    } catch (err) {
+      console.warn('waitlist', err);
+      btn.disabled = false; btn.textContent = 'Join the waitlist';
+      msg.className = 'msg err';
+      msg.innerHTML = 'That didn\'t work. Please mail <a href="mailto:drumhof.gent@gmail.com?subject=Drumsheet%20for%20teachers%20waitlist">drumhof.gent@gmail.com</a> instead.';
+    }
+  });
+</script>
