@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795550937';
-import { GrooveUtils } from './groove_utils.js?v=1795550937';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795551111';
+import { GrooveUtils } from './groove_utils.js?v=1795551111';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -87,10 +87,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1795550937';
-import * as _perm from './permutations.js?v=1795550937';
-import * as _view from './viewHtml.js?v=1795550937';
-import * as _grid from './gridState.js?v=1795550937';
+} from './constants.js?v=1795551111';
+import * as _perm from './permutations.js?v=1795551111';
+import * as _view from './viewHtml.js?v=1795551111';
+import * as _grid from './gridState.js?v=1795551111';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -5423,7 +5423,7 @@ function GrooveWriter() {
   var MY_KEY = 'benMyGrooves';
   var acct = null; // the account module, loaded only when needed
   function loadAccount() {
-    if (!acct) acct = import('./account.js?v=1795550937');
+    if (!acct) acct = import('./account.js?v=1795551111');
     return acct;
   }
   function localLoad() {
@@ -5908,7 +5908,7 @@ function GrooveWriter() {
           })
           .join('') +
         '</div>' +
-        '<div class="ben-wn-foot"><a href="https://github.com/bengladine/beatsheet/issues/new" target="_blank" rel="noopener">' +
+        '<div class="ben-wn-foot"><a href="https://forms.gle/rgXMxauXFDep4EJq6" target="_blank" rel="noopener">' +
         '<i class="fa fa-comment-o"></i> Got a request or found a bug?</a>' +
         (all ? '' : '<button class="ben-wn-ok">Got it</button>') +
         '</div>';
@@ -5922,7 +5922,7 @@ function GrooveWriter() {
       var ok = card.querySelector('.ben-wn-ok');
       if (ok) ok.onclick = close;
     }
-    import('./updates.js?v=1795550937')
+    import('./updates.js?v=1795551111')
       .then(function (m) {
         root.showWhatsNew = function () {
           show(m.UPDATES, true);
