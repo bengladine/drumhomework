@@ -4,10 +4,10 @@
 // getGrooveDataFromUrlString / getUrlStringFromGrooveData methods here, passing
 // its instance flags through the parse function's `config` argument.
 
-import { createGrooveData } from './grooveData.js?v=1795549672';
-import { parseMeters, metersToString } from './meters.js?v=1795549672';
-import { constant_DEFAULT_TEMPO, constant_MAX_MEASURES } from './constants.js?v=1795549672';
-import { parseTimeSigString, calc_notes_per_measure } from './musicMath.js?v=1795549672';
+import { createGrooveData } from './grooveData.js?v=1795550437';
+import { parseMeters, metersToString } from './meters.js?v=1795550437';
+import { constant_DEFAULT_TEMPO, constant_MAX_MEASURES } from './constants.js?v=1795550437';
+import { parseTimeSigString, calc_notes_per_measure } from './musicMath.js?v=1795550437';
 import {
   noteArraysFromURLData,
   tabLineFromAbcNoteArray,
@@ -16,7 +16,7 @@ import {
   GetDefaultSnareGroove,
   GetDefaultKickGroove,
   GetDefaultTomGroove,
-} from './noteArrays.js?v=1795549672';
+} from './noteArrays.js?v=1795550437';
 
 export function getQueryVariableFromString(variable, def_value, my_string) {
   // Tolerate query strings with or without a leading '?'. window.location.search
@@ -40,7 +40,7 @@ export function getQueryVariableFromString(variable, def_value, my_string) {
  * @param {string} encodedURLData  The URL / query string to parse.
  * @param {{debugMode?: (boolean|number), grooveDBAuthoring?: boolean, viewMode?: boolean}} [config]
  *   Instance flags to seed the new GrooveData with (passed by GrooveUtils).
- * @returns {import('./grooveData.js?v=1795549672').GrooveData}
+ * @returns {import('./grooveData.js?v=1795550437').GrooveData}
  */
 export function getGrooveDataFromUrlString(encodedURLData, config = {}) {
   var Stickings_string;
@@ -218,7 +218,7 @@ export function getGrooveDataFromUrlString(encodedURLData, config = {}) {
 /**
  * Serialize a {@link GrooveData} back into an encoded groove URL string.
  *
- * @param {import('./grooveData.js?v=1795549672').GrooveData} myGrooveData  The groove to serialize.
+ * @param {import('./grooveData.js?v=1795550437').GrooveData} myGrooveData  The groove to serialize.
  * @param {string} [url_destination]  Optional base URL to prepend.
  * @returns {string}
  */

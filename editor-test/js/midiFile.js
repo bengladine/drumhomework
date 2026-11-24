@@ -60,9 +60,9 @@ import {
   constant_OUR_MIDI_VELOCITY_ACCENT,
   constant_OUR_MIDI_VELOCITY_GHOST,
   constant_OUR_MIDI_VELOCITY_NORMAL,
-} from './constants.js?v=1795549672';
-import { meterFor, usedSlots } from './meters.js?v=1795549672';
-import { isTripletDivisionFromNotesPerMeasure, scaleNoteArrayToFullSize } from './musicMath.js?v=1795549672';
+} from './constants.js?v=1795550437';
+import { meterFor, usedSlots } from './meters.js?v=1795550437';
+import { isTripletDivisionFromNotesPerMeasure, scaleNoteArrayToFullSize } from './musicMath.js?v=1795550437';
 
 export function MIDI_build_midi_url_count_in_track(gu, timeSigTop, timeSigBottom) {
   var midiFile = new Midi.File();
@@ -483,7 +483,7 @@ export function MIDI_from_HH_Snare_Kick_Arrays(
  * Build a base64 data: URL for the MIDI rendering of a groove.
  *
  * @param {Object} gu  The owning GrooveUtils instance (for note/tab helpers).
- * @param {import('./grooveData.js?v=1795549672').GrooveData} myGrooveData  The groove to render.
+ * @param {import('./grooveData.js?v=1795550437').GrooveData} myGrooveData  The groove to render.
  * @param {string} [MIDI_type]  Optional MIDI rendering variant.
  * @returns {string}
  */
