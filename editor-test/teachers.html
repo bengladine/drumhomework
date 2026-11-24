@@ -121,8 +121,8 @@
 
 <h2 id="price">Price (planned)</h2>
 <div class="plans">
-  <div class="plan"><div class="pname">Free</div><div class="pprice">€0</div><p>Up to 3 students. All homework features.</p></div>
-  <div class="plan main"><div class="pname">Teacher</div><div class="pprice">€6 <span>/ month</span></div><p>Unlimited students. Or €60 a year.</p><p><b>Optional:</b> keep track of lessons and payments: who paid, who's ahead, who owes you.</p></div>
+  <div class="plan"><div class="pname">Free</div><div class="pprice"><span class="money" data-usd="$0">€0</span></div><p>Up to 3 students. All homework features.</p></div>
+  <div class="plan main"><div class="pname">Teacher</div><div class="pprice"><span class="money" data-usd="$6">€6</span> <span>/ month</span></div><p>Unlimited students. Or <span class="money" data-usd="$60">€60</span> a year.</p><p><b>Optional:</b> keep track of lessons and payments: who paid, who's ahead, who owes you.</p></div>
 </div>
 <p class="small">The Drumsheet editor stays free for everyone. People on the waitlist get their first 3 months of Teacher free.</p>
 
@@ -137,7 +137,7 @@
       <option value="">Choose…</option>
       <option>1–5</option><option>6–15</option><option>16–30</option><option>30+</option><option>A music school</option>
     </select>
-    <label for="wlPrice">Would you pay €6 a month for this?</label>
+    <label for="wlPrice">Would you pay <span class="money" data-usd="$6">€6</span> a month for this?</label>
     <select id="wlPrice">
       <option value="">Choose…</option>
       <option value="yes">Yes</option>
@@ -158,6 +158,14 @@
 
 <div id="zoom" onclick="this.style.display='none'"><img alt=""></div>
 <script>
+  // Prices in dollars outside Europe (guessed from the browser's time zone; no location lookup)
+  (function () {
+    var tz = '';
+    try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) {}
+    if (tz && !/^(Europe|Africa|Atlantic\/(Azores|Canary|Madeira|Reykjavik|Faroe))/.test(tz)) {
+      document.querySelectorAll('.money').forEach(function (s) { s.textContent = s.dataset.usd; });
+    }
+  })();
   document.querySelectorAll('.shot img').forEach(function (img) {
     img.addEventListener('click', function () { var z = document.getElementById('zoom'); z.querySelector('img').src = img.src; z.style.display = 'flex'; z.scrollTop = 0; });
   });
