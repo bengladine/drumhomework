@@ -6,7 +6,7 @@ export const UPDATES = [
     date: '24 Nov 2026',
     items: [
       '<b>Accounts (optional):</b> sign in with Google or email under ★ My grooves, and your grooves are saved online on all your devices.',
-      '<b>★ My grooves:</b> save, name and reopen your grooves (Ctrl+S). Without an account they stay in this browser.',
+      '<b>★ My grooves:</b> save, name and reopen your grooves (Ctrl+S). Without an account they are only stored in this browser, and clearing your browser data (cookies, history) deletes them. Sign in to keep them safe.',
     ],
   },
   {
