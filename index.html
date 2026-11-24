@@ -127,6 +127,14 @@
   }
   let state = load();
 
+  // Moved to drumhof.com/huiswerk. Send the student there and hand over their ticks/streak
+  // (stored per website, so the new address can't see them otherwise). ?stay keeps the old page.
+  if (code && !new URLSearchParams(location.search).has("stay")) {
+    const p = btoa(unescape(encodeURIComponent(JSON.stringify(state))));
+    location.replace("https://drumhof.com/huiswerk/?s=" + encodeURIComponent(code) + "#p=" + p);
+    return;
+  }
+
   // ---------- dates ----------
   const pad = n => String(n).padStart(2, "0");
   const ymd = d => d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
