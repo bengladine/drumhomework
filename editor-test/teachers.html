@@ -78,6 +78,14 @@
   .msg { margin-top: 12px; font-weight: 600; }
   .msg.err { color: #dc2626; }
   .done { font-size: 17px; }
+  .plans { display: grid; grid-template-columns: repeat(2, minmax(0, 260px)); gap: 14px; }
+  .plan { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; }
+  .plan.main { border: 2px solid var(--brand); }
+  .plan p { margin: 6px 0 0; font-size: 14px; color: var(--muted); }
+  .pname { font-weight: 700; }
+  .pprice { font-size: 26px; font-weight: 800; margin-top: 4px; }
+  .pprice span { font-size: 14px; font-weight: 400; color: var(--muted); }
+  @media (max-width: 560px) { .plans { grid-template-columns: 1fr 1fr; } }
   #zoom { position: fixed; inset: 0; background: rgba(0,0,0,.8); display: none; align-items: flex-start; justify-content: center; overflow: auto; z-index: 10; padding: 24px; cursor: zoom-out; }
   #zoom img { max-width: min(460px, 100%); border-radius: 18px; }
 </style>
@@ -98,9 +106,9 @@
   <div class="shot"><figure><div class="frame"><img src="images/teachers/student-exercise.webp" width="780" height="1658" alt="One exercise: goal, focus points, groove player and tempo steps"></div>
     <figcaption><b>One exercise</b>One goal, what to focus on, the groove to play along with, and tempo steps they tick off.</figcaption></figure></div>
   <div class="shot"><figure><div class="frame"><img src="images/teachers/teacher-add.webp" width="820" height="2300" alt="Teacher page: add homework with a Drumsheet link"></div>
-    <figcaption><b>What you do after the lesson</b>Paste the Drumsheet link, add a few notes. The tempo steps come from the link. (Teacher page is in Dutch for now; English is coming.)</figcaption></figure></div>
+    <figcaption><b>What you do after the lesson</b>Paste the Drumsheet link, add a few notes. The tempo steps come from the link.</figcaption></figure></div>
 </div>
-<p class="small">Real screenshots with demo students.</p>
+<p class="small">Screenshots of the working version with demo students. I use it in Dutch with my own students; this is the English version teachers will get.</p>
 
 <h2>How it works</h2>
 <ol class="steps">
@@ -108,6 +116,13 @@
   <li>On your teacher page, press <b>+ Homework</b>, paste the link and add a goal or a few notes. About two minutes per student.</li>
   <li>Your student opens their own page on their phone. It's live straight away and can be added to the home screen like an app.</li>
 </ol>
+
+<h2 id="price">Price (planned)</h2>
+<div class="plans">
+  <div class="plan"><div class="pname">Free</div><div class="pprice">€0</div><p>Up to 3 students. Everything included.</p></div>
+  <div class="plan main"><div class="pname">Teacher</div><div class="pprice">€6 <span>/ month</span></div><p>Unlimited students. Or €60 a year.</p></div>
+</div>
+<p class="small">The Drumsheet editor stays free for everyone. People on the waitlist get their first 3 months of Teacher free.</p>
 
 <div class="box" id="waitlist">
   <h2>Join the waitlist</h2>
@@ -119,6 +134,14 @@
     <select id="wlStudents">
       <option value="">Choose…</option>
       <option>1–5</option><option>6–15</option><option>16–30</option><option>30+</option><option>A music school</option>
+    </select>
+    <label for="wlPrice">Would you pay €6 a month for this?</label>
+    <select id="wlPrice">
+      <option value="">Choose…</option>
+      <option value="yes">Yes</option>
+      <option value="maybe">Maybe, if it had what I need</option>
+      <option value="cheaper">Only if it were cheaper</option>
+      <option value="free">No, I'd only use the free version</option>
     </select>
     <label for="wlNote">What would you need from it? <span>(optional)</span></label>
     <textarea id="wlNote" maxlength="1000" placeholder="e.g. see whether students practised, other instruments, your language…"></textarea>
@@ -140,19 +163,20 @@
   import { firebaseConfig } from './js/firebase-config.js';
   const BASE = 'https://www.gstatic.com/firebasejs/11.0.2/';
   const form = document.getElementById('wlForm'), msg = document.getElementById('wlMsg');
-  const email = document.getElementById('wlEmail'), students = document.getElementById('wlStudents'), note = document.getElementById('wlNote');
+  const email = document.getElementById('wlEmail'), students = document.getElementById('wlStudents'), price = document.getElementById('wlPrice'), note = document.getElementById('wlNote');
   form.addEventListener('submit', async function (e) {
     e.preventDefault();
     msg.className = 'msg'; msg.textContent = '';
     const v = email.value.trim();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) { msg.className = 'msg err'; msg.textContent = 'Please fill in a valid email address.'; email.focus(); return; }
+    if (!price.value) { msg.className = 'msg err'; msg.textContent = 'Please answer the price question. An honest "no" helps too.'; price.focus(); return; }
     const btn = form.querySelector('button'); btn.disabled = true; btn.textContent = 'Sending…';
     try {
       // Firebase only loads when someone actually joins, so visitors make no requests to Google.
       const { initializeApp } = await import(BASE + 'firebase-app.js');
       const L = await import(BASE + 'firebase-firestore-lite.js');
       const db = L.getFirestore(initializeApp(firebaseConfig));
-      await L.addDoc(L.collection(db, 'waitlist'), { email: v.slice(0, 200), students: students.value, note: note.value.trim().slice(0, 1000), created: L.serverTimestamp() });
+      await L.addDoc(L.collection(db, 'waitlist'), { email: v.slice(0, 200), students: students.value, price: price.value, note: note.value.trim().slice(0, 1000), created: L.serverTimestamp() });
       if (window.benCount) window.benCount('teachers-waitlist-joined');
       form.innerHTML = '<p class="done">✓ You\'re on the list. Thanks! I\'ll mail you when it\'s ready.</p>';
     } catch (err) {
