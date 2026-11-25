@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
-import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795550864';
-import { GrooveUtils } from './groove_utils.js?v=1795550864';
+import { addInlineMeter, barFraction, chooseBaseMeter } from './meters.js?v=1795614807';
+import { GrooveUtils } from './groove_utils.js?v=1795614807';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -87,10 +87,10 @@ import {
   constant_sticking_left_on_color_rgb,
   constant_sticking_both_on_color_rgb,
   constant_sticking_count_on_color_rgb,
-} from './constants.js?v=1795550864';
-import * as _perm from './permutations.js?v=1795550864';
-import * as _view from './viewHtml.js?v=1795550864';
-import * as _grid from './gridState.js?v=1795550864';
+} from './constants.js?v=1795614807';
+import * as _perm from './permutations.js?v=1795614807';
+import * as _view from './viewHtml.js?v=1795614807';
+import * as _grid from './gridState.js?v=1795614807';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -3781,11 +3781,13 @@ function GrooveWriter() {
 
     if (myGrooveData.showStickings) root.stickingsShowHide(true, true, true);
 
-    document.getElementById('tuneTitle').value = myGrooveData.title;
+    // a pasted link is never a title/author/comment (it would show up as a huge line on the sheet)
+    var noLink = (v) => (/^\s*https?:\/\//i.test(v || '') ? '' : v);
+    document.getElementById('tuneTitle').value = noLink(myGrooveData.title);
 
-    document.getElementById('tuneAuthor').value = myGrooveData.author;
+    document.getElementById('tuneAuthor').value = noLink(myGrooveData.author);
 
-    document.getElementById('tuneComments').value = myGrooveData.comments;
+    document.getElementById('tuneComments').value = noLink(myGrooveData.comments);
 
     root.myGrooveUtils.setTempo(myGrooveData.tempo);
 
@@ -5423,7 +5425,7 @@ function GrooveWriter() {
   var MY_KEY = 'benMyGrooves';
   var acct = null; // the account module, loaded only when needed
   function loadAccount() {
-    if (!acct) acct = import('./account.js?v=1795550864');
+    if (!acct) acct = import('./account.js?v=1795614807');
     return acct;
   }
   function localLoad() {
@@ -5908,7 +5910,10 @@ function GrooveWriter() {
           })
           .join('') +
         '</div>' +
-        (all ? '' : '<button class="ben-wn-ok">Got it</button>');
+        '<div class="ben-wn-foot"><a href="https://forms.gle/rgXMxauXFDep4EJq6" target="_blank" rel="noopener">' +
+        '<i class="fa fa-comment-o"></i> Got a request or found a bug?</a>' +
+        (all ? '' : '<button class="ben-wn-ok">Got it</button>') +
+        '</div>';
       document.body.appendChild(card);
       var close = function () {
         markSeen(list[0].id > seen() ? list[0].id : seen());
@@ -5919,7 +5924,7 @@ function GrooveWriter() {
       var ok = card.querySelector('.ben-wn-ok');
       if (ok) ok.onclick = close;
     }
-    import('./updates.js?v=1795550864')
+    import('./updates.js?v=1795614807')
       .then(function (m) {
         root.showWhatsNew = function () {
           show(m.UPDATES, true);
@@ -5929,6 +5934,32 @@ function GrooveWriter() {
       })
       .catch(function () {});
   })();
+
+  // Drumsheet: pasting a groove link into the title/author/comment box opens that groove instead
+  // of putting the whole link on the sheet music.
+  ['tuneTitle', 'tuneAuthor', 'tuneComments'].forEach(function (id) {
+    var box = document.getElementById(id);
+    if (!box) return;
+    box.addEventListener('paste', function (e) {
+      var t = ((e.clipboardData || window.clipboardData) || { getData: () => '' }).getData('text') || '';
+      t = t.trim();
+      if (!/^https?:\/\//i.test(t)) return;
+      e.preventDefault();
+      var q = t.indexOf('?') >= 0 ? t.slice(t.indexOf('?')).replace(/\\&/g, '&') : '';
+      if (/[?&](H|S|K|TimeSig|Measures)=/.test(q) && confirm('This is a groove link. Open that groove?')) {
+        var dlg = document.getElementById('benDetailsDialog');
+        if (dlg) dlg.style.display = 'none';
+        root.loadNewGroove(q);
+      }
+    });
+    // typed or autofilled links are dropped too
+    box.addEventListener('change', function () {
+      if (/^\s*https?:\/\//i.test(box.value)) {
+        box.value = '';
+        root.refresh_ABC();
+      }
+    });
+  });
 
   // Drumsheet: tap tempo. Tap the TAP button (or press T) in time; the BPM follows the average of the last taps.
   // ---------------------------------------------------------------------
