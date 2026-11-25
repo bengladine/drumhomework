@@ -1352,3 +1352,4 @@ html.ben-dark #benWhatsNew { background: var(--ben-tint-menu, #1b2536); }
 #benFooter a.ben-teachers:hover { background: color-mix(in srgb, var(--ben-brand) 10%, transparent); }
 #benFooter a.ben-teachers u { color: var(--ben-brand); text-decoration: none; font-weight: 600; }
 #benFooter .ben-teachers-icon { font-size: 22px; }
+.ben-paste-note { font-size: 12px; color: #dc2626; margin: 4px 0 0; }
