@@ -1345,3 +1345,11 @@ html.ben-dark #benWhatsNew { background: var(--ben-tint-menu, #1b2536); }
 .ben-wn-foot a { color: var(--ben-brand); font-weight: 600; text-decoration: none; }
 .ben-wn-foot a:hover { text-decoration: underline; }
 .ben-wn-foot .ben-wn-ok { margin: 0; }
+
+/* "For teachers" waitlist box in the footer */
+#benFooter a.ben-teachers { display: inline-flex; align-items: center; gap: 12px; text-align: left; text-decoration: none; color: var(--ben-ink);
+  border: 1px solid var(--ben-brand); border-radius: 12px; padding: 10px 16px; font-size: 13px; line-height: 1.45; transition: background 0.2s var(--ben-ease); }
+#benFooter a.ben-teachers:hover { background: color-mix(in srgb, var(--ben-brand) 10%, transparent); }
+#benFooter a.ben-teachers u { color: var(--ben-brand); text-decoration: none; font-weight: 600; }
+#benFooter .ben-teachers-icon { font-size: 22px; }
+.ben-paste-note { font-size: 12px; color: #dc2626; margin: 4px 0 0; }
