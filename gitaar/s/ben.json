@@ -1,0 +1,74 @@
+{
+  "title": "Gitaar oefenen",
+  "intro": "Alles wat ik aan het leren ben, op één plek.",
+
+  "homework": ["liedje1/riff1", "liedje2/riff1"],
+
+  "songs": [
+    {
+      "id": "liedje1",
+      "artist": "Foo Fighters",
+      "title": "Liedje 1 (naam invullen)",
+      "tuning": "Standaard",
+      "capo": 0,
+      "full": "https://www.ultimate-guitar.com/",
+      "video": [],
+      "parts": [
+        {
+          "id": "riff1",
+          "title": "Riff 1",
+          "goal": "Riff 1 vlot en zonder stoppen",
+          "tempos": [70, 90, 110],
+          "tab": [
+            "e|-----------------|",
+            "B|-----------------|",
+            "G|-----------------|",
+            "D|-----------------|",
+            "A|-----------------|",
+            "E|-----------------|"
+          ],
+          "focus": ["Plak hier de tab van de riff"]
+        },
+        { "id": "riff2", "title": "Riff 2", "goal": "Riff 2", "status": "later" },
+        { "id": "rest", "title": "Rest van het liedje", "goal": "Heel het liedje meespelen", "status": "later" }
+      ]
+    },
+    {
+      "id": "liedje2",
+      "artist": "Foo Fighters",
+      "title": "Liedje 2 (naam invullen)",
+      "tuning": "Standaard",
+      "capo": 0,
+      "full": "https://www.ultimate-guitar.com/",
+      "parts": [
+        {
+          "id": "riff1",
+          "title": "Riff 1",
+          "goal": "Riff 1 vlot en zonder stoppen",
+          "tempos": [70, 90, 110],
+          "tab": [
+            "e|-----------------|",
+            "B|-----------------|",
+            "G|-----------------|",
+            "D|-----------------|",
+            "A|-----------------|",
+            "E|-----------------|"
+          ]
+        },
+        { "id": "rest", "title": "Rest van het liedje", "goal": "Heel het liedje meespelen", "status": "later" }
+      ]
+    }
+  ],
+
+  "exercises": [
+    {
+      "id": "powerchords",
+      "type": "Techniek",
+      "title": "Powerchords wisselen (voorbeeld)",
+      "goal": "E5 – G5 – A5 – G5 strak in achtsten",
+      "tempos": [80, 100, 120],
+      "tex": "\\tempo 100 . (0.6 2.5).8 (0.6 2.5).8 (0.6 2.5).8 (0.6 2.5).8 (3.6 5.5).8 (3.6 5.5).8 (3.6 5.5).8 (3.6 5.5).8 | (5.6 7.5).8 (5.6 7.5).8 (5.6 7.5).8 (5.6 7.5).8 (3.6 5.5).8 (3.6 5.5).8 (3.6 5.5).8 (3.6 5.5).8 |",
+      "focus": ["Pols los, alleen naar beneden aanslaan", "Linkerhand blijft in dezelfde vorm, schuif alleen"]
+    }
+  ]
+}

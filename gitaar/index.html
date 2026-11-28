@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Gitaar oefenen</title>
+<style>
+  :root {
+    --bg: #f4f2ee; --card: #fff; --ink: #1d1d1b; --muted: #6b6860;
+    --accent: #2b7a78; --ok: #2e9e5b; --line: #e3dfd6; --radius: 16px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 17px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 560px; margin: 0 auto; padding: 16px 14px 48px; }
+  @media (min-width: 900px) { main { max-width: 900px; padding: 32px 24px 64px; } h1 { font-size: 2rem; } }
+  h1 { font-size: 1.5rem; margin: 8px 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 16px; }
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  }
+  .label { font-size: .8rem; font-weight: 700; letter-spacing: .06em;
+           text-transform: uppercase; color: var(--muted); margin: 0 0 6px; }
+  .section-label { margin: 26px 0 8px; }
+  .goal { font-size: 1.35rem; font-weight: 800; line-height: 1.25; margin: 0; }
+  .goal.done { color: var(--ok); }
+  .meta { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 0; }
+  .chip { font-size: .85rem; padding: 3px 10px; border-radius: 999px; background: var(--bg); }
+  ul.focus { margin: 0; padding-left: 20px; }
+  ul.focus li { margin: 4px 0; }
+  .celebrate { background: var(--ok); color: #fff; border-radius: 12px; padding: 12px 14px;
+               font-weight: 700; margin-top: 12px; }
+
+  /* streak */
+  .streak { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .streak-num { font-size: 2.2rem; font-weight: 800; }
+  .week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+  .day { border: 2px solid var(--line); background: #fff; border-radius: 12px; padding: 8px 0;
+         text-align: center; font: inherit; font-size: .85rem; color: var(--ink); min-height: 56px; }
+  .day b { display: block; font-size: 1.1rem; }
+  .day.on { background: var(--ok); border-color: var(--ok); color: #fff; }
+  .day.today { border-color: var(--ink); }
+  .day:disabled { opacity: .35; }
+
+  /* collapsible items */
+  details.ex { background: var(--card); border-radius: var(--radius); margin-bottom: 10px;
+               box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+  details.ex > summary { display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+                         cursor: pointer; list-style: none; }
+  details.ex > summary::-webkit-details-marker { display: none; }
+  .ex-mark { flex: 0 0 36px; height: 36px; border-radius: 50%; display: grid; place-items: center;
+             font-weight: 800; border: 2px solid var(--ink); font-size: .95rem; }
+  details.ex.done > summary .ex-mark { background: var(--ok); border-color: var(--ok); color: #fff; }
+  .ex-type { display: block; font-size: .75rem; font-weight: 700; letter-spacing: .05em;
+             text-transform: uppercase; color: var(--accent); }
+  .ex-title { font-weight: 700; }
+  .ex-progress { margin-left: auto; color: var(--muted); font-size: .85rem; white-space: nowrap; }
+  .ex-body { padding: 0 6px 6px; }
+  .ex-body .card { box-shadow: none; border: 1px solid var(--line); margin-bottom: 8px; }
+  .ex-body details.ex { box-shadow: none; border: 1px solid var(--line); }
+  details.ex.later > summary { opacity: .6; }
+
+  /* tab */
+  .tab-host { overflow-x: auto; margin: 0 -8px; }
+  .tab-host .at-surface { margin: 0 auto; }
+  .at-cursor-bar { background: rgba(43,122,120,.12); }
+  .at-cursor-beat { background: var(--accent); width: 3px; }
+  .at-selection div { background: rgba(43,122,120,.18); }
+  .at-highlight * { fill: var(--accent); stroke: var(--accent); }
+  pre.ascii { margin: 0; overflow-x: auto; font: 14px/1.35 ui-monospace, Menlo, Consolas, monospace;
+              background: var(--bg); padding: 12px; border-radius: 10px; }
+  .controls { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 4px; }
+  .btn { padding: 10px 14px; border-radius: 12px; border: 2px solid var(--ink); background: #fff;
+         font: inherit; font-weight: 700; color: var(--ink); cursor: pointer; }
+  .btn.on { background: var(--ink); color: #fff; }
+  .btn.main { background: var(--accent); border-color: var(--accent); color: #fff; min-width: 110px; }
+  .btn.main.on { background: var(--ink); border-color: var(--ink); }
+  .btn:disabled { opacity: .4; }
+  .hint { color: var(--muted); font-size: .85rem; margin: 6px 0 0; }
+  .status { color: var(--muted); font-size: .9rem; margin: 6px 0; }
+
+  /* tempo steps */
+  .step { display: flex; align-items: center; gap: 10px; border-top: 1px solid var(--line); padding: 10px 0; }
+  .step:first-of-type { border-top: 0; }
+  .step .btn { min-width: 96px; }
+  .check { display: flex; align-items: center; gap: 10px; flex: 1; font-size: 1rem; cursor: pointer; }
+  .check input { width: 30px; height: 30px; accent-color: var(--ok); flex: 0 0 auto; }
+
+  /* video */
+  .video { position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 10px; overflow: hidden; background: #000; }
+  .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .video-btn { display: flex; width: 100%; align-items: center; gap: 10px; text-align: left; margin-top: 8px; }
+  .links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  a.btn { text-decoration: none; display: inline-block; }
+  img.sheet { width: 100%; border-radius: 10px; display: block; }
+  .error { background: #fff; border-radius: var(--radius); padding: 20px; }
+</style>
+</head>
+<body>
+<main id="app"><p class="sub">Laden…</p></main>
+
+<script src="lib/alphaTab.min.js"></script>
+<script>
+(function () {
+  const app = document.getElementById("app");
+  const code = new URLSearchParams(location.search).get("s") || "ben";
+
+  // ---------- storage (in this browser) ----------
+  const KEY = "gitaar:" + code;
+  function load() {
+    try { return Object.assign({ days: [], ticks: {} }, JSON.parse(localStorage.getItem(KEY))); }
+    catch (e) { return { days: [], ticks: {} }; }
+  }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+  const state = load();
+
+  // ---------- helpers ----------
+  function el(tag, attrs, ...kids) {
+    const n = document.createElement(tag);
+    for (const k in attrs || {}) {
+      if (attrs[k] == null || attrs[k] === false) continue;
+      if (k === "class") n.className = attrs[k];
+      else if (k.startsWith("on")) n.addEventListener(k.slice(2), attrs[k]);
+      else n.setAttribute(k, attrs[k] === true ? "" : attrs[k]);
+    }
+    for (const k of kids.flat()) if (k != null && k !== false) n.append(k);
+    return n;
+  }
+  const list = x => x == null ? [] : Array.isArray(x) ? x : [x];
+  const pad = n => String(n).padStart(2, "0");
+  const ymd = d => d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+  const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const todayKey = ymd(today);
+
+  // ---------- progress ----------
+  // Each part/exercise has a key; ticks[key] = list of tempos reached (or ["done"]).
+  const steps = p => (p.tempos && p.tempos.length) ? p.tempos : ["done"];
+  const isDone = p => p.status === "klaar" || steps(p).every(t => (state.ticks[p._key] || []).includes(t));
+  function toggleTick(p, t) {
+    const arr = state.ticks[p._key] = state.ticks[p._key] || [];
+    const i = arr.indexOf(t);
+    if (i >= 0) arr.splice(i, 1); else arr.push(t);
+    save(); refresh();
+  }
+  // Update ticks and ✓ marks in place, so open players and videos keep running.
+  const refreshers = [];
+  function refresh() { refreshers.forEach(f => f()); }
+
+  function streak() {
+    const days = new Set(state.days);
+    let d = days.has(todayKey) ? today : addDays(today, -1), n = 0;
+    while (days.has(ymd(d))) { n++; d = addDays(d, -1); }
+    return n;
+  }
+  function streakCard() {
+    const card = el("section", { class: "card" });
+    function draw() {
+      card.textContent = "";
+      const s = streak(), monday = addDays(today, -((today.getDay() + 6) % 7));
+      const week = el("div", { class: "week" });
+      ["ma", "di", "wo", "do", "vr", "za", "zo"].forEach((nm, i) => {
+        const d = addDays(monday, i), key = ymd(d), on = state.days.includes(key);
+        week.append(el("button", {
+          class: "day" + (on ? " on" : "") + (key === todayKey ? " today" : ""),
+          disabled: d > today, "aria-label": nm + " " + d.getDate(),
+          onclick: () => {
+            const i = state.days.indexOf(key);
+            if (i >= 0) state.days.splice(i, 1); else state.days.push(key);
+            save(); draw();
+          }
+        }, nm, el("b", null, on ? "✓" : String(d.getDate()))));
+      });
+      card.append(el("div", { class: "streak" },
+        el("span", { class: "streak-num" }, "🔥 " + s),
+        el("span", null, s === 1 ? "dag op rij geoefend" : "dagen op rij geoefend")), week);
+    }
+    draw();
+    return card;
+  }
+
+  // ---------- metronome (for tabs without playback) ----------
+  let audio = null, metro = null;
+  function startMetronome(bpm, onStop) {
+    stopAll();
+    audio = audio || new (window.AudioContext || window.webkitAudioContext)();
+    audio.resume();
+    let next = audio.currentTime + 0.1, beat = 0;
+    const tick = () => {
+      while (next < audio.currentTime + 0.2) {
+        const o = audio.createOscillator(), g = audio.createGain();
+        o.frequency.value = beat % 4 === 0 ? 1500 : 1000;
+        g.gain.setValueAtTime(0.5, next); g.gain.exponentialRampToValueAtTime(0.001, next + 0.05);
+        o.connect(g).connect(audio.destination); o.start(next); o.stop(next + 0.06);
+        next += 60 / bpm; beat++;
+      }
+    };
+    tick();
+    metro = { timer: setInterval(tick, 50), onStop };
+  }
+  function stopMetronome() {
+    if (!metro) return;
+    clearInterval(metro.timer);
+    const f = metro.onStop; metro = null; f && f();
+  }
+
+  // ---------- alphaTab players ----------
+  const players = new Set();
+  function stopAll(except) {
+    stopMetronome();
+    players.forEach(api => { if (api !== except) api.stop(); });
+  }
+
+  // Build the tab view + play controls for one part. Returns {node, setTempo}.
+  function tabView(p) {
+    const node = el("div");
+    let setTempo = () => {}, current = null;
+
+    if (p.tex || p.gp) {
+      const host = el("div", { class: "tab-host" });
+      const status = el("p", { class: "status" }, "Tab laden…");
+      const playBtn = el("button", { class: "btn main", disabled: true }, "▶ Speel");
+      const loopBtn = el("button", { class: "btn on", disabled: true }, "🔁 Herhalen");
+      const metroBtn = el("button", { class: "btn", disabled: true }, "🥁 Klik");
+      const countBtn = el("button", { class: "btn", disabled: true }, "1-2-3-4");
+      const tempoLbl = el("p", { class: "hint" });
+      node.append(host, status, el("div", { class: "controls" }, playBtn, loopBtn, metroBtn, countBtn), tempoLbl,
+        el("p", { class: "hint" }, "Tik op een noot om daar te beginnen. Sleep over maten om alleen dat stuk te herhalen."));
+
+      const api = new alphaTab.AlphaTabApi(host, {
+        core: { fontDirectory: "lib/font/", enableLazyLoading: false, file: p.gp || null, tracks: p.track != null ? [p.track] : null },
+        display: { staveProfile: p.staff === "beide" ? "ScoreTab" : p.staff === "noten" ? "Score" : "Tab",
+                   scale: window.innerWidth < 600 ? 0.85 : 1, padding: [10, 10, 10, 10] },
+        notation: { elements: { scoreTitle: false, scoreWordsAndMusic: false, effectTempo: true, guitarTuning: false } },
+        player: { enablePlayer: true, enableCursor: true, enableUserInteraction: true,
+                  soundFont: "lib/soundfont/sonivox.sf2", scrollMode: "Off" }
+      });
+      players.add(api);
+      api.isLooping = true;
+
+      let scoreTempo = 120;
+      api.scoreLoaded.on(score => {
+        scoreTempo = score.tempo || 120;
+        setTempo(current || (p.tempos && p.tempos[0]) || scoreTempo);
+      });
+      api.error.on(e => { status.textContent = "Tab kon niet laden: " + (e && e.message || e); });
+      api.soundFontLoad.on(e => { status.textContent = "Geluid laden… " + Math.round(100 * e.loaded / (e.total || 1)) + "%"; });
+      api.playerReady.on(() => {
+        status.remove();
+        [playBtn, loopBtn, metroBtn, countBtn].forEach(b => b.disabled = false);
+      });
+      api.playerStateChanged.on(e => {
+        const on = e.state === 1;
+        playBtn.textContent = on ? "⏸ Pauze" : "▶ Speel";
+        playBtn.classList.toggle("on", on);
+        if (on) stopAll(api);
+      });
+      playBtn.onclick = () => { if (api.playerState !== 1) stopAll(api); api.playPause(); };
+      loopBtn.onclick = () => { api.isLooping = !api.isLooping; loopBtn.classList.toggle("on", api.isLooping); };
+      metroBtn.onclick = () => { api.metronomeVolume = api.metronomeVolume ? 0 : 1; metroBtn.classList.toggle("on", !!api.metronomeVolume); };
+      countBtn.onclick = () => { api.countInVolume = api.countInVolume ? 0 : 1; countBtn.classList.toggle("on", !!api.countInVolume); };
+
+      setTempo = bpm => {
+        current = bpm;
+        api.playbackSpeed = bpm / scoreTempo;
+        tempoLbl.textContent = "Tempo: " + bpm + " bpm" + (bpm !== scoreTempo ? " (origineel " + scoreTempo + ")" : "");
+      };
+      if (p.tex) api.tex(p.tex);   // after the event handlers, so scoreLoaded is caught
+      return { node, setTempo, isTab: true };
+    }
+
+    if (p.tab) {
+      node.append(el("pre", { class: "ascii" }, list(p.tab).join("\n")));
+      return { node, setTempo: null };
+    }
+    return null;
+  }
+
+  // ---------- YouTube ----------
+  const secs = t => typeof t === "number" ? t
+    : String(t || "0").split(":").reduce((a, b) => a * 60 + (+b || 0), 0);
+  function ytId(url) {
+    const m = String(url).match(/(?:v=|youtu\.be\/|shorts\/|embed\/)([\w-]{11})/);
+    return m ? m[1] : null;
+  }
+  function videoCard(videos) {
+    const card = el("section", { class: "card" }, el("p", { class: "label" }, "Video"));
+    const frame = el("div", { class: "video", style: "display:none" });
+    card.append(frame);
+    videos.forEach(v => {
+      v = typeof v === "string" ? { url: v } : v;
+      const id = ytId(v.url);
+      const start = secs(v.start || (String(v.url).match(/[?&]t=(\d+)/) || [])[1]);
+      const label = (v.label || "Bekijk video") + (start ? " · vanaf " + Math.floor(start / 60) + ":" + pad(start % 60) : "");
+      if (!id) { card.append(el("a", { class: "btn video-btn", href: v.url, target: "_blank", rel: "noopener" }, "↗ " + label)); return; }
+      card.append(el("button", { class: "btn video-btn", onclick: () => {
+        stopAll();
+        frame.style.display = "";
+        frame.textContent = "";
+        frame.append(el("iframe", { allow: "autoplay; encrypted-media; fullscreen", allowfullscreen: true,
+          src: "https://www.youtube-nocookie.com/embed/" + id + "?autoplay=1&playsinline=1&start=" + start +
+               (v.end ? "&end=" + secs(v.end) : "") }));
+      } }, "▶ " + label));
+    });
+    return card;
+  }
+
+  // ---------- one part / exercise ----------
+  function partView(p) {
+    const wrap = el("div");
+    const goalCard = el("section", { class: "card" });
+    wrap.append(goalCard);
+    const meta = [p.tuning, p.capo ? "Capo " + p.capo : null].filter(Boolean);
+
+    if (list(p.focus).length) {
+      wrap.append(el("section", { class: "card" }, el("p", { class: "label" }, "Let op"),
+        el("ul", { class: "focus" }, list(p.focus).map(f => el("li", null, f)))));
+    }
+
+    // tab + tempo steps
+    const tv = tabView(p);
+    const tempos = p.tempos || [];
+    let activeTempo = tempos[0];
+    const stepBtns = [];
+    if (tv || tempos.length) {
+      const card = el("section", { class: "card" }, el("p", { class: "label" }, "Tab"));
+      if (tv) card.append(tv.node);
+      if (tempos.length) {
+        card.append(el("p", { class: "label", style: "margin-top:14px" }, "Tempo-trap"));
+        tempos.forEach(t => {
+          const box = el("input", { type: "checkbox", onchange: () => toggleTick(p, t) });
+          const txt = el("span");
+          const btn = el("button", { class: "btn" }, tv && tv.isTab ? "▶ " + t : "🥁 " + t);
+          btn.onclick = () => {
+            if (tv && tv.isTab) { activeTempo = t; tv.setTempo(t); markSteps(); return; }
+            if (metro && metro.bpm === t) { stopMetronome(); return; }   // metronome on/off
+            startMetronome(t, () => { activeTempo = null; markSteps(); });
+            metro.bpm = t; activeTempo = t; markSteps();
+          };
+          stepBtns.push({ t, btn, box, txt });
+          card.append(el("div", { class: "step" }, btn, el("label", { class: "check" }, box, txt)));
+        });
+      }
+      wrap.append(card);
+    }
+    function markSteps() {
+      const isTab = tv && tv.isTab;
+      stepBtns.forEach(s => s.btn.classList.toggle("on", s.t === activeTempo && (isTab || !!metro)));
+    }
+
+    if (list(p.video).length) wrap.append(videoCard(list(p.video)));
+    if (p.pdf || p.image) {
+      const card = el("section", { class: "card" });
+      list(p.image).forEach(src => card.append(el("img", { class: "sheet", src, alt: p.title || "", loading: "lazy" })));
+      list(p.pdf).forEach(src => card.append(el("a", { class: "btn", href: src, target: "_blank", rel: "noopener" }, "📄 Open PDF")));
+      wrap.append(card);
+    }
+
+    function draw() {
+      const done = isDone(p), ticks = state.ticks[p._key] || [];
+      goalCard.textContent = "";
+      goalCard.append(el("p", { class: "label" }, "Doel"),
+        el("p", { class: "goal" + (done ? " done" : "") }, p.goal || p.title),
+        ...(meta.length ? [el("div", { class: "meta" }, meta.map(m => el("span", { class: "chip" }, m)))] : []));
+      if (!tempos.length && p.status !== "klaar") {
+        goalCard.append(el("label", { class: "check", style: "margin-top:12px" },
+          el("input", { type: "checkbox", checked: done, onchange: () => toggleTick(p, "done") }), done ? "Kan ik ✓" : "Kan ik"));
+      }
+      if (done) goalCard.append(el("div", { class: "celebrate" }, "🎉 Zit erin!"));
+      stepBtns.forEach(s => {
+        s.box.checked = ticks.includes(s.t);
+        s.txt.textContent = s.box.checked ? "Lukt op " + s.t + " ✓" : "Lukt op " + s.t;
+      });
+      markSteps();
+    }
+    refreshers.push(draw);
+    draw();
+    return wrap;
+  }
+
+  // Collapsible row; the content is only built the first time it opens (keeps the page light).
+  function item(p, opts) {
+    const d = el("details", { class: "ex" + (p.status === "later" ? " later" : "") });
+    const mark = el("span", { class: "ex-mark" }, opts.mark);
+    const progress = el("span", { class: "ex-progress" });
+    d.append(el("summary", null, mark,
+      el("span", null, opts.type ? el("span", { class: "ex-type" }, opts.type) : null,
+        el("span", { class: "ex-title" }, opts.title)), progress));
+    const body = el("div", { class: "ex-body" });
+    d.append(body);
+    d.addEventListener("toggle", () => {
+      if (d.open && !body.firstChild) body.append(opts.build());
+      if (!d.open) stopAll();
+    });
+    const draw = () => {
+      const done = opts.done();
+      d.classList.toggle("done", done);
+      mark.textContent = done ? "✓" : opts.mark;
+      progress.textContent = opts.progress ? opts.progress() : "";
+    };
+    refreshers.push(draw);
+    draw();
+    return d;
+  }
+
+  function songView(song) {
+    const wrap = el("div");
+    const meta = [song.tuning, song.capo ? "Capo " + song.capo : null, song.bpm ? song.bpm + " bpm" : null].filter(Boolean);
+    const links = [];
+    if (song.full) links.push(el("a", { class: "btn", href: song.full, target: "_blank", rel: "noopener" }, "📖 Volledige tab ↗"));
+    if (song.pdf) links.push(el("a", { class: "btn", href: song.pdf, target: "_blank", rel: "noopener" }, "📄 PDF"));
+    wrap.append(el("section", { class: "card" },
+      meta.length ? el("div", { class: "meta", style: "margin:0" }, meta.map(m => el("span", { class: "chip" }, m))) : null,
+      list(song.notes).length ? el("ul", { class: "focus", style: "margin-top:10px" }, list(song.notes).map(n => el("li", null, n))) : null,
+      links.length ? el("div", { class: "links" }, links) : null));
+    if (list(song.video).length) wrap.append(videoCard(list(song.video)));
+    (song.parts || []).forEach((p, i) => wrap.append(item(p, {
+      mark: String(i + 1), title: p.title || p.goal,
+      type: p.status === "later" ? "nog te leren" : null,
+      done: () => isDone(p), build: () => partView(p)
+    })));
+    return wrap;
+  }
+
+  // ---------- page ----------
+  function renderPage(data) {
+    app.textContent = "";
+    // give every part a stable key and inherit song info (tuning, capo, tempo)
+    const byKey = {};
+    (data.songs || []).forEach(s => (s.parts || []).forEach(p => {
+      p._key = s.id + "/" + p.id; p._song = s;
+      p.tuning = p.tuning || s.tuning; p.capo = p.capo != null ? p.capo : s.capo;
+      byKey[p._key] = p;
+    }));
+    (data.exercises || []).forEach(e => { e._key = "ex/" + e.id; byKey[e._key] = e; byKey[e.id] = e; });
+
+    app.append(el("h1", null, "🎸 " + (data.title || "Gitaar oefenen")));
+    app.append(el("p", { class: "sub" }, data.intro || "Alles wat ik aan het leren ben, op één plek."));
+    app.append(streakCard());
+
+    if (list(data.notes).length) {
+      app.append(el("section", { class: "card" }, el("p", { class: "label" }, "Notities"),
+        el("ul", { class: "focus" }, list(data.notes).map(n => el("li", null, n)))));
+    }
+
+    // Homework: a list of "song/part" or exercise ids
+    const hw = list(data.homework).map(k => byKey[k]).filter(Boolean);
+    if (hw.length) {
+      const doneLbl = el("span");
+      app.append(el("p", { class: "label section-label" }, "Huiswerk · ", doneLbl));
+      refreshers.push(() => { doneLbl.textContent = hw.filter(isDone).length + " van " + hw.length + " klaar"; });
+      hw.forEach((p, i) => app.append(item(p, {
+        mark: String(i + 1), title: p.title || p.goal,
+        type: p._song ? (p._song.artist ? p._song.artist + " – " : "") + p._song.title : (p.type || "Oefening"),
+        done: () => isDone(p), build: () => partView(p)
+      })));
+    }
+
+    if ((data.songs || []).length) {
+      app.append(el("p", { class: "label section-label" }, "Liedjes"));
+      data.songs.forEach(s => {
+        const parts = s.parts || [];
+        app.append(item(s, {
+          mark: "♪", title: s.title, type: s.artist,
+          done: () => parts.length > 0 && parts.every(isDone),
+          progress: () => parts.filter(isDone).length + "/" + parts.length,
+          build: () => songView(s)
+        }));
+      });
+    }
+
+    if ((data.exercises || []).length) {
+      app.append(el("p", { class: "label section-label" }, "Oefeningen"));
+      data.exercises.forEach((e, i) => app.append(item(e, {
+        mark: "•", title: e.title || e.goal, type: [e.type, e.teacher].filter(Boolean).join(" · "),
+        done: () => isDone(e), build: () => partView(e)
+      })));
+    }
+    refresh();
+  }
+
+  if (!/^[a-z0-9-]+$/i.test(code)) { app.innerHTML = '<div class="error">Deze link klopt niet.</div>'; return; }
+  fetch("s/" + code + ".json", { cache: "no-store" })
+    .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(renderPage)
+    .catch(e => {
+      app.innerHTML = '<div class="error">Oefenlijst niet gevonden of kapot (' + e.message +
+        '). Plak het JSON-bestand in jsonlint.com om de fout te vinden.</div>';
+    });
+})();
+</script>
+</body>
+</html>
